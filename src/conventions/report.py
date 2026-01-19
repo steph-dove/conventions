@@ -11,6 +11,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
+from .ratings import get_score_label, rate_convention
 from .schemas import ConventionsOutput
 
 
@@ -175,6 +176,127 @@ def write_markdown_report(output: ConventionsOutput, repo_path: Path) -> Path:
 
     report_path = conventions_dir / "conventions.md"
     report_content = generate_markdown_report(output)
+    report_path.write_text(report_content)
+
+    return report_path
+
+
+def generate_review_markdown(output: ConventionsOutput) -> str:
+    """Generate a review report with ratings and improvement suggestions."""
+    lines: list[str] = []
+
+    # Header
+    lines.append("# Conventions Review Report")
+    lines.append("")
+    lines.append(f"*Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*")
+    lines.append("")
+
+    # Score legend
+    lines.append("## Score Legend")
+    lines.append("")
+    lines.append("| Score | Rating |")
+    lines.append("|:-----:|:-------|")
+    lines.append("| 5 | Excellent |")
+    lines.append("| 4 | Good |")
+    lines.append("| 3 | Average |")
+    lines.append("| 2 | Below Average |")
+    lines.append("| 1 | Poor |")
+    lines.append("")
+
+    if not output.rules:
+        lines.append("*No conventions detected to review.*")
+        return "\n".join(lines)
+
+    # Calculate overall score
+    scores: list[int] = []
+    rated_rules: list[tuple[str, str, int, str, str | None]] = []
+
+    for rule in output.rules:
+        score, reason, suggestion = rate_convention(rule)
+        scores.append(score)
+        rated_rules.append((rule.id, rule.title, score, reason, suggestion))
+
+    avg_score = sum(scores) / len(scores) if scores else 0
+
+    # Summary
+    lines.append("## Summary")
+    lines.append("")
+    lines.append(f"- **Conventions Reviewed:** {len(output.rules)}")
+    lines.append(f"- **Average Score:** {avg_score:.1f}/5 ({get_score_label(round(avg_score))})")
+    lines.append(f"- **Excellent (5):** {scores.count(5)}")
+    lines.append(f"- **Good (4):** {scores.count(4)}")
+    lines.append(f"- **Average (3):** {scores.count(3)}")
+    lines.append(f"- **Below Average (2):** {scores.count(2)}")
+    lines.append(f"- **Poor (1):** {scores.count(1)}")
+    lines.append("")
+
+    # Scores overview table
+    lines.append("## Scores Overview")
+    lines.append("")
+    lines.append("| Convention | Score | Rating |")
+    lines.append("|:-----------|:-----:|:-------|")
+
+    for rule_id, title, score, reason, suggestion in sorted(rated_rules, key=lambda x: (-x[2], x[0])):
+        rating_label = get_score_label(score)
+        lines.append(f"| {title} | {score}/5 | {rating_label} |")
+
+    lines.append("")
+
+    # Detailed reviews
+    lines.append("## Detailed Reviews")
+    lines.append("")
+
+    # Group by score for better organization
+    for target_score in [5, 4, 3, 2, 1]:
+        rules_with_score = [r for r in rated_rules if r[2] == target_score]
+        if not rules_with_score:
+            continue
+
+        lines.append(f"### {get_score_label(target_score)} ({target_score}/5)")
+        lines.append("")
+
+        for rule_id, title, score, reason, suggestion in sorted(rules_with_score, key=lambda x: x[0]):
+            lines.append(f"#### {title}")
+            lines.append("")
+            lines.append(f"**ID:** `{rule_id}`  ")
+            lines.append(f"**Score:** {score}/5 ({get_score_label(score)})")
+            lines.append("")
+            lines.append(f"**Assessment:** {reason}")
+            lines.append("")
+
+            if suggestion:
+                lines.append(f"**Suggestion:** {suggestion}")
+                lines.append("")
+
+            lines.append("---")
+            lines.append("")
+
+    # Improvement priorities section
+    improvements_needed = [r for r in rated_rules if r[4] is not None]
+    if improvements_needed:
+        lines.append("## Improvement Priorities")
+        lines.append("")
+        lines.append("Conventions sorted by priority (lowest scores first):")
+        lines.append("")
+
+        for i, (rule_id, title, score, reason, suggestion) in enumerate(
+            sorted(improvements_needed, key=lambda x: (x[2], x[0])), 1
+        ):
+            if suggestion:
+                lines.append(f"{i}. **{title}** (Score: {score}/5)")
+                lines.append(f"   - {suggestion}")
+                lines.append("")
+
+    return "\n".join(lines)
+
+
+def write_review_report(output: ConventionsOutput, repo_path: Path) -> Path:
+    """Write a review report to the .conventions directory."""
+    conventions_dir = repo_path / ".conventions"
+    conventions_dir.mkdir(exist_ok=True)
+
+    report_path = conventions_dir / "conventions-review.md"
+    report_content = generate_review_markdown(output)
     report_path.write_text(report_content)
 
     return report_path
