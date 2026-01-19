@@ -27,8 +27,8 @@ A command-line tool that automatically discovers and documents coding convention
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/conventions-cli.git
-cd conventions-cli
+git clone https://github.com/steph-dove/conventions.git
+cd conventions
 
 # Create a virtual environment
 python3 -m venv .venv
@@ -292,7 +292,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install conventions-cli
+      - run: pip install git+https://github.com/steph-dove/conventions.git
       - run: conventions discover -r .
       - run: cat .conventions/conventions-review.md
 ```
