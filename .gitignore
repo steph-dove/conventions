@@ -1,0 +1,21 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Generated output
+.conventions/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
