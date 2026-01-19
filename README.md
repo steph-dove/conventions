@@ -9,7 +9,10 @@ A command-line tool that automatically discovers and documents coding convention
 - **Cross-Language Detection**: CI/CD, Git conventions, Docker, Kubernetes, and more
 - **Convention Rating**: Rates each convention on a 1-5 scale (Poor to Excellent)
 - **Improvement Suggestions**: Provides actionable suggestions for conventions that could be improved
-- **Multiple Output Formats**: JSON, Markdown reports, and review reports
+- **Multiple Output Formats**: JSON, Markdown, HTML reports, and SARIF for GitHub Code Scanning
+- **Configuration File Support**: Customize behavior with `.conventionsrc.json`
+- **Plugin System**: Extend with custom detectors and rating rules
+- **Incremental Scanning**: Cache results to speed up subsequent scans
 
 ## Language Support
 
@@ -76,14 +79,17 @@ conventions show -r /path/to/your/repo
 |--------|-------|-------------|
 | `--repo` | `-r` | Path to repository root (default: current directory) |
 | `--languages` | `-l` | Comma-separated list of languages to scan |
-| `--max-files` | `-m` | Maximum files to scan (default: 2000) |
+| `--max-files` | | Maximum files to scan (default: 2000) |
 | `--verbose` | `-v` | Enable verbose output |
 | `--quiet` | `-q` | Suppress output except errors |
 | `--detailed` | `-d` | Show detailed rule information |
+| `--config` | `-c` | Path to configuration file |
+| `--ignore-config` | | Ignore configuration file even if present |
+| `--format` | | Output format(s): json, markdown, review, html, sarif |
 
 ## Output Files
 
-After running `conventions discover`, three files are created in the `.conventions/` directory:
+After running `conventions discover`, files are created in the `.conventions/` directory based on configured formats:
 
 ### 1. `conventions.raw.json`
 
@@ -96,6 +102,18 @@ Human-readable Markdown report summarizing detected conventions.
 ### 3. `conventions-review.md`
 
 Review report with ratings (1-5) and improvement suggestions, sorted by priority.
+
+### 4. `conventions.html` (with `--format html`)
+
+Self-contained HTML report with:
+- Interactive dark/light mode toggle
+- Sortable and filterable conventions table
+- Expandable evidence sections with code snippets
+- Visual score indicators
+
+### 5. `conventions.sarif` (with `--format sarif`)
+
+SARIF (Static Analysis Results Interchange Format) for integration with GitHub Code Scanning and other SARIF-compatible tools.
 
 ## Detected Conventions
 
@@ -277,7 +295,7 @@ Detected Conventions:
 
 ## Integrating with CI/CD
 
-You can integrate conventions checking into your CI pipeline:
+### Basic Integration
 
 ```yaml
 # .github/workflows/conventions.yml
@@ -292,12 +310,57 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install git+https://github.com/steph-dove/conventions.git
-      - run: conventions discover -r .
+      - run: pip install conventions-cli
+      - run: conventions discover
       - run: cat .conventions/conventions-review.md
 ```
 
+### With Quality Gate
+
+Add a `.conventionsrc.json` to enforce minimum standards:
+
+```json
+{
+  "min_score": 3.0,
+  "output_formats": ["json", "markdown", "review"]
+}
+```
+
+The workflow will fail (exit code 2) if the average score falls below the threshold.
+
 ## Configuration
+
+### Configuration File
+
+Create a `.conventionsrc.json` file in your repository root to customize behavior:
+
+```json
+{
+  "languages": ["python", "node"],
+  "max_files": 1000,
+  "disabled_detectors": ["python_graphql"],
+  "disabled_rules": ["python.conventions.graphql"],
+  "output_formats": ["json", "markdown", "review", "html"],
+  "exclude_patterns": ["**/generated/**", "**/vendor/**"],
+  "plugin_paths": ["./custom_rules.py"],
+  "min_score": 3.0
+}
+```
+
+### Configuration Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `languages` | `string[]` | Languages to scan (auto-detect if not specified) |
+| `max_files` | `number` | Maximum files to scan per language (default: 2000) |
+| `disabled_detectors` | `string[]` | Detector names to skip |
+| `disabled_rules` | `string[]` | Rule IDs to exclude from output |
+| `output_formats` | `string[]` | Output formats: json, markdown, review, html, sarif |
+| `exclude_patterns` | `string[]` | Glob patterns to exclude from scanning |
+| `plugin_paths` | `string[]` | Paths to plugin files |
+| `min_score` | `number` | Exit with code 2 if average score is below this threshold |
+
+### Automatic Exclusions
 
 The tool respects `.gitignore` files and automatically excludes:
 - `node_modules/`
@@ -305,6 +368,85 @@ The tool respects `.gitignore` files and automatically excludes:
 - `__pycache__/`
 - `.git/`
 - Build directories
+
+## Plugins
+
+Create custom detectors and rating rules by adding plugin files:
+
+```python
+# custom_rules.py
+from conventions.detectors.base import BaseDetector, DetectorContext, DetectorResult
+from conventions.ratings import RatingRule
+
+class MyCustomDetector(BaseDetector):
+    name = "my_custom_detector"
+    description = "Detects my custom convention"
+    languages = {"python"}
+
+    def detect(self, ctx: DetectorContext) -> DetectorResult:
+        result = DetectorResult()
+        # Custom detection logic
+        return result
+
+# Required exports
+DETECTORS = [MyCustomDetector]
+
+# Optional: custom rating rules
+RATING_RULES = {
+    "custom.my_rule": RatingRule(
+        score_func=lambda r: 5 if r.stats.get("metric", 0) > 0.8 else 3,
+        reason_func=lambda r, s: f"Custom metric: {r.stats.get('metric', 0):.0%}",
+        suggestion_func=lambda r, s: None if s >= 5 else "Improve the custom metric.",
+    ),
+}
+```
+
+Add the plugin to your config:
+
+```json
+{
+  "plugin_paths": ["./custom_rules.py"]
+}
+```
+
+## CI/CD Quality Gate
+
+Use the `min_score` configuration to fail CI builds when conventions don't meet standards:
+
+```json
+{
+  "min_score": 3.5,
+  "output_formats": ["sarif"]
+}
+```
+
+The tool exits with code 2 if the average convention score falls below the threshold.
+
+## SARIF Integration
+
+Upload SARIF results to GitHub Code Scanning:
+
+```yaml
+# .github/workflows/conventions.yml
+name: Convention Analysis
+on: [push, pull_request]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install conventions-cli
+      - run: conventions discover --format sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: .conventions/conventions.sarif
+```
 
 ## Contributing
 
@@ -315,37 +457,4 @@ Contributions are welcome! To add support for new conventions:
 3. Add rating rules in `src/conventions/ratings.py`
 4. Add tests in `tests/`
 
-### Directory Structure
-
-```
-src/conventions/detectors/
-├── base.py              # Base detector classes
-├── registry.py          # Detector registration
-├── orchestrator.py      # Detection orchestration
-├── generic/             # Cross-language detectors
-│   ├── ci_cd.py
-│   ├── git_conventions.py
-│   ├── containerization.py
-│   └── ...
-├── python/              # Python detectors
-│   ├── index.py
-│   ├── typing.py
-│   ├── testing.py
-│   └── ...
-├── go/                  # Go detectors
-│   ├── index.py
-│   ├── testing.py
-│   └── ...
-├── node/                # Node.js/TypeScript detectors
-│   ├── index.py
-│   ├── typescript.py
-│   └── ...
-└── rust/                # Rust detectors
-    ├── index.py
-    ├── cargo.py
-    └── ...
-```
-
-## License
-
-MIT License - see LICENSE file for details.
+For quick prototyping, use the plugin system instead of modifying the core codebase.

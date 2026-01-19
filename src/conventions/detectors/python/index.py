@@ -113,9 +113,11 @@ class PythonIndex:
         self,
         repo_root: Path,
         max_files: int = 2000,
+        exclude_patterns: Optional[list[str]] = None,
     ):
         self.repo_root = Path(repo_root).resolve()
         self.max_files = max_files
+        self.exclude_patterns = exclude_patterns or []
         self.files: dict[str, FileIndex] = {}  # relative_path -> FileIndex
         self._built = False
 
@@ -128,6 +130,7 @@ class PythonIndex:
             self.repo_root,
             extensions={".py"},
             max_files=self.max_files,
+            exclude_patterns=self.exclude_patterns,
         ):
             file_index = self._index_file(file_path)
             self.files[file_index.relative_path] = file_index
