@@ -5,21 +5,38 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "conventions-cli"
 version = "0.1.0"
-description = "Discover coding conventions from source code"
+description = "Automatically discover and document coding conventions in your codebase"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Conventions CLI", email = "conventions@example.com"}
+    {name = "Stephanie Dover"}
+]
+keywords = [
+    "conventions",
+    "code-analysis",
+    "static-analysis",
+    "code-quality",
+    "best-practices",
+    "linting",
+    "python",
+    "typescript",
+    "golang",
+    "rust",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
 ]
 dependencies = [
     "typer>=0.9.0",
@@ -36,6 +53,11 @@ dev = [
     "mypy>=1.0.0",
     "ruff>=0.1.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/steph-dove/conventions"
+Repository = "https://github.com/steph-dove/conventions"
+Issues = "https://github.com/steph-dove/conventions/issues"
 
 [project.scripts]
 conventions = "conventions.cli:main"

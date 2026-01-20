@@ -259,6 +259,15 @@ Each convention is rated on a 1-5 scale:
 | 2 | Below Average | Significant improvements needed |
 | 1 | Poor | Major issues detected |
 
+## Example Reports
+
+See the `examples/` directory for sample outputs generated from the FastAPI codebase:
+
+- **[conventions.html](examples/conventions.html)** - Interactive HTML report with filtering and dark mode
+- **[conventions-review.md](examples/conventions-review.md)** - Review report with scores and suggestions
+- **[conventions.md](examples/conventions.md)** - Markdown summary
+- **[conventions.raw.json](examples/conventions.raw.json)** - Machine-readable JSON
+
 ## Example Output
 
 ```
