@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -31,7 +31,7 @@ class RustSerializationDetector(RustDetector):
         serde_uses = index.find_uses_matching("serde", limit=50)
         if serde_uses:
             uses_serde = True
-            examples.extend([(r, l) for r, _, l in serde_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in serde_uses[:3]])
 
         # Check for Serialize/Deserialize derives
         derive_count = index.count_pattern(
@@ -125,7 +125,7 @@ class RustSerializationDetector(RustDetector):
         format_names = [f["name"] for f in formats.values()]
 
         if uses_serde:
-            title = f"Serialization: Serde"
+            title = "Serialization: Serde"
             description = f"Uses Serde with {derive_count} derived types."
 
             if format_names:

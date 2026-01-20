@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from collections import Counter
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -90,7 +89,7 @@ class PythonTestingConventionsDetector(PythonDetector):
 
         # Determine primary framework
         primary, primary_count = frameworks.most_common(1)[0]
-        total = sum(frameworks.values())
+        sum(frameworks.values())
 
         # Map to friendly names
         framework_names = {

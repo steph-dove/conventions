@@ -15,7 +15,6 @@ from typing import Any, Optional
 
 from .schemas import ConventionRule, ConventionsOutput
 
-
 CACHE_VERSION = "1.0.0"
 CACHE_FILE_NAME = ".cache.json"
 

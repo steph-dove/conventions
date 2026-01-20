@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import GoDetector
 from .index import GoIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register

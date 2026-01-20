@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import re
-from pathlib import Path
-
 from ..base import DetectorContext, DetectorResult
-from .base import NodeDetector
-from .index import NodeIndex, make_evidence
 from ..registry import DetectorRegistry
+from .base import NodeDetector
+from .index import NodeIndex
 
 
 @DetectorRegistry.register

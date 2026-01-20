@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import re
-from collections import Counter
-
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import GoDetector
 from .index import GoIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -46,7 +43,7 @@ class GoDocumentationDetector(GoDetector):
         examples: list[tuple[str, int]] = []
 
         for file_idx in index.get_non_test_files():
-            content = "\n".join(file_idx.lines)
+            "\n".join(file_idx.lines)
             lines = file_idx.lines
 
             for func_name, line_num in file_idx.functions:
@@ -68,8 +65,8 @@ class GoDocumentationDetector(GoDetector):
                             break
 
                     has_doc = any(
-                        l.startswith(f"// {func_name}")
-                        for l in prev_lines
+                        line.startswith(f"// {func_name}")
+                        for line in prev_lines
                     )
 
                     if has_doc:

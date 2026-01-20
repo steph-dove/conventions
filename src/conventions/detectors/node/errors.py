@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -147,7 +147,7 @@ class NodeErrorHandlingDetector(NodeDetector):
 
         # app.use with error handler
         app_use_error_pattern = r'app\.use\s*\([^)]*error'
-        app_use_count = index.count_pattern(app_use_error_pattern, exclude_tests=True)
+        index.count_pattern(app_use_error_pattern, exclude_tests=True)
 
         # Fastify error handler
         fastify_error_pattern = r'setErrorHandler\s*\('

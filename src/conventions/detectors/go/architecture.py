@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from collections import Counter
 from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import GoDetector
 from .index import GoIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -114,7 +113,7 @@ class GoArchitectureDetector(GoDetector):
                 content,
                 re.DOTALL,
             ):
-                interface_name = match.group(1)
+                match.group(1)
                 interface_body = match.group(2)
 
                 # Count method signatures (lines with parentheses)

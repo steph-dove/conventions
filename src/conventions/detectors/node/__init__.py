@@ -1,27 +1,27 @@
 """Node.js convention detectors package."""
 
-from .index import NodeIndex, make_evidence
+from .api import NodeAPIDetector
+from .architecture import NodeArchitectureDetector
+from .async_patterns import NodeAsyncPatternsDetector
 from .base import NodeDetector
+from .build_tools import NodeBuildToolsDetector
 
 # Import all detector classes to ensure they register
 from .conventions import NodeConventionsDetector
-from .typescript import NodeTypeScriptDetector
 from .documentation import NodeDocumentationDetector
-from .testing import NodeTestingDetector
-from .logging import NodeLoggingDetector
 from .errors import NodeErrorHandlingDetector
-from .security import NodeSecurityDetector
-from .async_patterns import NodeAsyncPatternsDetector
-from .architecture import NodeArchitectureDetector
-from .api import NodeAPIDetector
-from .patterns import NodePatternsDetector
-from .package_manager import NodePackageManagerDetector
-from .monorepo import NodeMonorepoDetector
-from .build_tools import NodeBuildToolsDetector
-from .linting import NodeLintingDetector
 from .formatting import NodeFormattingDetector
 from .frontend import NodeFrontendDetector
+from .index import NodeIndex, make_evidence
+from .linting import NodeLintingDetector
+from .logging import NodeLoggingDetector
+from .monorepo import NodeMonorepoDetector
+from .package_manager import NodePackageManagerDetector
+from .patterns import NodePatternsDetector
+from .security import NodeSecurityDetector
 from .state_management import NodeStateManagementDetector
+from .testing import NodeTestingDetector
+from .typescript import NodeTypeScriptDetector
 
 __all__ = [
     "NodeIndex",

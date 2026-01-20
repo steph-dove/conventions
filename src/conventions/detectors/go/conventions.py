@@ -6,9 +6,9 @@ import re
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import GoDetector
 from .index import GoIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -141,15 +141,15 @@ class GoConventionsDetector(GoDetector):
         errors_pkg = index.find_imports_matching("github.com/pkg/errors", limit=20)
         if errors_pkg:
             error_patterns["pkg_errors"] = len(errors_pkg)
-            pattern_examples["pkg_errors"] = [(p, l) for p, _, l in errors_pkg[:5]]
+            pattern_examples["pkg_errors"] = [(p, ln) for p, _, ln in errors_pkg[:5]]
 
         # Check for stdlib errors
         stdlib_errors = index.find_imports_matching("errors", limit=20)
         # Filter to exact match
-        stdlib_errors = [(p, pkg, l) for p, pkg, l in stdlib_errors if pkg == "errors"]
+        stdlib_errors = [(p, pkg, ln) for p, pkg, ln in stdlib_errors if pkg == "errors"]
         if stdlib_errors:
             error_patterns["stdlib_errors"] = len(stdlib_errors)
-            pattern_examples["stdlib_errors"] = [(p, l) for p, _, l in stdlib_errors[:5]]
+            pattern_examples["stdlib_errors"] = [(p, ln) for p, _, ln in stdlib_errors[:5]]
 
         # Check for fmt.Errorf usage (heuristic)
         errorf_count = 0

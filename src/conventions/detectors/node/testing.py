@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -121,7 +121,7 @@ class NodeTestingDetector(NodeDetector):
                     lib_counts[lib] += len(imports)
                     if lib not in examples:
                         examples[lib] = []
-                    examples[lib].extend([(r, l) for r, _, l in imports[:5]])
+                    examples[lib].extend([(r, ln) for r, _, ln in imports[:5]])
 
         # Also check for inline usage
         jest_fn_count = index.count_pattern(r'jest\.(?:fn|mock|spyOn)\s*\(')

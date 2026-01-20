@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -33,7 +33,7 @@ class RustAsyncDetector(RustDetector):
                 "name": "Tokio",
                 "count": len(tokio_uses),
             }
-            examples.extend([(r, l) for r, _, l in tokio_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in tokio_uses[:3]])
 
             # Check for tokio::main
             tokio_main = index.search_pattern(r"#\[tokio::main\]", limit=10)
@@ -52,7 +52,7 @@ class RustAsyncDetector(RustDetector):
                 "name": "async-std",
                 "count": len(async_std_uses),
             }
-            examples.extend([(r, l) for r, _, l in async_std_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in async_std_uses[:3]])
 
         # Check for smol
         smol_uses = index.find_uses_matching("smol", limit=30)

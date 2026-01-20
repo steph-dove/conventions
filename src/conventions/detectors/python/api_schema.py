@@ -5,8 +5,8 @@ from __future__ import annotations
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -277,9 +277,7 @@ class PythonAPISchemaConventionsDetector(PythonDetector):
         # This is heuristic - we look for dict keys like "data", "error", "message"
 
         envelope_indicators = 0
-        raw_indicators = 0
         envelope_examples: list[tuple[str, int]] = []
-        raw_examples: list[tuple[str, int]] = []
 
         # Check for response model classes with envelope patterns
         for rel_path, cls in index.get_all_classes():

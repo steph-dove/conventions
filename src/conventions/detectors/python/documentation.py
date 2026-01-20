@@ -6,8 +6,8 @@ import re
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -236,13 +236,12 @@ class PythonDocstringNamingConventionsDetector(PythonDetector):
         """Detect naming convention patterns."""
         # Look for constants (UPPER_CASE) at module level
         constant_count = 0
-        constant_examples: list[tuple[str, int]] = []
 
         # Check for snake_case vs camelCase in function names
         snake_case_funcs = 0
         camel_case_funcs = 0
 
-        snake_case_pattern = re.compile(r"^[a-z][a-z0-9_]*$")
+        re.compile(r"^[a-z][a-z0-9_]*$")
         camel_case_pattern = re.compile(r"^[a-z][a-zA-Z0-9]*$")  # camelCase
         has_underscore = re.compile(r"_")
 

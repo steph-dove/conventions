@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -34,7 +34,7 @@ class RustLoggingDetector(RustDetector):
                 "type": "structured",
                 "count": len(tracing_uses),
             }
-            examples.extend([(r, l) for r, _, l in tracing_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in tracing_uses[:3]])
 
             # Check for tracing-subscriber
             subscriber_uses = index.find_uses_matching("tracing_subscriber", limit=20)
@@ -61,7 +61,7 @@ class RustLoggingDetector(RustDetector):
                 "count": len(log_uses),
             }
             if not examples:
-                examples.extend([(r, l) for r, _, l in log_uses[:3]])
+                examples.extend([(r, ln) for r, _, ln in log_uses[:3]])
 
         # Check for env_logger
         env_logger_uses = index.find_uses_matching("env_logger", limit=20)

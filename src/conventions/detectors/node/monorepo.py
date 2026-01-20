@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
-from .base import NodeDetector
 from ..registry import DetectorRegistry
+from .base import NodeDetector
 
 
 @DetectorRegistry.register
@@ -106,7 +105,7 @@ class NodeMonorepoDetector(NodeDetector):
                 if item.is_dir() and (item / "package.json").exists():
                     package_count += 1
 
-        tool_names = [t["name"] for t in tools.values()]
+        [t["name"] for t in tools.values()]
         primary = list(tools.keys())[0]
 
         title = f"Monorepo: {tools[primary]['name']}"

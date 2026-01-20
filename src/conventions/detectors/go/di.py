@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
-from .base import GoDetector
-from .index import GoIndex, make_evidence
 from ..registry import DetectorRegistry
+from .base import GoDetector
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -34,7 +34,7 @@ class GoDIDetector(GoDetector):
                 "import_count": len(wire_imports),
                 "style": "compile-time",
             }
-            examples["wire"] = [(r, l) for r, _, l in wire_imports[:5]]
+            examples["wire"] = [(r, ln) for r, _, ln in wire_imports[:5]]
 
         # Uber Fx
         fx_imports = index.find_imports_matching("go.uber.org/fx", limit=30)
@@ -44,7 +44,7 @@ class GoDIDetector(GoDetector):
                 "import_count": len(fx_imports),
                 "style": "runtime",
             }
-            examples["fx"] = [(r, l) for r, _, l in fx_imports[:5]]
+            examples["fx"] = [(r, ln) for r, _, ln in fx_imports[:5]]
 
         # Uber dig
         dig_imports = index.find_imports_matching("go.uber.org/dig", limit=30)
@@ -54,7 +54,7 @@ class GoDIDetector(GoDetector):
                 "import_count": len(dig_imports),
                 "style": "runtime",
             }
-            examples["dig"] = [(r, l) for r, _, l in dig_imports[:5]]
+            examples["dig"] = [(r, ln) for r, _, ln in dig_imports[:5]]
 
         # samber/do
         do_imports = index.find_imports_matching("github.com/samber/do", limit=30)
@@ -64,7 +64,7 @@ class GoDIDetector(GoDetector):
                 "import_count": len(do_imports),
                 "style": "runtime",
             }
-            examples["do"] = [(r, l) for r, _, l in do_imports[:5]]
+            examples["do"] = [(r, ln) for r, _, ln in do_imports[:5]]
 
         if not frameworks:
             return result

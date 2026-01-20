@@ -81,7 +81,12 @@ def discover(
     """
     from .detectors.orchestrator import run_detectors, write_conventions_output
     from .ratings import rate_convention
-    from .report import print_detailed_rules, print_summary, write_markdown_report, write_review_report
+    from .report import (
+        print_detailed_rules,
+        print_summary,
+        write_markdown_report,
+        write_review_report,
+    )
 
     # Load configuration
     cfg = ConventionsConfig()

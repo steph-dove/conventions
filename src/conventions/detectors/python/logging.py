@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import ast
 import re
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -143,12 +142,6 @@ class PythonLoggingConventionsDetector(PythonDetector):
         field_examples: list[tuple[str, int, list[str]]] = []
 
         # Common fields we're looking for
-        common_fields = {
-            "user_id", "request_id", "trace_id", "correlation_id",
-            "session_id", "order_id", "customer_id", "transaction_id",
-            "action", "event", "status", "duration", "error", "exception",
-            "method", "path", "url", "ip", "user_agent",
-        }
 
         # Look through calls for logging patterns
         for rel_path, call in index.get_all_calls():
@@ -198,7 +191,7 @@ class PythonLoggingConventionsDetector(PythonDetector):
 
         # Check for common patterns
         has_request_id = any("request" in f[0] or "trace" in f[0] or "correlation" in f[0] for f in top_fields)
-        has_user_id = any("user" in f[0] for f in top_fields)
+        any("user" in f[0] for f in top_fields)
 
         field_list = [f[0] for f in top_fields[:5]]
 

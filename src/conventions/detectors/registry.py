@@ -38,16 +38,14 @@ def register_all_detectors() -> None:
     This must be called before using the registry.
     """
     # Generic detectors (language-agnostic)
-    from . import generic  # noqa: F401
-
     # Python detectors
-    from . import python  # noqa: F401
-
     # Go detectors
-    from . import go  # noqa: F401
-
     # Node.js detectors
-    from . import node  # noqa: F401
-
     # Rust detectors
-    from . import rust  # noqa: F401
+    from . import (
+        generic,  # noqa: F401
+        go,  # noqa: F401
+        node,  # noqa: F401
+        python,  # noqa: F401
+        rust,  # noqa: F401
+    )

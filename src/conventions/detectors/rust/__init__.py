@@ -1,21 +1,21 @@
 """Rust convention detectors package."""
 
-from .index import RustIndex, make_evidence
+from .async_runtime import RustAsyncDetector
 from .base import RustDetector
 
 # Import all detector classes to ensure they register
 from .cargo import RustCargoDetector
-from .testing import RustTestingDetector
-from .errors import RustErrorHandlingDetector
-from .async_runtime import RustAsyncDetector
-from .web import RustWebDetector
 from .cli import RustCLIDetector
-from .serialization import RustSerializationDetector
-from .documentation import RustDocumentationDetector
-from .unsafe_code import RustUnsafeDetector
-from .macros import RustMacrosDetector
-from .logging import RustLoggingDetector
 from .database import RustDatabaseDetector
+from .documentation import RustDocumentationDetector
+from .errors import RustErrorHandlingDetector
+from .index import RustIndex, make_evidence
+from .logging import RustLoggingDetector
+from .macros import RustMacrosDetector
+from .serialization import RustSerializationDetector
+from .testing import RustTestingDetector
+from .unsafe_code import RustUnsafeDetector
+from .web import RustWebDetector
 
 __all__ = [
     "RustIndex",

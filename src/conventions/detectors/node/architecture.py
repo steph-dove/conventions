@@ -5,9 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -52,7 +52,6 @@ class NodeArchitectureDetector(NodeDetector):
 
         has_src = "src" in dirs
         has_lib = "lib" in dirs
-        has_dist = "dist" in dirs
         has_routes = any(d in dirs for d in ("routes", "api"))
         has_controllers = "controllers" in dirs
         has_services = any(d in dirs for d in ("services", "service"))

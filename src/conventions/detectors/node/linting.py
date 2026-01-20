@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
-from .base import NodeDetector
 from ..registry import DetectorRegistry
+from .base import NodeDetector
 
 
 @DetectorRegistry.register
@@ -143,7 +142,7 @@ class NodeLintingDetector(NodeDetector):
                 description += f" Plugins: {', '.join(features[:4])}."
 
         if len(linters) > 1:
-            others = [l["name"] for k, l in linters.items() if k != primary]
+            others = [lib["name"] for k, lib in linters.items() if k != primary]
             description += f" Also: {', '.join(others)}."
 
         confidence = 0.95

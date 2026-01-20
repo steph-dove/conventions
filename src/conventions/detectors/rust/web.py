@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -33,7 +33,7 @@ class RustWebDetector(RustDetector):
                 "name": "Axum",
                 "count": len(axum_uses),
             }
-            examples.extend([(r, l) for r, _, l in axum_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in axum_uses[:3]])
 
         # Check for Actix-web
         actix_uses = index.find_uses_matching("actix_web", limit=50)
@@ -42,7 +42,7 @@ class RustWebDetector(RustDetector):
                 "name": "Actix-web",
                 "count": len(actix_uses),
             }
-            examples.extend([(r, l) for r, _, l in actix_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in actix_uses[:3]])
 
         # Check for Rocket
         rocket_uses = index.find_uses_matching("rocket", limit=50)
@@ -51,7 +51,7 @@ class RustWebDetector(RustDetector):
                 "name": "Rocket",
                 "count": len(rocket_uses),
             }
-            examples.extend([(r, l) for r, _, l in rocket_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in rocket_uses[:3]])
 
         # Check for Warp
         warp_uses = index.find_uses_matching("warp", limit=50)

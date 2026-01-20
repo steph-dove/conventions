@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
-from .base import NodeDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .base import NodeDetector
 
 
 @DetectorRegistry.register
@@ -21,10 +19,9 @@ class NodeBuildToolsDetector(NodeDetector):
     def detect(self, ctx: DetectorContext) -> DetectorResult:
         """Detect build tool conventions."""
         result = DetectorResult()
-        index = self.get_index(ctx)
+        self.get_index(ctx)
 
         tools: dict[str, dict] = {}
-        examples: list[tuple[str, int]] = []
 
         # Check for Vite
         if (ctx.repo_root / "vite.config.js").exists() or \
@@ -131,7 +128,7 @@ class NodeBuildToolsDetector(NodeDetector):
         if primary is None:
             primary = list(tools.keys())[0]
 
-        tool_names = [t["name"] for t in tools.values()]
+        [t["name"] for t in tools.values()]
         title = f"Build tool: {tools[primary]['name']}"
         description = f"Uses {tools[primary]['name']} for building/bundling."
 

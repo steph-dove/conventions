@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import re
-
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -35,7 +33,7 @@ class RustTestingDetector(RustDetector):
                 "name": "Unit tests",
                 "count": len(test_attrs),
             }
-            examples.extend([(r, l) for r, l, _ in test_attrs[:3]])
+            examples.extend([(r, ln) for r, ln, _ in test_attrs[:3]])
 
         # Count #[cfg(test)] modules
         cfg_test = index.search_pattern(r"#\[cfg\(test\)\]", limit=50)
@@ -63,7 +61,7 @@ class RustTestingDetector(RustDetector):
                 "name": "Property testing (proptest)",
                 "count": len(proptest_uses),
             }
-            examples.extend([(r, l) for r, _, l in proptest_uses[:2]])
+            examples.extend([(r, ln) for r, _, ln in proptest_uses[:2]])
 
         # Check for quickcheck
         quickcheck_uses = index.find_uses_matching("quickcheck", limit=20)
@@ -107,13 +105,13 @@ class RustTestingDetector(RustDetector):
 
         # Check for assert macros patterns
         assert_eq_count = index.count_pattern(r"assert_eq!\(")
-        assert_ne_count = index.count_pattern(r"assert_ne!\(")
+        index.count_pattern(r"assert_ne!\(")
         assert_count = index.count_pattern(r"assert!\(")
 
         if not patterns:
             return result
 
-        pattern_names = [p["name"] for p in patterns.values()]
+        [p["name"] for p in patterns.values()]
         total_tests = patterns.get("unit_tests", {}).get("count", 0)
         total_tests += integration_test_count
 
