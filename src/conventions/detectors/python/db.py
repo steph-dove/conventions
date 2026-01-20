@@ -116,7 +116,7 @@ class PythonDBConventionsDetector(PythonDetector):
         primary_ratio = primary_count / total_imports if total_imports else 0
 
         # Build description
-        lib_names = [DB_LIBRARIES[lib]["name"] for lib in library_counts.keys()]
+        lib_names: list[str] = [str(DB_LIBRARIES[lib]["name"]) for lib in library_counts.keys()]
 
         if len(library_counts) == 1:
             title = f"Single database library: {DB_LIBRARIES[primary_lib]['name']}"

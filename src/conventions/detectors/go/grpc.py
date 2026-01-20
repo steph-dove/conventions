@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
 from .base import GoDetector
@@ -28,7 +30,7 @@ class GoGRPCDetector(GoDetector):
             ctx.repo_root / "api",
         ]
 
-        proto_files = []
+        proto_files: list[Path] = []
         for proto_dir in proto_dirs:
             if proto_dir.is_dir():
                 proto_files.extend(proto_dir.glob("**/*.proto"))

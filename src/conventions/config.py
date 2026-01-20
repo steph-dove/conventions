@@ -97,6 +97,7 @@ def load_config(repo_root: Path, config_path: Path | None = None) -> Conventions
     Returns:
         ConventionsConfig instance (defaults if no config found)
     """
+    target_path: Path | None
     if config_path is not None:
         if not config_path.exists():
             raise FileNotFoundError(f"Config file not found: {config_path}")

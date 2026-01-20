@@ -80,9 +80,11 @@ class PythonLayeringConventionsDetector(PythonDetector):
             return
 
         # Analyze layering pattern
-        api_to_service = role_imports.get("api", {}).get("service", 0)
-        api_to_db = role_imports.get("api", {}).get("db", 0)
-        service_to_db = role_imports.get("service", {}).get("db", 0)
+        api_imports = role_imports.get("api", Counter())
+        service_imports = role_imports.get("service", Counter())
+        api_to_service = api_imports.get("service", 0)
+        api_to_db = api_imports.get("db", 0)
+        service_to_db = service_imports.get("db", 0)
 
         # Determine pattern
         total_deps = api_to_service + api_to_db + service_to_db
