@@ -17,9 +17,61 @@ class RatingRule:
     suggestion_func: Callable[[ConventionRule, int], str | None]  # Returns suggestion or None
 
 
+# Category-specific suggestions for better actionable feedback
+CATEGORY_SUGGESTIONS: dict[str, str] = {
+    "typing": "Add type annotations to function parameters and return types. Start with public APIs.",
+    "testing": "Add more test cases and increase coverage of edge cases and error paths.",
+    "documentation": "Add docstrings to public functions and classes explaining purpose and parameters.",
+    "logging": "Use structured logging with consistent field names for better observability.",
+    "error_handling": "Define custom exception types for domain-specific errors and handle them at appropriate layers.",
+    "security": "Review for OWASP top 10 vulnerabilities and ensure input validation at boundaries.",
+    "architecture": "Ensure clear separation between layers (API, service, data) with appropriate dependency direction.",
+    "ci_cd": "Add automated testing, linting, and deployment steps to your CI/CD pipeline.",
+    "tooling": "Configure development tools (formatters, linters) for consistent code quality.",
+    "concurrency": "Use appropriate synchronization primitives and handle async errors properly.",
+    "patterns": "Apply consistent design patterns across the codebase for maintainability.",
+}
+
+
 def _get_stat(rule: ConventionRule, key: str, default: float = 0.0) -> float:
     """Safely get a stat value from a rule."""
     return rule.stats.get(key, default)
+
+
+def _make_actionable_suggestion(rule: ConventionRule, base_suggestion: str) -> str:
+    """Enhance suggestion with stats-based actionable details."""
+    stats = rule.stats
+
+    # Add specific numbers when available
+    if "untyped_functions" in stats:
+        count = stats["untyped_functions"]
+        coverage = stats.get("any_annotation_coverage", 0) * 100
+        return f"Add type hints to the {count} untyped functions (currently {coverage:.0f}% coverage)."
+
+    if "missing_docstrings" in stats:
+        count = stats["missing_docstrings"]
+        return f"Add docstrings to {count} public functions/classes missing documentation."
+
+    if "test_file_count" in stats and stats["test_file_count"] < 3:
+        return f"Add more test files (currently {stats['test_file_count']}). Aim for comprehensive coverage."
+
+    if "raw_sql_count" in stats:
+        count = stats["raw_sql_count"]
+        return f"Replace {count} raw SQL execution(s) with parameterized queries or ORM methods."
+
+    if "fixture_count" in stats and stats.get("conftest_count", 0) == 0:
+        return f"Create a conftest.py to centralize the {stats['fixture_count']} fixtures across test files."
+
+    if "api_to_db" in stats and stats["api_to_db"] > 0:
+        return f"Remove {stats['api_to_db']} direct API-to-DB import(s). Route through the service layer."
+
+    if "violations_by_type" in stats:
+        violations = stats["violations_by_type"]
+        if violations:
+            details = ", ".join(f"{k}: {v}" for k, v in violations.items())
+            return f"Fix layer boundary violations: {details}."
+
+    return base_suggestion
 
 
 # Python typing coverage rating
@@ -671,10 +723,45 @@ def _generic_reason(r: ConventionRule, _score: int) -> str:
     return f"Convention detected with {r.confidence * 100:.0f}% confidence"
 
 
-def _generic_suggestion(_r: ConventionRule, score: int) -> str | None:
+def _generic_suggestion(r: ConventionRule, score: int) -> str | None:
     if score >= 4:
         return None
-    return "Review this convention for potential improvements based on best practices."
+
+    # Try to provide category-specific suggestion
+    category = r.category.lower()
+    if category in CATEGORY_SUGGESTIONS:
+        base = CATEGORY_SUGGESTIONS[category]
+        return _make_actionable_suggestion(r, base)
+
+    # Map common category variations
+    category_mapping = {
+        "type_coverage": "typing",
+        "typing_coverage": "typing",
+        "docstrings": "documentation",
+        "docstring": "documentation",
+        "test": "testing",
+        "tests": "testing",
+        "log": "logging",
+        "logs": "logging",
+        "error": "error_handling",
+        "errors": "error_handling",
+        "exception": "error_handling",
+        "security": "security",
+        "auth": "security",
+        "architecture": "architecture",
+        "layer": "architecture",
+        "ci": "ci_cd",
+        "cd": "ci_cd",
+        "pipeline": "ci_cd",
+    }
+
+    for key, mapped_category in category_mapping.items():
+        if key in category:
+            if mapped_category in CATEGORY_SUGGESTIONS:
+                base = CATEGORY_SUGGESTIONS[mapped_category]
+                return _make_actionable_suggestion(r, base)
+
+    return "Review this convention and consider industry best practices for improvement."
 
 
 # Rating rules registry

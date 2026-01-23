@@ -66,6 +66,7 @@ def should_exclude(
     path: Path,
     repo_root: Path,
     gitignore_spec: Optional["pathspec.PathSpec"] = None,
+    custom_excludes: Optional["pathspec.PathSpec"] = None,
 ) -> bool:
     """Check if a path should be excluded from scanning."""
     # Check hard excludes against any path component
@@ -77,16 +78,33 @@ def should_exclude(
             if pattern.startswith("*") and part.endswith(pattern[1:]):
                 return True
 
+    try:
+        rel_path = path.relative_to(repo_root)
+        rel_path_str = str(rel_path)
+    except ValueError:
+        rel_path_str = None
+
     # Check gitignore patterns
-    if gitignore_spec is not None:
-        try:
-            rel_path = path.relative_to(repo_root)
-            if gitignore_spec.match_file(str(rel_path)):
-                return True
-        except ValueError:
-            pass
+    if gitignore_spec is not None and rel_path_str is not None:
+        if gitignore_spec.match_file(rel_path_str):
+            return True
+
+    # Check custom exclude patterns
+    if custom_excludes is not None and rel_path_str is not None:
+        if custom_excludes.match_file(rel_path_str):
+            return True
 
     return False
+
+
+def create_exclude_spec(patterns: list[str]) -> Optional["pathspec.PathSpec"]:
+    """Create a PathSpec from a list of glob patterns."""
+    if not patterns or pathspec is None:
+        return None
+    try:
+        return pathspec.PathSpec.from_lines("gitwildmatch", patterns)
+    except Exception:
+        return None
 
 
 def walk_files(
@@ -94,6 +112,7 @@ def walk_files(
     extensions: set[str],
     max_files: int = DEFAULT_MAX_FILES,
     respect_gitignore: bool = True,
+    exclude_patterns: Optional[list[str]] = None,
 ) -> Iterator[Path]:
     """
     Walk repository and yield files matching given extensions.
@@ -103,12 +122,14 @@ def walk_files(
         extensions: Set of file extensions to include (e.g., {".py", ".pyi"})
         max_files: Maximum number of files to yield
         respect_gitignore: Whether to respect .gitignore patterns
+        exclude_patterns: Additional glob patterns to exclude
 
     Yields:
         Path objects for matching files
     """
     repo_root = Path(repo_root).resolve()
     gitignore_spec = load_gitignore(repo_root) if respect_gitignore else None
+    custom_excludes = create_exclude_spec(exclude_patterns or [])
 
     file_count = 0
 
@@ -118,7 +139,7 @@ def walk_files(
         # Filter directories in-place to skip excluded ones
         dirs[:] = [
             d for d in dirs
-            if not should_exclude(root_path / d, repo_root, gitignore_spec)
+            if not should_exclude(root_path / d, repo_root, gitignore_spec, custom_excludes)
         ]
 
         for filename in files:
@@ -132,7 +153,7 @@ def walk_files(
                 continue
 
             # Check exclusions
-            if should_exclude(file_path, repo_root, gitignore_spec):
+            if should_exclude(file_path, repo_root, gitignore_spec, custom_excludes):
                 continue
 
             # Check file size

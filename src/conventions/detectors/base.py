@@ -18,6 +18,7 @@ class DetectorContext:
     selected_languages: set[str]
     max_files: int = 2000
     max_evidence_snippets: int = 5
+    exclude_patterns: list[str] = field(default_factory=list)
 
     # Shared indexes can be cached here
     _python_index: Any = field(default=None, repr=False)
@@ -29,7 +30,11 @@ class DetectorContext:
         """Get or create Python index (lazy loading)."""
         if self._python_index is None:
             from .python.index import PythonIndex
-            self._python_index = PythonIndex(self.repo_root, max_files=self.max_files)
+            self._python_index = PythonIndex(
+                self.repo_root,
+                max_files=self.max_files,
+                exclude_patterns=self.exclude_patterns,
+            )
             self._python_index.build()
         return self._python_index
 

@@ -12,7 +12,7 @@ from .base import DetectorContext
 from .registry import DetectorRegistry, register_all_detectors
 
 
-def detect_languages(repo_root: Path) -> set[str]:
+def detect_languages(repo_root: Path, exclude_patterns: Optional[list[str]] = None) -> set[str]:
     """
     Auto-detect programming languages in the repository.
 
@@ -23,19 +23,24 @@ def detect_languages(repo_root: Path) -> set[str]:
     languages: set[str] = set()
 
     # Check for Python files
-    py_files = list(walk_files(repo_root, {".py"}, max_files=5))
+    py_files = list(walk_files(repo_root, {".py"}, max_files=5, exclude_patterns=exclude_patterns))
     if py_files:
         languages.add("python")
 
     # Check for Go files
-    go_files = list(walk_files(repo_root, {".go"}, max_files=5))
+    go_files = list(walk_files(repo_root, {".go"}, max_files=5, exclude_patterns=exclude_patterns))
     if go_files:
         languages.add("go")
 
     # Check for Node.js files (JavaScript/TypeScript)
-    node_files = list(walk_files(repo_root, {".js", ".ts", ".jsx", ".tsx"}, max_files=5))
+    node_files = list(walk_files(repo_root, {".js", ".ts", ".jsx", ".tsx"}, max_files=5, exclude_patterns=exclude_patterns))
     if node_files:
         languages.add("node")
+
+    # Check for Rust files
+    rust_files = list(walk_files(repo_root, {".rs"}, max_files=5, exclude_patterns=exclude_patterns))
+    if rust_files:
+        languages.add("rust")
 
     return languages
 
@@ -45,6 +50,10 @@ def run_detectors(
     languages: Optional[set[str]] = None,
     max_files: int = 2000,
     progress_callback: Optional[Callable[[str], None]] = None,
+    disabled_detectors: Optional[set[str]] = None,
+    disabled_rules: Optional[set[str]] = None,
+    exclude_patterns: Optional[list[str]] = None,
+    plugin_paths: Optional[list[str]] = None,
 ) -> ConventionsOutput:
     """
     Run all registered detectors on a repository.
@@ -54,26 +63,42 @@ def run_detectors(
         languages: Set of languages to scan (auto-detect if None)
         max_files: Maximum files to scan per language
         progress_callback: Optional callback for progress updates
+        disabled_detectors: Set of detector names to skip
+        disabled_rules: Set of rule IDs to filter from results
+        exclude_patterns: Additional glob patterns to exclude from scanning
+        plugin_paths: Paths to plugin files to load
 
     Returns:
         ConventionsOutput with all detected rules and warnings
     """
     repo_root = Path(repo_root).resolve()
+    disabled_detectors = disabled_detectors or set()
+    disabled_rules = disabled_rules or set()
 
     # Register all detectors
     register_all_detectors()
 
+    # Load plugins if specified
+    if plugin_paths:
+        try:
+            from ..plugins import load_plugins
+            load_plugins(plugin_paths, progress_callback)
+        except ImportError:
+            if progress_callback:
+                progress_callback("Plugin system not available")
+
     # Auto-detect languages if not specified
     if languages is None:
-        languages = detect_languages(repo_root)
+        languages = detect_languages(repo_root, exclude_patterns)
         if progress_callback:
             progress_callback(f"Detected languages: {', '.join(sorted(languages)) or 'none'}")
 
-    # Create context
+    # Create context with exclude patterns
     ctx = DetectorContext(
         repo_root=repo_root,
         selected_languages=languages,
         max_files=max_files,
+        exclude_patterns=exclude_patterns or [],
     )
 
     # Collect results
@@ -85,6 +110,12 @@ def run_detectors(
     for detector_class in DetectorRegistry.get_all():
         detector = detector_class()
 
+        # Skip disabled detectors
+        if detector.name in disabled_detectors:
+            if progress_callback:
+                progress_callback(f"Skipping disabled detector: {detector.name}")
+            continue
+
         if not detector.should_run(ctx):
             continue
 
@@ -93,7 +124,13 @@ def run_detectors(
 
         try:
             result = detector.detect(ctx)
-            all_rules.extend(result.rules)
+
+            # Filter out disabled rules
+            for rule in result.rules:
+                if rule.id not in disabled_rules:
+                    all_rules.append(rule)
+                elif progress_callback:
+                    progress_callback(f"Skipping disabled rule: {rule.id}")
 
             # Convert string warnings to DetectorWarning objects
             for warning_msg in result.warnings:

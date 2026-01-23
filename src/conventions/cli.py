@@ -8,6 +8,8 @@ from typing import Optional
 import typer
 from rich.console import Console
 
+from .config import ConventionsConfig, load_config
+
 app = typer.Typer(
     name="conventions",
     help="Discover coding conventions from source code.",
@@ -32,10 +34,10 @@ def discover(
         "-l", "--languages",
         help="Comma-separated languages to analyze (python,go,node). Auto-detect if not specified.",
     ),
-    max_files: int = typer.Option(
-        2000,
+    max_files: Optional[int] = typer.Option(
+        None,
         "--max-files",
-        help="Maximum files to scan per language",
+        help="Maximum files to scan per language (default: 2000)",
     ),
     verbose: bool = typer.Option(
         False,
@@ -52,6 +54,24 @@ def discover(
         "-q", "--quiet",
         help="Suppress console output, only write files",
     ),
+    config: Optional[Path] = typer.Option(
+        None,
+        "-c", "--config",
+        help="Path to configuration file",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+    ),
+    ignore_config: bool = typer.Option(
+        False,
+        "--ignore-config",
+        help="Ignore configuration file even if present",
+    ),
+    output_format: Optional[str] = typer.Option(
+        None,
+        "--format",
+        help="Output format(s), comma-separated (json,markdown,review,html,sarif)",
+    ),
 ) -> None:
     """
     Discover coding conventions from a repository.
@@ -59,62 +79,115 @@ def discover(
     Scans source code and writes detected conventions to
     .conventions/conventions.raw.json and .conventions/conventions.md
     """
-    from .detectors.orchestrator import write_conventions_output
+    from .detectors.orchestrator import run_detectors, write_conventions_output
+    from .ratings import rate_convention
     from .report import print_detailed_rules, print_summary, write_markdown_report, write_review_report
-    from .scan import scan_repository
 
-    # Parse languages
-    lang_set: Optional[set[str]] = None
+    # Load configuration
+    cfg = ConventionsConfig()
+    if not ignore_config:
+        try:
+            cfg = load_config(repo, config)
+            if verbose and (config or (repo / ".conventionsrc.json").exists()):
+                console.print("[dim]Loaded configuration file[/dim]")
+        except Exception as e:
+            console.print(f"[yellow]Warning: Could not load config: {e}[/yellow]")
+
+    # CLI options override config
     if languages:
-        lang_set = {lang.strip().lower() for lang in languages.split(",")}
-        valid_langs = {"python", "go", "node"}
+        lang_set: set[str] | None = {lang.strip().lower() for lang in languages.split(",")}
+    elif cfg.languages:
+        lang_set = set(cfg.languages)
+    else:
+        lang_set = None
+
+    if lang_set:
+        valid_langs = {"python", "go", "node", "rust"}
         invalid = lang_set - valid_langs
         if invalid:
             console.print(f"[red]Invalid languages: {', '.join(invalid)}[/red]")
             console.print(f"Valid options: {', '.join(valid_langs)}")
             raise typer.Exit(1)
 
+    # Use CLI max_files if provided, otherwise config value
+    effective_max_files = max_files if max_files is not None else cfg.max_files
+
+    # Determine output formats
+    if output_format:
+        formats = {f.strip().lower() for f in output_format.split(",")}
+    else:
+        formats = set(cfg.output_formats)
+
     if not quiet:
         console.print(f"\n[bold blue]Scanning repository:[/bold blue] {repo}")
 
-    # Run scan
+    # Run scan with config
     try:
-        output = scan_repository(
-            repo_path=repo,
+        output = run_detectors(
+            repo_root=repo,
             languages=lang_set,
-            max_files=max_files,
-            verbose=verbose,
+            max_files=effective_max_files,
+            progress_callback=console.print if verbose else None,
+            disabled_detectors=set(cfg.disabled_detectors),
+            disabled_rules=set(cfg.disabled_rules),
+            exclude_patterns=cfg.exclude_patterns,
+            plugin_paths=cfg.plugin_paths,
         )
     except Exception as e:
         console.print(f"[red]Error during scan: {e}[/red]")
         raise typer.Exit(1)
 
-    # Write output
-    try:
-        output_path = write_conventions_output(output, repo)
-        if not quiet:
-            console.print(f"[green]Wrote conventions to:[/green] {output_path}")
-    except Exception as e:
-        console.print(f"[red]Error writing output: {e}[/red]")
-        raise typer.Exit(1)
+    # Write outputs based on format configuration
+    if "json" in formats:
+        try:
+            output_path = write_conventions_output(output, repo)
+            if not quiet:
+                console.print(f"[green]Wrote conventions to:[/green] {output_path}")
+        except Exception as e:
+            console.print(f"[red]Error writing output: {e}[/red]")
+            raise typer.Exit(1)
 
-    # Write markdown report
-    try:
-        markdown_path = write_markdown_report(output, repo)
-        if not quiet:
-            console.print(f"[green]Wrote markdown report to:[/green] {markdown_path}")
-    except Exception as e:
-        console.print(f"[red]Error writing markdown report: {e}[/red]")
-        raise typer.Exit(1)
+    if "markdown" in formats:
+        try:
+            markdown_path = write_markdown_report(output, repo)
+            if not quiet:
+                console.print(f"[green]Wrote markdown report to:[/green] {markdown_path}")
+        except Exception as e:
+            console.print(f"[red]Error writing markdown report: {e}[/red]")
+            raise typer.Exit(1)
 
-    # Write review report
-    try:
-        review_path = write_review_report(output, repo)
-        if not quiet:
-            console.print(f"[green]Wrote review report to:[/green] {review_path}")
-    except Exception as e:
-        console.print(f"[red]Error writing review report: {e}[/red]")
-        raise typer.Exit(1)
+    if "review" in formats:
+        try:
+            review_path = write_review_report(output, repo)
+            if not quiet:
+                console.print(f"[green]Wrote review report to:[/green] {review_path}")
+        except Exception as e:
+            console.print(f"[red]Error writing review report: {e}[/red]")
+            raise typer.Exit(1)
+
+    if "html" in formats:
+        try:
+            from .outputs.html import write_html_report
+            html_path = write_html_report(output, repo)
+            if not quiet:
+                console.print(f"[green]Wrote HTML report to:[/green] {html_path}")
+        except ImportError:
+            console.print("[yellow]HTML output not available[/yellow]")
+        except Exception as e:
+            console.print(f"[red]Error writing HTML report: {e}[/red]")
+            raise typer.Exit(1)
+
+    if "sarif" in formats:
+        try:
+            from .outputs.sarif import write_sarif_report
+            sarif_path = write_sarif_report(output, repo)
+            if not quiet:
+                console.print(f"[green]Wrote SARIF report to:[/green] {sarif_path}")
+        except ImportError:
+            console.print("[yellow]SARIF output not available[/yellow]")
+        except Exception as e:
+            console.print(f"[red]Error writing SARIF report: {e}[/red]")
+            raise typer.Exit(1)
 
     # Print summary
     if not quiet:
@@ -128,6 +201,17 @@ def discover(
             console.print(
                 f"\n[yellow]Completed with {len(output.warnings)} warning(s)[/yellow]"
             )
+
+    # Check min_score threshold
+    if cfg.min_score is not None and output.rules:
+        scores = [rate_convention(rule)[0] for rule in output.rules]
+        avg_score = sum(scores) / len(scores)
+        if avg_score < cfg.min_score:
+            if not quiet:
+                console.print(
+                    f"\n[red]Average score {avg_score:.2f} is below minimum threshold {cfg.min_score}[/red]"
+                )
+            raise typer.Exit(2)
 
 
 @app.command()
