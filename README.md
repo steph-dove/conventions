@@ -26,6 +26,29 @@ A command-line tool that automatically discovers and documents coding convention
 
 ## Installation
 
+### Using pipx (Recommended)
+
+[pipx](https://pipx.pypa.io/) installs CLI tools in isolated environments:
+
+```bash
+# Install pipx if you don't have it
+brew install pipx  # macOS
+# or: pip install --user pipx
+
+# Install conventions-cli
+pipx install conventions-cli
+```
+
+### Using pip
+
+```bash
+# In a virtual environment
+pip install conventions-cli
+
+# Or with --user flag
+pip install --user conventions-cli
+```
+
 ### From Source
 
 ```bash
