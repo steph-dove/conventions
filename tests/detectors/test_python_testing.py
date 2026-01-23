@@ -100,7 +100,7 @@ class TestPythonTestingDetector:
 
     def test_detect_pytest_framework(self, pytest_repo: Path):
         """Test detection of pytest as testing framework."""
-        from conventions.detectors.python.testing import PythonTestingDetector
+        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
 
         ctx = DetectorContext(
             repo_root=pytest_repo,
@@ -123,7 +123,7 @@ class TestPythonTestingDetector:
 
     def test_detect_pytest_fixtures(self, pytest_repo: Path):
         """Test detection of pytest fixtures."""
-        from conventions.detectors.python.testing import PythonTestingDetector
+        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
 
         ctx = DetectorContext(
             repo_root=pytest_repo,
@@ -146,7 +146,7 @@ class TestPythonTestingDetector:
 
     def test_detect_unittest_framework(self, unittest_repo: Path):
         """Test detection of unittest framework."""
-        from conventions.detectors.python.testing import PythonTestingDetector
+        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
 
         ctx = DetectorContext(
             repo_root=unittest_repo,
@@ -172,7 +172,7 @@ class TestPythonTestingMocking:
 
     def test_detect_mocking_libraries(self, pytest_repo: Path):
         """Test detection of mocking libraries."""
-        from conventions.detectors.python.testing import PythonTestingDetector
+        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
 
         ctx = DetectorContext(
             repo_root=pytest_repo,

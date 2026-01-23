@@ -95,7 +95,7 @@ class TestPythonTypingDetector:
 
     def test_detect_high_typing_coverage(self, typed_repo: Path):
         """Test detection of high typing coverage."""
-        from conventions.detectors.python.typing import PythonTypingDetector
+        from conventions.detectors.python.typing import PythonTypingConventionsDetector as PythonTypingDetector
 
         ctx = DetectorContext(
             repo_root=typed_repo,
@@ -122,7 +122,7 @@ class TestPythonTypingDetector:
 
     def test_detect_low_typing_coverage(self, untyped_repo: Path):
         """Test detection of low typing coverage."""
-        from conventions.detectors.python.typing import PythonTypingDetector
+        from conventions.detectors.python.typing import PythonTypingConventionsDetector as PythonTypingDetector
 
         ctx = DetectorContext(
             repo_root=untyped_repo,
@@ -145,7 +145,7 @@ class TestPythonTypingDetector:
 
     def test_detect_mixed_typing(self, mixed_repo: Path):
         """Test detection of mixed typing coverage."""
-        from conventions.detectors.python.typing import PythonTypingDetector
+        from conventions.detectors.python.typing import PythonTypingConventionsDetector as PythonTypingDetector
 
         ctx = DetectorContext(
             repo_root=mixed_repo,
@@ -173,7 +173,7 @@ class TestPythonTypingDetectorShouldRun:
 
     def test_should_run_with_python(self, typed_repo: Path):
         """Test detector runs when Python is selected."""
-        from conventions.detectors.python.typing import PythonTypingDetector
+        from conventions.detectors.python.typing import PythonTypingConventionsDetector as PythonTypingDetector
 
         ctx = DetectorContext(
             repo_root=typed_repo,
@@ -185,7 +185,7 @@ class TestPythonTypingDetectorShouldRun:
 
     def test_should_not_run_without_python(self, typed_repo: Path):
         """Test detector does not run when Python is not selected."""
-        from conventions.detectors.python.typing import PythonTypingDetector
+        from conventions.detectors.python.typing import PythonTypingConventionsDetector as PythonTypingDetector
 
         ctx = DetectorContext(
             repo_root=typed_repo,
