@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 from ...fs import read_file_safe
 from ..base import BaseDetector, DetectorContext, DetectorResult
@@ -216,7 +217,7 @@ class ContainerizationDetector(BaseDetector):
             ctx.repo_root / "charts",  # Helm
         ]
 
-        k8s_files = []
+        k8s_files: list[Path] = []
         for k8s_dir in k8s_dirs:
             if k8s_dir.is_dir():
                 k8s_files.extend(k8s_dir.glob("**/*.yaml"))

@@ -351,8 +351,7 @@ class _ASTVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         # Extract base classes
-        bases = [get_dotted_name(base) for base in node.bases]
-        bases = [b for b in bases if b]
+        bases: list[str] = [b for b in (get_dotted_name(base) for base in node.bases) if b is not None]
 
         # Check for docstring
         has_docstring = False

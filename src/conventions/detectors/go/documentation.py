@@ -54,19 +54,19 @@ class GoDocumentationDetector(GoDetector):
                 # Check if preceded by a doc comment
                 # Look at lines before the function declaration
                 if line_num > 1:
-                    prev_lines = []
+                    prev_lines: list[str] = []
                     for i in range(line_num - 2, max(0, line_num - 5) - 1, -1):
-                        line = lines[i].strip()
-                        if line.startswith("//"):
-                            prev_lines.insert(0, line)
-                        elif line == "":
+                        prev_line = lines[i].strip()
+                        if prev_line.startswith("//"):
+                            prev_lines.insert(0, prev_line)
+                        elif prev_line == "":
                             continue
                         else:
                             break
 
                     has_doc = any(
-                        line.startswith(f"// {func_name}")
-                        for line in prev_lines
+                        pl.startswith(f"// {func_name}")
+                        for pl in prev_lines
                     )
 
                     if has_doc:

@@ -26,8 +26,8 @@ class PythonTypingConventionsDetector(PythonDetector):
         total_functions = 0
         annotated_functions = 0
         fully_annotated_functions = 0
-        typed_examples = []
-        untyped_examples = []
+        typed_examples: list[tuple[str, int, str]] = []
+        untyped_examples: list[tuple[str, int, str]] = []
 
         for rel_path, func in index.get_all_functions():
             # Skip test files for typing coverage

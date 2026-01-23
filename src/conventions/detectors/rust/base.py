@@ -24,4 +24,5 @@ class RustDetector(BaseDetector):
             index = RustIndex(ctx.repo_root)
             index.build()
             ctx.cache[cache_key] = index
-        return ctx.cache[cache_key]
+        result: RustIndex = ctx.cache[cache_key]
+        return result

@@ -35,7 +35,7 @@ CATEGORY_SUGGESTIONS: dict[str, str] = {
 
 def _get_stat(rule: ConventionRule, key: str, default: float = 0.0) -> float:
     """Safely get a stat value from a rule."""
-    return rule.stats.get(key, default)
+    return float(rule.stats.get(key, default))
 
 
 def _make_actionable_suggestion(rule: ConventionRule, base_suggestion: str) -> str:

@@ -70,8 +70,8 @@ class GoCodegenDetector(GoDetector):
         confidence = min(0.9, 0.6 + len(generate_directives) * 0.03)
 
         evidence = []
-        for rel_path, line, _ in generate_directives[:ctx.max_evidence_snippets]:
-            ev = make_evidence(index, rel_path, line, radius=2)
+        for rel_path, line_num, _ in generate_directives[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line_num, radius=2)
             if ev:
                 evidence.append(ev)
 

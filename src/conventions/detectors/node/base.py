@@ -14,7 +14,9 @@ class NodeDetector(BaseDetector):
     def get_index(self, ctx: DetectorContext) -> NodeIndex:
         """Get or create Node.js index."""
         # Cache on context
-        if not hasattr(ctx, "_node_index") or ctx._node_index is None:
-            ctx._node_index = NodeIndex(ctx.repo_root, max_files=ctx.max_files)
-            ctx._node_index.build()
-        return ctx._node_index
+        if "node_index" not in ctx.cache or ctx.cache["node_index"] is None:
+            index = NodeIndex(ctx.repo_root, max_files=ctx.max_files)
+            index.build()
+            ctx.cache["node_index"] = index
+        result: NodeIndex = ctx.cache["node_index"]
+        return result

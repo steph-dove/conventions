@@ -154,6 +154,7 @@ def run_detectors(
 
     # Build output
     return ConventionsOutput(
+        version="1.0.0",
         metadata=RepoMetadata(
             path=str(repo_root),
             detected_languages=sorted(languages),

@@ -181,8 +181,8 @@ class NodeArchitectureDetector(NodeDetector):
             if re.search(reexport_pattern, content):
                 reexport_files += 1
                 # Find first re-export line
-                for i, line in enumerate(file_idx.lines):
-                    if re.search(reexport_pattern, line):
+                for i, line_content in enumerate(file_idx.lines):
+                    if re.search(reexport_pattern, line_content):
                         examples.append((file_idx.relative_path, i + 1))
                         break
 
