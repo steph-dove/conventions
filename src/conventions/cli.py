@@ -60,7 +60,7 @@ def discover(
     .conventions/conventions.raw.json and .conventions/conventions.md
     """
     from .detectors.orchestrator import write_conventions_output
-    from .report import print_detailed_rules, print_summary, write_markdown_report
+    from .report import print_detailed_rules, print_summary, write_markdown_report, write_review_report
     from .scan import scan_repository
 
     # Parse languages
@@ -105,6 +105,15 @@ def discover(
             console.print(f"[green]Wrote markdown report to:[/green] {markdown_path}")
     except Exception as e:
         console.print(f"[red]Error writing markdown report: {e}[/red]")
+        raise typer.Exit(1)
+
+    # Write review report
+    try:
+        review_path = write_review_report(output, repo)
+        if not quiet:
+            console.print(f"[green]Wrote review report to:[/green] {review_path}")
+    except Exception as e:
+        console.print(f"[red]Error writing review report: {e}[/red]")
         raise typer.Exit(1)
 
     # Print summary

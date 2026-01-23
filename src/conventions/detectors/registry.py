@@ -38,25 +38,16 @@ def register_all_detectors() -> None:
     This must be called before using the registry.
     """
     # Generic detectors (language-agnostic)
-    from . import generic_repo_layout  # noqa: F401
+    from . import generic  # noqa: F401
 
     # Python detectors
-    from . import python_typing_conventions  # noqa: F401
-    from . import python_error_conventions  # noqa: F401
-    from . import python_db_conventions  # noqa: F401
-    from . import python_logging_conventions  # noqa: F401
-    from . import python_layering_conventions  # noqa: F401
-    from . import python_di_conventions  # noqa: F401
-    from . import python_testing_conventions  # noqa: F401
-    from . import python_api_schema_conventions  # noqa: F401
-    from . import python_retries_timeouts_conventions  # noqa: F401
-    from . import python_observability_conventions  # noqa: F401
-    from . import python_async_conventions  # noqa: F401
-    from . import python_docstring_naming_conventions  # noqa: F401
-    from . import python_security_conventions  # noqa: F401
+    from . import python  # noqa: F401
 
-    # Node.js detectors (lighter)
-    from . import node_conventions  # noqa: F401
+    # Go detectors
+    from . import go  # noqa: F401
 
-    # Go detectors (lighter)
-    from . import go_conventions  # noqa: F401
+    # Node.js detectors
+    from . import node  # noqa: F401
+
+    # Rust detectors
+    from . import rust  # noqa: F401

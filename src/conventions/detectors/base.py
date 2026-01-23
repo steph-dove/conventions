@@ -22,10 +22,13 @@ class DetectorContext:
     # Shared indexes can be cached here
     _python_index: Any = field(default=None, repr=False)
 
+    # Generic cache for language indexes (Rust, Go, Node, etc.)
+    cache: dict[str, Any] = field(default_factory=dict, repr=False)
+
     def get_python_index(self) -> Any:
         """Get or create Python index (lazy loading)."""
         if self._python_index is None:
-            from .python_index import PythonIndex
+            from .python.index import PythonIndex
             self._python_index = PythonIndex(self.repo_root, max_files=self.max_files)
             self._python_index.build()
         return self._python_index
