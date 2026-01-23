@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -57,7 +56,7 @@ class NodeStateManagementDetector(NodeDetector):
         if "zustand" in all_deps:
             libraries["zustand"] = {"name": "Zustand"}
             zustand_imports = index.find_imports_matching("zustand", limit=20)
-            examples.extend([(r, l) for r, _, l in zustand_imports[:3]])
+            examples.extend([(r, ln) for r, _, ln in zustand_imports[:3]])
 
         # Jotai
         if "jotai" in all_deps:
@@ -119,7 +118,6 @@ class NodeStateManagementDetector(NodeDetector):
             primary = list(libraries.keys())[0]
 
         lib_info = libraries[primary]
-        lib_names = [l["name"] for l in libraries.values()]
 
         title = f"State management: {lib_info['name']}"
         description = f"Uses {lib_info['name']} for state management."
@@ -128,7 +126,7 @@ class NodeStateManagementDetector(NodeDetector):
             description += " (modern approach)"
 
         if len(libraries) > 1:
-            others = [l["name"] for k, l in libraries.items() if k != primary]
+            others = [lib["name"] for k, lib in libraries.items() if k != primary]
             description += f" Also: {', '.join(others[:3])}."
 
         confidence = 0.95

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from ..base import DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register

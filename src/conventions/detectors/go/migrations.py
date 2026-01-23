@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from ..base import DetectorContext, DetectorResult
-from .base import GoDetector
-from .index import GoIndex, make_evidence
 from ..registry import DetectorRegistry
+from .base import GoDetector
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -32,7 +30,7 @@ class GoMigrationsDetector(GoDetector):
                 "name": "golang-migrate",
                 "import_count": len(migrate_imports),
             }
-            examples["golang_migrate"] = [(r, l) for r, _, l in migrate_imports[:5]]
+            examples["golang_migrate"] = [(r, ln) for r, _, ln in migrate_imports[:5]]
 
         # goose
         goose_imports = index.find_imports_matching("github.com/pressly/goose", limit=20)
@@ -41,7 +39,7 @@ class GoMigrationsDetector(GoDetector):
                 "name": "goose",
                 "import_count": len(goose_imports),
             }
-            examples["goose"] = [(r, l) for r, _, l in goose_imports[:5]]
+            examples["goose"] = [(r, ln) for r, _, ln in goose_imports[:5]]
 
         # Atlas
         atlas_imports = index.find_imports_matching("ariga.io/atlas", limit=20)
@@ -50,7 +48,7 @@ class GoMigrationsDetector(GoDetector):
                 "name": "Atlas",
                 "import_count": len(atlas_imports),
             }
-            examples["atlas"] = [(r, l) for r, _, l in atlas_imports[:5]]
+            examples["atlas"] = [(r, ln) for r, _, ln in atlas_imports[:5]]
 
         # sql-migrate
         sql_migrate_imports = index.find_imports_matching("github.com/rubenv/sql-migrate", limit=20)
@@ -59,7 +57,7 @@ class GoMigrationsDetector(GoDetector):
                 "name": "sql-migrate",
                 "import_count": len(sql_migrate_imports),
             }
-            examples["sql_migrate"] = [(r, l) for r, _, l in sql_migrate_imports[:5]]
+            examples["sql_migrate"] = [(r, ln) for r, _, ln in sql_migrate_imports[:5]]
 
         # Check for migration files
         migration_dirs = [
@@ -82,7 +80,7 @@ class GoMigrationsDetector(GoDetector):
             return result
 
         if tools:
-            tool_names = [t["name"] for t in tools.values()]
+            [t["name"] for t in tools.values()]
             primary = max(tools, key=lambda k: tools[k]["import_count"])
 
             title = f"Database migrations: {tools[primary]['name']}"

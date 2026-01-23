@@ -14,7 +14,6 @@ from typing import Any
 from ..ratings import get_score_label, rate_convention
 from ..schemas import ConventionsOutput
 
-
 SARIF_SCHEMA = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
 SARIF_VERSION = "2.1.0"
 TOOL_NAME = "conventions-cli"

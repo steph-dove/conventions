@@ -1,12 +1,12 @@
 """Generic (language-agnostic) convention detectors package."""
 
-from .repo_layout import GenericRepoLayoutDetector
-from .ci_cd import CICDDetector
-from .git_conventions import GitConventionsDetector
-from .dependency_updates import DependencyUpdatesDetector
 from .api_docs import APIDocumentationDetector
+from .ci_cd import CICDDetector
 from .containerization import ContainerizationDetector
+from .dependency_updates import DependencyUpdatesDetector
 from .editor_config import EditorConfigDetector
+from .git_conventions import GitConventionsDetector
+from .repo_layout import GenericRepoLayoutDetector
 
 __all__ = [
     "GenericRepoLayoutDetector",

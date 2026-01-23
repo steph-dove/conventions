@@ -5,9 +5,8 @@ from __future__ import annotations
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
-
+from .index import make_evidence
 
 # Database library patterns
 DB_LIBRARIES = {
@@ -209,7 +208,7 @@ class PythonDBConventionsDetector(PythonDetector):
             return
 
         # Determine dominant pattern
-        total = sum(patterns.values())
+        sum(patterns.values())
         has_get_db = "get_db" in patterns
         has_sessionmaker = "sessionmaker" in patterns or "SessionLocal" in patterns
         has_depends = "Depends_injection" in patterns

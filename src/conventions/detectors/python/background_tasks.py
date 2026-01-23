@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import PythonIndex, make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -85,13 +85,13 @@ class PythonBackgroundTaskDetector(PythonDetector):
         if not libraries:
             return result
 
-        library_names = [l["name"] for l in libraries.values()]
+        library_names = [lib["name"] for lib in libraries.values()]
         primary = max(libraries, key=lambda k: libraries[k]["import_count"])
 
         title = f"Background tasks: {libraries[primary]['name']}"
         description = f"Uses {libraries[primary]['name']} for background task processing."
         if len(libraries) > 1:
-            others = [l for l in library_names if l != libraries[primary]["name"]]
+            others = [name for name in library_names if name != libraries[primary]["name"]]
             description += f" Also uses: {', '.join(others)}."
 
         confidence = min(0.9, 0.7 + libraries[primary]["import_count"] * 0.02)

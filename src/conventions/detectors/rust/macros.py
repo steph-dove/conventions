@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -105,7 +105,7 @@ class RustMacrosDetector(RustDetector):
                 description += f" Including: {', '.join(macro_names[:3])}."
         else:
             title = f"Macros: {len(derive_usage)} derive usages"
-            description = f"Uses derive macros extensively."
+            description = "Uses derive macros extensively."
 
         if top_derive_names and not is_proc_macro:
             description += f" Common derives: {', '.join(top_derive_names[:4])}."

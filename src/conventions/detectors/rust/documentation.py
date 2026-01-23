@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -50,7 +50,7 @@ class RustDocumentationDetector(RustDetector):
         doc_example_count = len(doc_examples)
 
         # Check for #[doc = ...] attributes
-        doc_attrs = index.count_pattern(r"#\[doc\s*=", exclude_tests=True)
+        index.count_pattern(r"#\[doc\s*=", exclude_tests=True)
 
         # Check for #![deny(missing_docs)]
         missing_docs_deny = index.search_pattern(
@@ -69,7 +69,6 @@ class RustDocumentationDetector(RustDetector):
         if doc_comment_count == 0 and module_doc_count == 0:
             return result
 
-        examples: list[tuple[str, int]] = []
 
         # Estimate documentation coverage
         if total_pub_items > 0:

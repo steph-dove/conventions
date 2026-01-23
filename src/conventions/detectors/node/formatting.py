@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
-from .base import NodeDetector
 from ..registry import DetectorRegistry
+from .base import NodeDetector
 
 
 @DetectorRegistry.register

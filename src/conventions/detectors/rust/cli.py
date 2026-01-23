@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -33,7 +33,7 @@ class RustCLIDetector(RustDetector):
                 "name": "clap",
                 "count": len(clap_uses),
             }
-            examples.extend([(r, l) for r, _, l in clap_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in clap_uses[:3]])
 
             # Check for derive macro usage
             derive_parser = index.search_pattern(r"#\[derive\([^)]*Parser", limit=10)

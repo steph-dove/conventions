@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
+from ...fs import read_file_safe
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
-from ...fs import read_file_safe
 
 
 @DetectorRegistry.register
@@ -224,7 +222,7 @@ class PythonToolingDetector(PythonDetector):
         if not linters:
             return
 
-        linter_names = [l["name"] for l in linters.values()]
+        linter_names = [linter["name"] for linter in linters.values()]
         primary = list(linters.keys())[0]
 
         title = f"Linters: {', '.join(linter_names)}"

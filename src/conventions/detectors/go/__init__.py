@@ -1,25 +1,25 @@
 """Go convention detectors package."""
 
-from .index import GoIndex, make_evidence
+from .api import GoAPIDetector
+from .architecture import GoArchitectureDetector
 from .base import GoDetector
+from .cli import GoCLIDetector
+from .codegen import GoCodegenDetector
+from .concurrency import GoConcurrencyDetector
 
 # Import all detector classes to ensure they register
 from .conventions import GoConventionsDetector
-from .documentation import GoDocumentationDetector
-from .testing import GoTestingDetector
-from .logging import GoLoggingDetector
-from .errors import GoErrorHandlingDetector
-from .security import GoSecurityDetector
-from .concurrency import GoConcurrencyDetector
-from .architecture import GoArchitectureDetector
-from .api import GoAPIDetector
-from .patterns import GoPatternsDetector
-from .modules import GoModulesDetector
-from .cli import GoCLIDetector
-from .migrations import GoMigrationsDetector
 from .di import GoDIDetector
+from .documentation import GoDocumentationDetector
+from .errors import GoErrorHandlingDetector
 from .grpc import GoGRPCDetector
-from .codegen import GoCodegenDetector
+from .index import GoIndex, make_evidence
+from .logging import GoLoggingDetector
+from .migrations import GoMigrationsDetector
+from .modules import GoModulesDetector
+from .patterns import GoPatternsDetector
+from .security import GoSecurityDetector
+from .testing import GoTestingDetector
 
 __all__ = [
     "GoIndex",

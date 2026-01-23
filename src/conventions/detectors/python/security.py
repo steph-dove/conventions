@@ -5,8 +5,8 @@ from __future__ import annotations
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -158,7 +158,6 @@ class PythonSecurityConventionsDetector(PythonDetector):
     ) -> None:
         """Detect raw SQL execution patterns."""
         raw_sql_count = 0
-        parameterized_count = 0
         raw_sql_examples: list[tuple[str, int, str]] = []
 
         # Look for text() usage (SQLAlchemy raw SQL)
@@ -270,7 +269,7 @@ class PythonSecurityConventionsDetector(PythonDetector):
             return
 
         primary, primary_count = patterns.most_common(1)[0]
-        total = sum(patterns.values())
+        sum(patterns.values())
 
         pattern_names = {
             "os_environ": "os.environ direct access",

@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import infer_module_role, make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register

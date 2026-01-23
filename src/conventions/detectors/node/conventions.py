@@ -4,12 +4,11 @@ from __future__ import annotations
 
 import re
 from collections import Counter
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register

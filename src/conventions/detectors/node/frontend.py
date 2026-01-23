@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -56,7 +55,7 @@ class NodeFrontendDetector(NodeDetector):
             if hook_patterns:
                 frameworks["react"]["hooks"] = True
                 react_features.append("hooks")
-                examples.extend([(r, l) for r, l, _ in hook_patterns[:3]])
+                examples.extend([(r, ln) for r, ln, _ in hook_patterns[:3]])
 
             # Context usage
             context_matches = index.search_pattern(
@@ -100,7 +99,7 @@ class NodeFrontendDetector(NodeDetector):
             )
             if composition_matches:
                 vue_features.append("Composition API")
-                examples.extend([(r, l) for r, l, _ in composition_matches[:3]])
+                examples.extend([(r, ln) for r, ln, _ in composition_matches[:3]])
 
             # script setup
             script_setup = index.search_pattern(

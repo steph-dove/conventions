@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import GoDetector
 from .index import GoIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -124,7 +124,7 @@ class GoSecurityDetector(GoDetector):
             imports = index.find_imports_matching(pkg, limit=20)
             if imports:
                 lib_counts[name] = len(imports)
-                examples[name] = [(r, l) for r, _, l in imports[:5]]
+                examples[name] = [(r, ln) for r, _, ln in imports[:5]]
 
         if not lib_counts:
             # Check for os.Getenv usage
@@ -203,7 +203,7 @@ class GoSecurityDetector(GoDetector):
             imports = index.find_imports_matching(pkg, limit=20)
             if imports:
                 lib_counts[name] = len(imports)
-                examples[name] = [(r, l) for r, _, l in imports[:5]]
+                examples[name] = [(r, ln) for r, _, ln in imports[:5]]
 
         if not lib_counts:
             return

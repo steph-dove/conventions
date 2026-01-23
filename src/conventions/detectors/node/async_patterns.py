@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -43,7 +43,7 @@ class NodeAsyncPatternsDetector(NodeDetector):
 
         # Promise constructor: new Promise(
         promise_constructor_pattern = r'new\s+Promise\s*\('
-        promise_constructor_count = index.count_pattern(promise_constructor_pattern, exclude_tests=True)
+        index.count_pattern(promise_constructor_pattern, exclude_tests=True)
 
         # .then() chains
         then_chain_pattern = r'\.then\s*\('

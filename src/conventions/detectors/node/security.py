@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -121,7 +121,7 @@ class NodeSecurityDetector(NodeDetector):
             imports = index.find_imports_matching(pkg, limit=10)
             if imports:
                 lib_counts[name] = len(imports)
-                examples[name] = [(r, l) for r, _, l in imports[:5]]
+                examples[name] = [(r, ln) for r, _, ln in imports[:5]]
 
         # Also check for process.env usage
         process_env_count = index.count_pattern(r'process\.env\.', exclude_tests=True)
@@ -192,7 +192,7 @@ class NodeSecurityDetector(NodeDetector):
             imports = index.find_imports_matching(pkg, limit=20)
             if imports:
                 lib_counts[name] = len(imports)
-                examples[name] = [(r, l) for r, _, l in imports[:5]]
+                examples[name] = [(r, ln) for r, _, ln in imports[:5]]
 
         if not lib_counts:
             return
@@ -256,7 +256,7 @@ class NodeSecurityDetector(NodeDetector):
             imports = index.find_imports_matching(pkg, limit=10)
             if imports:
                 lib_counts[name] = len(imports)
-                examples[name] = [(r, l) for r, _, l in imports[:3]]
+                examples[name] = [(r, ln) for r, _, ln in imports[:3]]
 
         if not lib_counts:
             return

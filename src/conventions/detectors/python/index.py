@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import ast
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 from ...fs import get_relative_path, read_file_safe, walk_files
 from ...schemas import EvidenceSnippet

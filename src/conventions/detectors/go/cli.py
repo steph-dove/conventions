@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
-from .base import GoDetector
-from .index import GoIndex, make_evidence
 from ..registry import DetectorRegistry
+from .base import GoDetector
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -33,7 +33,7 @@ class GoCLIDetector(GoDetector):
                 "name": "Cobra",
                 "import_count": len(cobra_imports),
             }
-            examples["cobra"] = [(r, l) for r, _, l in cobra_imports[:5]]
+            examples["cobra"] = [(r, ln) for r, _, ln in cobra_imports[:5]]
 
         # urfave/cli
         urfave_imports = index.find_imports_matching("github.com/urfave/cli", limit=30)
@@ -42,7 +42,7 @@ class GoCLIDetector(GoDetector):
                 "name": "urfave/cli",
                 "import_count": len(urfave_imports),
             }
-            examples["urfave"] = [(r, l) for r, _, l in urfave_imports[:5]]
+            examples["urfave"] = [(r, ln) for r, _, ln in urfave_imports[:5]]
 
         # Kong
         kong_imports = index.find_imports_matching("github.com/alecthomas/kong", limit=30)
@@ -51,7 +51,7 @@ class GoCLIDetector(GoDetector):
                 "name": "Kong",
                 "import_count": len(kong_imports),
             }
-            examples["kong"] = [(r, l) for r, _, l in kong_imports[:5]]
+            examples["kong"] = [(r, ln) for r, _, ln in kong_imports[:5]]
 
         # flag (stdlib)
         flag_imports = index.find_imports_matching("flag", limit=20)
@@ -61,7 +61,7 @@ class GoCLIDetector(GoDetector):
                 "name": "flag (stdlib)",
                 "import_count": len(flag_imports),
             }
-            examples["flag"] = [(r, l) for r, _, l in flag_imports[:5]]
+            examples["flag"] = [(r, ln) for r, _, ln in flag_imports[:5]]
 
         if not frameworks:
             return result

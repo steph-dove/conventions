@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from ..base import DetectorContext, DetectorResult
-from .base import GoDetector
-from .index import GoIndex, make_evidence
 from ..registry import DetectorRegistry
+from .base import GoDetector
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -59,19 +57,19 @@ class GoGRPCDetector(GoDetector):
 
         if grpc_imports:
             features.append("gRPC")
-            examples.extend([(r, l) for r, _, l in grpc_imports[:3]])
+            examples.extend([(r, ln) for r, _, ln in grpc_imports[:3]])
 
         if gateway_imports:
             features.append("gRPC-Gateway")
-            examples.extend([(r, l) for r, _, l in gateway_imports[:2]])
+            examples.extend([(r, ln) for r, _, ln in gateway_imports[:2]])
 
         if connect_imports:
             features.append("Connect")
-            examples.extend([(r, l) for r, _, l in connect_imports[:3]])
+            examples.extend([(r, ln) for r, _, ln in connect_imports[:3]])
 
         if protobuf_imports and not grpc_imports:
             features.append("Protocol Buffers")
-            examples.extend([(r, l) for r, _, l in protobuf_imports[:3]])
+            examples.extend([(r, ln) for r, _, ln in protobuf_imports[:3]])
 
         title = f"gRPC/Protobuf: {', '.join(features[:2])}"
         description = f"Uses {', '.join(features)}."

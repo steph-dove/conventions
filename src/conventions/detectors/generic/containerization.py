@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
+from ...fs import read_file_safe
 from ..base import BaseDetector, DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
-from ...fs import read_file_safe
 
 
 @DetectorRegistry.register

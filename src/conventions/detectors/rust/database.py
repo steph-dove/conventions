@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -34,7 +34,7 @@ class RustDatabaseDetector(RustDetector):
                 "type": "ORM",
                 "count": len(diesel_uses),
             }
-            examples.extend([(r, l) for r, _, l in diesel_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in diesel_uses[:3]])
 
         # Check for SQLx
         sqlx_uses = index.find_uses_matching("sqlx", limit=50)
@@ -44,7 +44,7 @@ class RustDatabaseDetector(RustDetector):
                 "type": "async SQL",
                 "count": len(sqlx_uses),
             }
-            examples.extend([(r, l) for r, _, l in sqlx_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in sqlx_uses[:3]])
 
         # Check for SeaORM
         sea_orm_uses = index.find_uses_matching("sea_orm", limit=50)
@@ -54,7 +54,7 @@ class RustDatabaseDetector(RustDetector):
                 "type": "async ORM",
                 "count": len(sea_orm_uses),
             }
-            examples.extend([(r, l) for r, _, l in sea_orm_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in sea_orm_uses[:3]])
 
         # Check for rusqlite
         rusqlite_uses = index.find_uses_matching("rusqlite", limit=30)
@@ -151,7 +151,7 @@ class RustDatabaseDetector(RustDetector):
         description = f"Uses {lib_info['name']} ({lib_info['type']})."
 
         if len(libraries) > 1:
-            others = [l["name"] for k, l in libraries.items() if k != primary]
+            others = [lib["name"] for k, lib in libraries.items() if k != primary]
             description += f" Also: {', '.join(others[:3])}."
 
         if migrations:

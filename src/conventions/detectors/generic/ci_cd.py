@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
+from ...fs import read_file_safe
 from ..base import BaseDetector, DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
-from ...fs import read_file_safe
 
 
 @DetectorRegistry.register
@@ -107,7 +105,7 @@ class CICDDetector(BaseDetector):
             if primary.get("workflow_count"):
                 description += f" {primary['workflow_count']} workflow(s) configured."
         else:
-            title = f"Multiple CI/CD platforms"
+            title = "Multiple CI/CD platforms"
             description = f"Uses multiple CI/CD platforms: {', '.join(platform_names)}."
 
         confidence = min(0.95, 0.7 + len(platforms) * 0.1)

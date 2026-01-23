@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import re
-
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import GoDetector
 from .index import GoIndex, make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -180,7 +178,7 @@ class GoTestingDetector(GoDetector):
             imports = index.find_imports_matching(pkg, limit=20)
             if imports:
                 framework_counts[name] = len(imports)
-                examples[name] = [(r, l) for r, _, l in imports[:5]]
+                examples[name] = [(r, ln) for r, _, ln in imports[:5]]
 
         if not framework_counts:
             return

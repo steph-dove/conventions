@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-import re
-
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import PythonIndex, make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register

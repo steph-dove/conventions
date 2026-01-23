@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
-from .index import PythonIndex, make_evidence
 from ..registry import DetectorRegistry
+from .index import make_evidence
 
 
 @DetectorRegistry.register
@@ -73,7 +73,7 @@ class PythonGraphQLDetector(PythonDetector):
         if not libraries:
             return result
 
-        library_names = [l["name"] for l in libraries.values()]
+        library_names = [lib["name"] for lib in libraries.values()]
         primary = max(libraries, key=lambda k: libraries[k]["import_count"])
 
         style = libraries[primary].get("style", "")
@@ -83,7 +83,7 @@ class PythonGraphQLDetector(PythonDetector):
             description += f" ({style})"
 
         if len(libraries) > 1:
-            others = [l for l in library_names if l != libraries[primary]["name"]]
+            others = [name for name in library_names if name != libraries[primary]["name"]]
             description += f" Also uses: {', '.join(others)}."
 
         # Modern type-hint based library gets higher confidence

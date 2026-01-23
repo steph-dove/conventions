@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -34,7 +34,7 @@ class RustErrorHandlingDetector(RustDetector):
                 "type": "application errors",
                 "count": len(anyhow_uses),
             }
-            examples.extend([(r, l) for r, _, l in anyhow_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in anyhow_uses[:3]])
 
         # Check for thiserror
         thiserror_uses = index.find_uses_matching("thiserror", limit=30)
@@ -44,7 +44,7 @@ class RustErrorHandlingDetector(RustDetector):
                 "type": "library errors",
                 "count": len(thiserror_uses),
             }
-            examples.extend([(r, l) for r, _, l in thiserror_uses[:3]])
+            examples.extend([(r, ln) for r, _, ln in thiserror_uses[:3]])
 
         # Check for eyre
         eyre_uses = index.find_uses_matching("eyre", limit=30)
@@ -109,7 +109,7 @@ class RustErrorHandlingDetector(RustDetector):
         if not patterns and question_mark_count == 0:
             return result
 
-        pattern_names = [p["name"] for p in patterns.values()]
+        [p["name"] for p in patterns.values()]
 
         # Determine primary error handling approach
         if "thiserror" in patterns and "anyhow" in patterns:

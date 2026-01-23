@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
-from .base import RustDetector
 from ..registry import DetectorRegistry
+from .base import RustDetector
 
 
 @DetectorRegistry.register
@@ -35,7 +34,7 @@ class RustCargoDetector(RustDetector):
         info["is_workspace"] = is_workspace
 
         # Count dependencies
-        deps_match = re.findall(r"\[(?:dev-)?dependencies(?:\.[^\]]+)?\]", content)
+        re.findall(r"\[(?:dev-)?dependencies(?:\.[^\]]+)?\]", content)
         dep_count = len(re.findall(r"^\s*\w+\s*=", content, re.MULTILINE))
         info["dependency_count"] = dep_count
 

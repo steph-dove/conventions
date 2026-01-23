@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from ..base import DetectorContext, DetectorResult
+from ..registry import DetectorRegistry
 from .base import RustDetector
 from .index import make_evidence
-from ..registry import DetectorRegistry
 
 
 @DetectorRegistry.register
@@ -102,8 +102,8 @@ class RustUnsafeDetector(RustDetector):
             return result
 
         examples: list[tuple[str, int]] = []
-        examples.extend([(r, l) for r, l, _ in unsafe_blocks[:3]])
-        examples.extend([(r, l) for r, l, _ in unsafe_fns[:2]])
+        examples.extend([(r, ln) for r, ln, _ in unsafe_blocks[:3]])
+        examples.extend([(r, ln) for r, ln, _ in unsafe_fns[:2]])
 
         # Determine unsafe category
         has_ffi = len(extern_blocks) > 0 or len(no_mangle) > 0
