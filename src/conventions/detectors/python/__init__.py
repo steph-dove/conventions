@@ -28,10 +28,10 @@ from .security import PythonSecurityConventionsDetector
 from .test_conventions import PythonTestConventionsDetector
 from .test_organization import PythonTestOrganizationDetector
 from .tooling import PythonToolingDetector
-from .validation_patterns import PythonValidationPatternsDetector
 
 # Import all detector classes to ensure they register
 from .typing import PythonTypingConventionsDetector
+from .validation_patterns import PythonValidationPatternsDetector
 
 __all__ = [
     "PythonIndex",

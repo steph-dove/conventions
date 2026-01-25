@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from collections import Counter
-
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
 from .index import make_evidence
@@ -52,21 +50,6 @@ class PythonReturnPatternsDetector(PythonDetector):
                 optional_count += 1
                 if len(optional_examples) < 5:
                     optional_examples.append((rel_path, imp.line))
-
-        # Check function return annotations for patterns
-        functions_with_optional_return = 0
-        functions_with_union_none = 0
-
-        for rel_path, func in index.get_all_functions():
-            file_idx = index.files.get(rel_path)
-            if file_idx and file_idx.role in ("test", "docs"):
-                continue
-
-            # We can't easily inspect the actual annotation from FunctionInfo
-            # But we can track functions that have return annotations
-            if func.has_return_annotation:
-                # This is a proxy - we'd need AST access for full analysis
-                pass
 
         total = optional_count + union_none_count + pipe_none_count
         if total < 2:

@@ -13,7 +13,6 @@ from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
-from .index import make_evidence
 
 
 @DetectorRegistry.register

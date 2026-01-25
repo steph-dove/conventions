@@ -101,7 +101,7 @@ class PythonCodeStyleDetector(PythonDetector):
 
         # Build evidence
         evidence = []
-        primary_style = max(format_counts, key=format_counts.get) if format_counts else "fstring"
+        primary_style = max(format_counts, key=lambda k: format_counts[k]) if format_counts else "fstring"
         for rel_path, line in format_examples.get(primary_style, [])[:ctx.max_evidence_snippets]:
             ev = make_evidence(index, rel_path, line, radius=3)
             if ev:

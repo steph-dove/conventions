@@ -78,7 +78,7 @@ class PythonClassPatternsDetector(PythonDetector):
             style = "plain"
             confidence = 0.7
         else:
-            dominant_style = max(structured_counts, key=structured_counts.get)
+            dominant_style = max(structured_counts, key=lambda k: structured_counts[k])
             dominant_count = structured_counts[dominant_style]
             dominant_ratio = dominant_count / structured_total if structured_total else 0
 
@@ -100,9 +100,9 @@ class PythonClassPatternsDetector(PythonDetector):
             else:
                 # Multiple styles in use
                 used_styles = [s for s, c in structured_counts.items() if c > 0]
-                title = f"Mixed data class styles"
+                title = "Mixed data class styles"
                 description = (
-                    f"Uses multiple data class styles: "
+                    "Uses multiple data class styles: "
                     + ", ".join(f"{style_names[s]} ({structured_counts[s]})" for s in used_styles)
                     + "."
                 )
@@ -112,7 +112,7 @@ class PythonClassPatternsDetector(PythonDetector):
         # Build evidence
         evidence = []
         primary_examples = style_examples.get(
-            style if style != "mixed" else max(structured_counts, key=structured_counts.get),
+            style if style != "mixed" else max(structured_counts, key=lambda k: structured_counts[k]),
             []
         )
         for rel_path, line, name in primary_examples[:ctx.max_evidence_snippets]:

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from collections import Counter
 from pathlib import Path
 
@@ -191,7 +190,7 @@ class PythonTestOrganizationDetector(PythonDetector):
             title = "Mixed test naming styles"
             patterns_used = [p for p, c in test_func_patterns.most_common(3) if c > 0]
             description = (
-                f"Uses multiple test naming styles: "
+                "Uses multiple test naming styles: "
                 + ", ".join(pattern_descriptions.get(p, p) for p in patterns_used)
                 + "."
             )
