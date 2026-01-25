@@ -75,10 +75,6 @@ class PythonSecurityConventionsDetector(PythonDetector):
                     auth_examples["bcrypt"] = []
                 auth_examples["bcrypt"].append((rel_path, imp.line))
 
-            # python-multipart (for form auth)
-            if "python_multipart" in imp.module or "multipart" in imp.module:
-                auth_patterns["form_auth"] += 1
-
         # Check for auth-related functions and dependencies
         for rel_path, func in index.get_all_functions():
             name_lower = func.name.lower()
@@ -182,7 +178,7 @@ class PythonSecurityConventionsDetector(PythonDetector):
             fstring_patterns.append(f"f'{kw}")
 
         for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
+            if file_idx.role in ("test", "docs"):
                 continue
 
             content = "\n".join(file_idx.lines)

@@ -144,6 +144,11 @@ class PythonAsyncConventionsDetector(PythonDetector):
         job_examples: dict[str, list[tuple[str, int]]] = {}
 
         for rel_path, imp in index.get_all_imports():
+            # Skip test and docs files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
             # Celery
             if "celery" in imp.module or "Celery" in imp.names:
                 job_libs["celery"] += 1
@@ -196,6 +201,11 @@ class PythonAsyncConventionsDetector(PythonDetector):
         # Check for task decorators
         task_decorators = 0
         for rel_path, dec in index.get_all_decorators():
+            # Skip test and docs files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
             if any(x in dec.name for x in [".task", "shared_task", "celery.task"]):
                 task_decorators += 1
                 job_libs["celery"] = job_libs.get("celery", 0) + 1

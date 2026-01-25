@@ -161,7 +161,7 @@ class PythonLoggingConventionsDetector(PythonDetector):
         # Also look for extra dict keys by scanning source (heuristic)
         extra_fields: Counter[str] = Counter()
         for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
+            if file_idx.role in ("test", "docs"):
                 continue
             content = "\n".join(file_idx.lines)
             # Look for extra={...} patterns

@@ -102,6 +102,13 @@ class DependencyUpdatesDetector(BaseDetector):
         description = f"Automated dependency updates via {'; '.join(descriptions)}."
         confidence = min(0.95, 0.7 + len(tools) * 0.1)
 
+        # Determine primary tool (prefer renovate > dependabot > others)
+        primary_tool = None
+        for preferred in ["renovate", "dependabot", "snyk"]:
+            if preferred in tools:
+                primary_tool = preferred
+                break
+
         result.rules.append(self.make_rule(
             rule_id="generic.conventions.dependency_updates",
             category="dependencies",
@@ -113,6 +120,7 @@ class DependencyUpdatesDetector(BaseDetector):
             stats={
                 "tools": list(tools.keys()),
                 "tool_details": tools,
+                "primary_tool": primary_tool,
             },
         ))
 

@@ -446,6 +446,101 @@ def _exception_handlers_suggestion(r: ConventionRule, score: int) -> str | None:
     return "Consider centralizing exception handlers for easier maintenance."
 
 
+# Error wrapper pattern rating
+def _error_wrapper_score(r: ConventionRule) -> int:
+    """Score custom error wrapper patterns."""
+    ratio = r.stats.get("usage_ratio", 0)
+    count = r.stats.get("usage_count", 0)
+
+    # High consistency in error handling is good
+    if ratio >= 0.5 and count >= 10:
+        return 5  # Very consistent error handling
+    if ratio >= 0.3 and count >= 5:
+        return 4  # Good consistency
+    if ratio >= 0.15 and count >= 3:
+        return 3  # Some pattern emerging
+    return 2  # Pattern exists but not widely adopted
+
+
+def _error_wrapper_reason(r: ConventionRule, _score: int) -> str:
+    wrapper = r.stats.get("wrapper_function", "unknown")
+    count = r.stats.get("usage_count", 0)
+    total = r.stats.get("total_handlers", 0)
+    ratio = r.stats.get("usage_ratio", 0)
+    return f"Error wrapper '{wrapper}' used in {count}/{total} handlers ({ratio:.0%})"
+
+
+def _error_wrapper_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    ratio = r.stats.get("usage_ratio", 0)
+    wrapper = r.stats.get("wrapper_function", "")
+    if ratio < 0.3:
+        return f"Consider using '{wrapper}' more consistently across all exception handlers."
+    return "Document the error wrapper pattern in your codebase guidelines."
+
+
+# Error transformation pattern rating
+def _error_transform_score(r: ConventionRule) -> int:
+    """Score error transformation patterns."""
+    ratio = r.stats.get("usage_ratio", 0)
+    count = r.stats.get("usage_count", 0)
+
+    # Consistent transformation to a custom exception is good
+    if ratio >= 0.4 and count >= 8:
+        return 5
+    if ratio >= 0.25 and count >= 5:
+        return 4
+    if ratio >= 0.15 and count >= 3:
+        return 3
+    return 2
+
+
+def _error_transform_reason(r: ConventionRule, _score: int) -> str:
+    target = r.stats.get("target_exception", "unknown")
+    count = r.stats.get("usage_count", 0)
+    total = r.stats.get("total_handlers", 0)
+    ratio = r.stats.get("usage_ratio", 0)
+    return f"Transforms errors to '{target}' in {count}/{total} handlers ({ratio:.0%})"
+
+
+def _error_transform_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    target = r.stats.get("target_exception", "")
+    return f"Consider transforming more exceptions to '{target}' for consistent client error responses."
+
+
+# Standardized error response pattern rating
+def _error_response_score(r: ConventionRule) -> int:
+    """Score standardized error response patterns."""
+    ratio = r.stats.get("usage_ratio", 0)
+    count = r.stats.get("usage_count", 0)
+
+    if ratio >= 0.4 and count >= 5:
+        return 5
+    if ratio >= 0.25 and count >= 3:
+        return 4
+    if ratio >= 0.15:
+        return 3
+    return 2
+
+
+def _error_response_reason(r: ConventionRule, _score: int) -> str:
+    func = r.stats.get("response_function", "unknown")
+    count = r.stats.get("usage_count", 0)
+    total = r.stats.get("total_handlers", 0)
+    ratio = r.stats.get("usage_ratio", 0)
+    return f"Standardized error response via '{func}' in {count}/{total} handlers ({ratio:.0%})"
+
+
+def _error_response_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    func = r.stats.get("response_function", "")
+    return f"Use '{func}' in more exception handlers for consistent error responses to clients."
+
+
 # Raw SQL usage rating (inverse - lower is better)
 def _raw_sql_score(r: ConventionRule) -> int:
     count = r.stats.get("raw_sql_count", 0)
@@ -832,6 +927,21 @@ RATING_RULES: dict[str, RatingRule] = {
         score_func=_exception_handlers_score,
         reason_func=_exception_handlers_reason,
         suggestion_func=_exception_handlers_suggestion,
+    ),
+    "python.conventions.error_wrapper": RatingRule(
+        score_func=_error_wrapper_score,
+        reason_func=_error_wrapper_reason,
+        suggestion_func=_error_wrapper_suggestion,
+    ),
+    "python.conventions.error_transformation": RatingRule(
+        score_func=_error_transform_score,
+        reason_func=_error_transform_reason,
+        suggestion_func=_error_transform_suggestion,
+    ),
+    "python.conventions.error_response_pattern": RatingRule(
+        score_func=_error_response_score,
+        reason_func=_error_response_reason,
+        suggestion_func=_error_response_suggestion,
     ),
 
     # Python security
@@ -1265,8 +1375,8 @@ RATING_RULES: dict[str, RatingRule] = {
         suggestion_func=lambda r, s: None if s >= 5 else "Adopt consistent branch naming (feature/, fix/, etc.).",
     ),
     "generic.conventions.git_hooks": RatingRule(
-        score_func=lambda r: 5 if r.stats.get("hook_tool") in ("pre-commit", "husky", "lefthook") else 3,
-        reason_func=lambda r, _: f"Git hooks: {r.stats.get('hook_tool', 'none configured')}",
+        score_func=lambda r: 5 if (r.stats.get("hook_tool") or r.stats.get("hooks_tools", [None])[0]) in ("pre-commit", "husky", "lefthook", "Husky", "Lefthook") else 3,
+        reason_func=lambda r, _: f"Git hooks: {r.stats.get('hook_tool') or (r.stats.get('hooks_tools', ['none configured'])[0] if r.stats.get('hooks_tools') else 'none configured')}",
         suggestion_func=lambda r, s: None if s >= 5 else "Configure pre-commit hooks for automated quality checks.",
     ),
 

@@ -52,7 +52,7 @@ class PythonDocstringNamingConventionsDetector(PythonDetector):
         documented_classes = 0
 
         for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
+            if file_idx.role in ("test", "docs"):
                 continue
 
             for func in file_idx.functions:
@@ -152,7 +152,7 @@ class PythonDocstringNamingConventionsDetector(PythonDetector):
         sphinx_pattern = re.compile(r":param\s+\w+:|:returns:|:rtype:|:raises:", re.IGNORECASE)
 
         for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
+            if file_idx.role in ("test", "docs"):
                 continue
 
             for func in file_idx.functions:
@@ -246,7 +246,7 @@ class PythonDocstringNamingConventionsDetector(PythonDetector):
         has_underscore = re.compile(r"_")
 
         for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
+            if file_idx.role in ("test", "docs"):
                 continue
 
             # Look for module-level constants (heuristic: UPPER_CASE names)

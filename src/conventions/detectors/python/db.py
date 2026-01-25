@@ -97,6 +97,11 @@ class PythonDBConventionsDetector(PythonDetector):
         library_examples: dict[str, list[tuple[str, int]]] = {}
 
         for rel_path, imp in index.get_all_imports():
+            # Skip test and docs files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
             for lib_key, lib_info in DB_LIBRARIES.items():
                 for pattern in lib_info["imports"]:
                     if pattern in imp.module or pattern in imp.names:

@@ -242,6 +242,15 @@ class GitConventionsDetector(BaseDetector):
             description += f" Configured: {', '.join(hooks_configured)}."
         confidence = min(0.9, 0.7 + len(hooks_tools) * 0.1)
 
+        # Determine primary hook tool (prefer pre-commit > husky > lefthook)
+        hook_tool = None
+        if has_pre_commit:
+            hook_tool = "pre-commit"
+        elif has_husky:
+            hook_tool = "husky"
+        elif has_lefthook:
+            hook_tool = "lefthook"
+
         result.rules.append(self.make_rule(
             rule_id="generic.conventions.git_hooks",
             category="git",
@@ -253,6 +262,7 @@ class GitConventionsDetector(BaseDetector):
             stats={
                 "hooks_tools": hooks_tools,
                 "hooks_configured": hooks_configured,
+                "hook_tool": hook_tool,
                 "has_pre_commit": has_pre_commit,
                 "has_husky": has_husky,
                 "has_lefthook": has_lefthook,

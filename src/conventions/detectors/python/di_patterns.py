@@ -43,7 +43,19 @@ class PythonDIConventionsDetector(PythonDetector):
         depends_count = 0
         depends_names: Counter[str] = Counter()
 
+        # First, check if FastAPI/Starlette is actually used
+        has_fastapi = False
+        for rel_path, imp in index.get_all_imports():
+            if imp.module in ("fastapi", "starlette") or imp.module.startswith("fastapi.") or imp.module.startswith("starlette."):
+                has_fastapi = True
+                break
+
         for rel_path, call in index.get_all_calls():
+            # Skip test and docs files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
             if call.name == "Depends":
                 depends_count += 1
                 patterns["fastapi_depends"] += 1
@@ -53,67 +65,58 @@ class PythonDIConventionsDetector(PythonDetector):
                 if len(pattern_examples["fastapi_depends"]) < 5:
                     pattern_examples["fastapi_depends"].append((rel_path, call.line, "Depends"))
 
-        # Check for common dependency function names
-        for rel_path, func in index.get_all_functions():
-            if func.name in ("get_db", "get_session", "get_current_user", "get_settings"):
-                depends_names[func.name] += 1
-                patterns["fastapi_depends"] += 1
+        # Only count common dependency function names if FastAPI is used or Depends() was found
+        if has_fastapi or depends_count > 0:
+            for rel_path, func in index.get_all_functions():
+                # Skip test and docs files
+                file_idx = index.files.get(rel_path)
+                if file_idx and file_idx.role in ("test", "docs"):
+                    continue
 
-                if "fastapi_depends" not in pattern_examples:
-                    pattern_examples["fastapi_depends"] = []
-                if len(pattern_examples["fastapi_depends"]) < 5:
-                    pattern_examples["fastapi_depends"].append((rel_path, func.line, func.name))
+                if func.name in ("get_db", "get_session", "get_current_user", "get_settings"):
+                    depends_names[func.name] += 1
+                    patterns["fastapi_depends"] += 1
+
+                    if "fastapi_depends" not in pattern_examples:
+                        pattern_examples["fastapi_depends"] = []
+                    if len(pattern_examples["fastapi_depends"]) < 5:
+                        pattern_examples["fastapi_depends"].append((rel_path, func.line, func.name))
 
         # Check for DI container libraries
+        # Use exact module matching to avoid false positives (e.g., "threading" contains "di")
         container_libs = {
-            "dependency_injector": "dependency-injector",
-            "injector": "injector",
-            "punq": "punq",
-            "lagom": "lagom",
-            "di": "di",
+            "dependency_injector",
+            "injector",
+            "punq",
+            "lagom",
+            "pinject",
+            "python_inject",
+            "kink",
         }
 
         for rel_path, imp in index.get_all_imports():
-            for lib_key, lib_name in container_libs.items():
-                if lib_key in imp.module:
-                    patterns["container_di"] += 1
-                    if "container_di" not in pattern_examples:
-                        pattern_examples["container_di"] = []
-                    pattern_examples["container_di"].append((rel_path, imp.line, lib_name))
-                    break
-
-        # Check for Container/Inject patterns
-        for rel_path, cls in index.get_all_classes():
-            if "Container" in cls.name:
+            # Check if the import module starts with or equals a known DI library
+            module_parts = imp.module.split(".")
+            root_module = module_parts[0]
+            if root_module in container_libs:
                 patterns["container_di"] += 1
                 if "container_di" not in pattern_examples:
                     pattern_examples["container_di"] = []
-                pattern_examples["container_di"].append((rel_path, cls.line, cls.name))
+                pattern_examples["container_di"].append((rel_path, imp.line, root_module))
 
-        # Check for module-level singleton patterns
-        # (This is heuristic - we look for common singleton patterns)
-        singleton_indicators = 0
-        singleton_examples: list[tuple[str, int, str]] = []
+        # Check for Container classes only if we already found DI library imports
+        # (to avoid false positives from unrelated Container classes)
+        if patterns.get("container_di", 0) > 0:
+            for rel_path, cls in index.get_all_classes():
+                if cls.name.endswith("Container") and "DI" in cls.name.upper():
+                    patterns["container_di"] += 1
+                    if "container_di" not in pattern_examples:
+                        pattern_examples["container_di"] = []
+                    pattern_examples["container_di"].append((rel_path, cls.line, cls.name))
 
-        for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
-                continue
-
-            # Look for module-level client instantiation
-            for call in file_idx.calls:
-                if any(x in call.name for x in [
-                    "Client(", "Connection(", "Session(", "Pool(",
-                    "httpx.Client", "requests.Session", "aiohttp.ClientSession"
-                ]):
-                    # Check if it's at module level (heuristic: early line numbers)
-                    if call.line < 50:
-                        singleton_indicators += 1
-                        if len(singleton_examples) < 5:
-                            singleton_examples.append((rel_path, call.line, call.name))
-
-        if singleton_indicators >= 3:
-            patterns["module_singletons"] = singleton_indicators
-            pattern_examples["module_singletons"] = singleton_examples
+        # NOTE: Module-level singleton detection removed due to high false positive rate.
+        # The heuristic of checking for "Client/Connection/Session" calls in early lines
+        # was incorrectly flagging standard library usage (e.g., threading imports) as DI patterns.
 
         if not patterns:
             return
@@ -134,11 +137,6 @@ class PythonDIConventionsDetector(PythonDetector):
                 "name": "Container-based DI",
                 "title": "Container-based dependency injection",
                 "desc": "Uses a DI container library for dependency management",
-            },
-            "module_singletons": {
-                "name": "Module singletons",
-                "title": "Module-level singleton pattern",
-                "desc": "Uses module-level instantiation for shared dependencies",
             },
         }
 

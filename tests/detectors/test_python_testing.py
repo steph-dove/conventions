@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from conventions.detectors.base import DetectorContext, DetectorResult
+from conventions.detectors.base import DetectorContext
 
 
 @pytest.fixture
@@ -92,15 +92,34 @@ if __name__ == "__main__":
     unittest.main()
 '''
     (tests / "test_example.py").write_text(test_file)
+
+    test_file2 = '''"""More unittest tests."""
+import unittest
+
+class TestMore(unittest.TestCase):
+    def test_addition(self):
+        self.assertEqual(1 + 1, 2)
+'''
+    (tests / "test_more.py").write_text(test_file2)
+
+    test_file3 = '''"""Even more unittest tests."""
+import unittest
+
+class TestEvenMore(unittest.TestCase):
+    def test_subtraction(self):
+        self.assertEqual(2 - 1, 1)
+'''
+    (tests / "test_even_more.py").write_text(test_file3)
+
     return tmp_path
 
 
-class TestPythonTestingDetector:
-    """Tests for Python testing detector."""
+class TestPythonTestConventionsDetector:
+    """Tests for Python test conventions detector."""
 
     def test_detect_pytest_framework(self, pytest_repo: Path):
         """Test detection of pytest as testing framework."""
-        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
+        from conventions.detectors.python.test_conventions import PythonTestConventionsDetector
 
         ctx = DetectorContext(
             repo_root=pytest_repo,
@@ -108,7 +127,7 @@ class TestPythonTestingDetector:
             max_files=100,
         )
 
-        detector = PythonTestingDetector()
+        detector = PythonTestConventionsDetector()
         result = detector.detect(ctx)
 
         framework_rule = None
@@ -123,7 +142,7 @@ class TestPythonTestingDetector:
 
     def test_detect_pytest_fixtures(self, pytest_repo: Path):
         """Test detection of pytest fixtures."""
-        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
+        from conventions.detectors.python.test_conventions import PythonTestConventionsDetector
 
         ctx = DetectorContext(
             repo_root=pytest_repo,
@@ -131,22 +150,22 @@ class TestPythonTestingDetector:
             max_files=100,
         )
 
-        detector = PythonTestingDetector()
+        detector = PythonTestConventionsDetector()
         result = detector.detect(ctx)
 
         fixture_rule = None
         for rule in result.rules:
-            if rule.id == "python.conventions.testing_fixtures":
+            if rule.id == "python.test_conventions.fixtures":
                 fixture_rule = rule
                 break
 
         assert fixture_rule is not None
-        assert fixture_rule.stats.get("fixture_count", 0) >= 3
-        assert fixture_rule.stats.get("conftest_count", 0) >= 1
+        assert fixture_rule.stats.get("fixture_counts", {}).get("pytest_fixture", 0) >= 3
+        assert fixture_rule.stats.get("conftest_files", 0) >= 1
 
     def test_detect_unittest_framework(self, unittest_repo: Path):
         """Test detection of unittest framework."""
-        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
+        from conventions.detectors.python.test_conventions import PythonTestConventionsDetector
 
         ctx = DetectorContext(
             repo_root=unittest_repo,
@@ -154,7 +173,7 @@ class TestPythonTestingDetector:
             max_files=100,
         )
 
-        detector = PythonTestingDetector()
+        detector = PythonTestConventionsDetector()
         result = detector.detect(ctx)
 
         framework_rule = None
@@ -172,7 +191,7 @@ class TestPythonTestingMocking:
 
     def test_detect_mocking_libraries(self, pytest_repo: Path):
         """Test detection of mocking libraries."""
-        from conventions.detectors.python.testing import PythonTestingConventionsDetector as PythonTestingDetector
+        from conventions.detectors.python.test_conventions import PythonTestConventionsDetector
 
         ctx = DetectorContext(
             repo_root=pytest_repo,
@@ -180,16 +199,16 @@ class TestPythonTestingMocking:
             max_files=100,
         )
 
-        detector = PythonTestingDetector()
+        detector = PythonTestConventionsDetector()
         result = detector.detect(ctx)
 
         mock_rule = None
         for rule in result.rules:
-            if rule.id == "python.conventions.testing_mocking":
+            if rule.id == "python.test_conventions.mocking":
                 mock_rule = rule
                 break
 
         # Should detect unittest.mock usage
         if mock_rule is not None:
-            libs = mock_rule.stats.get("mock_library_counts", {})
-            assert len(libs) > 0 or mock_rule.stats.get("total_mock_uses", 0) > 0
+            libs = mock_rule.stats.get("mock_counts", {})
+            assert len(libs) > 0

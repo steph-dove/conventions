@@ -1,13 +1,13 @@
 # Code Conventions Report
 
-*Generated: 2026-01-19 16:33:32*
+*Generated: 2026-01-24 21:05:01*
 
 ## Summary
 
-- **Repository:** `/private/tmp/fastapi_test`
+- **Repository:** `/private/tmp/fastapi`
 - **Languages:** node, python
 - **Files scanned:** 1252
-- **Conventions detected:** 38
+- **Conventions detected:** 53
 
 ## Detected Conventions
 
@@ -16,41 +16,56 @@
 | `python.conventions.dependency_management` | Dependency management: uv | 95% | 0 |
 | `python.conventions.graphql` | GraphQL: Strawberry | 95% | 2 |
 | `python.conventions.naming` | PEP 8 snake_case naming | 95% | 0 |
+| `python.conventions.path_handling` | Modern pathlib for path handling | 95% | 5 |
 | `python.conventions.testing_framework` | pytest-based testing | 95% | 5 |
 | `python.conventions.typing_coverage` | High type annotation coverage | 95% | 4 |
+| `python.conventions.string_formatting` | Modern f-string formatting | 95% | 5 |
 | `generic.conventions.ci_quality` | CI/CD best practices | 90% | 0 |
 | `node.conventions.typescript` | JavaScript codebase | 90% | 0 |
 | `python.conventions.cli_framework` | CLI framework: Typer | 90% | 5 |
+| `python.conventions.context_managers` | Context manager usage | 90% | 2 |
+| `python.conventions.decorator_caching` | Caching decorator pattern | 90% | 5 |
 | `python.conventions.import_sorting` | Import sorting: Ruff (isort rules) | 90% | 0 |
-| `python.conventions.testing_fixtures` | Centralized pytest fixtures in conftest.py | 90% | 5 |
-| `python.conventions.testing_mocking` | Uses unittest.mock for mocking | 90% | 5 |
-| `python.conventions.async_style` | Async-first API design | 90% | 2 |
-| `python.conventions.background_jobs` | Background jobs with FastAPI BackgroundTasks | 90% | 5 |
+| `python.test_conventions.fixtures` | pytest fixtures for test setup | 90% | 5 |
+| `python.test_conventions.mocking` | Mocking with unittest.mock / Mock | 90% | 5 |
+| `python.test_conventions.parametrized` | Parametrized tests | 90% | 5 |
 | `python.conventions.db_query_style` | SQLAlchemy 2.0 select() style | 90% | 5 |
-| `python.conventions.docstring_style` | Sphinx/reST style docstrings | 90% | 2 |
 | `python.conventions.linter` | Linters: Ruff, mypy | 90% | 0 |
 | `python.conventions.logging_library` | Uses Python standard logging | 90% | 5 |
+| `python.test_conventions.assertions` | Plain assert statements | 89% | 5 |
+| `python.conventions.class_style` | Data classes: Pydantic models | 86% | 5 |
 | `python.conventions.auth_pattern` | JWT-based authentication | 85% | 5 |
 | `python.conventions.db_session_lifecycle` | FastAPI-style session dependency injection | 85% | 2 |
 | `python.conventions.secrets_access_style` | Structured configuration with Pydantic Settings | 85% | 5 |
+| `python.conventions.test_naming` | Test naming: Simple style (test_feature) | 84% | 3 |
 | `python.conventions.schema_library` | Primary schema library: Pydantic | 84% | 5 |
 | `python.conventions.api_framework` | Primary API framework: FastAPI | 84% | 5 |
 | `python.conventions.caching` | Caching: functools.lru_cache | 80% | 5 |
-| `python.conventions.logging_fields` | Structured logging with request/trace IDs | 80% | 0 |
+| `python.conventions.enum_usage` | Enum usage: Enum | 80% | 4 |
+| `python.conventions.optional_usage` | Optional type annotations | 80% | 5 |
+| `python.conventions.pagination_pattern` | Cursor-based pagination | 80% | 0 |
+| `python.docs_conventions.example_structure` | Examples with main() entry point | 80% | 0 |
+| `python.docs_conventions.organization` | Tutorial-style documentation | 80% | 0 |
 | `generic.conventions.ci_platform` | CI/CD: GitHub Actions | 80% | 0 |
 | `generic.conventions.dependency_updates` | Dependency updates: Dependabot | 80% | 0 |
 | `generic.conventions.git_hooks` | Git hooks: pre-commit | 80% | 0 |
-| `python.conventions.db_library` | Primary database library: SQLModel | 79% | 5 |
+| `python.conventions.validation_style` | Pydantic validation | 78% | 5 |
 | `node.conventions.jsdoc` | Partial JSDoc coverage | 75% | 5 |
-| `python.conventions.di_style` | Mixed DI patterns: FastAPI Depends dominant | 73% | 5 |
+| `python.conventions.background_jobs` | Background jobs with FastAPI BackgroundTasks | 72% | 4 |
 | `generic.conventions.repo_layout` | Standard repository layout | 70% | 0 |
+| `python.conventions.constant_naming` | lowercase constant naming | 70% | 5 |
 | `python.conventions.error_handling_boundary` | HTTP errors raised in service layer | 70% | 5 |
+| `python.conventions.import_style` | Absolute imports preferred | 70% | 5 |
+| `python.conventions.response_envelope` | Response envelope classes | 70% | 5 |
+| `python.conventions.test_structure` | Distributed test files | 70% | 0 |
+| `python.docs_conventions.example_completeness` | Snippet-style examples | 70% | 0 |
 | `generic.conventions.standard_files` | Standard repository files | 65% | 0 |
 | `python.conventions.db_transactions` | Implicit transaction management | 60% | 0 |
 | `python.conventions.docstrings` | Low docstring coverage | 60% | 4 |
 | `python.conventions.error_taxonomy` | Mixed exception naming conventions | 60% | 5 |
 | `python.conventions.exception_handlers` | Distributed exception handling | 60% | 5 |
 | `python.conventions.timeouts` | Infrequent timeout specification | 60% | 4 |
+| `python.conventions.error_wrapper` | Error wrapper pattern: time.sleep | 59% | 5 |
 
 ## Convention Details
 
@@ -117,14 +132,70 @@ from strawberry.fastapi import GraphQLRouter
 **Language:** python  
 **Confidence:** 95%
 
-Function names follow PEP 8 snake_case convention. 1243/1243 functions use snake_case. Found 45 module-level constants.
+Function names follow PEP 8 snake_case convention. 305/305 functions use snake_case. Found 21 module-level constants.
 
 **Statistics:**
 
-- snake_case_functions: `1243`
+- snake_case_functions: `305`
 - camel_case_functions: `0`
 - snake_case_ratio: `1.0`
-- module_constants: `45`
+- module_constants: `21`
+
+---
+
+### Modern pathlib for path handling
+
+**ID:** `python.conventions.path_handling`  
+**Category:** code_style  
+**Language:** python  
+**Confidence:** 95%
+
+Uses pathlib consistently for file paths. 66/66 (100%) use pathlib.
+
+**Statistics:**
+
+- pathlib_count: `66`
+- ospath_count: `0`
+- pathlib_ratio: `1.0`
+- style: `pathlib`
+
+**Evidence:**
+
+1. `fastapi/__init__.py:15-21`
+
+```
+from .param_functions import File as File
+from .param_functions import Form as Form
+from .param_functions import Header as Header
+from .param_functions import Path as Path
+from .param_functions import Query as Query
+from .param_functions import Security as Security
+from .requests import Request as Request
+```
+
+2. `fastapi/encoders.py:11-17`
+
+```
+    IPv6Interface,
+    IPv6Network,
+)
+from pathlib import Path, PurePath
+from re import Pattern
+from types import GeneratorType
+from typing import Annotated, Any, Callable, Optional, Union
+```
+
+3. `scripts/contributors.py:3-9`
+
+```
+import subprocess
+from collections import Counter
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+import httpx
+```
 
 ---
 
@@ -135,13 +206,13 @@ Function names follow PEP 8 snake_case convention. 1243/1243 functions use snake
 **Language:** python  
 **Confidence:** 95%
 
-Uses pytest as primary testing framework. Found 888 pytest usages.
+Uses pytest as primary testing framework. Found 887 pytest usages across 465 test files.
 
 **Statistics:**
 
-- framework_counts: `{'pytest': 888, 'unittest': 1}`
+- framework_counts: `{'pytest': 887, 'unittest': 1}`
 - primary_framework: `pytest`
-- test_file_count: `559`
+- test_file_count: `465`
 
 **Evidence:**
 
@@ -187,15 +258,15 @@ from fastapi.testclient import TestClient
 **Language:** python  
 **Confidence:** 95%
 
-Type annotations are commonly used in this codebase. 1081/1326 functions (82%) have at least one type annotation.
+Type annotations are commonly used in this codebase. 362/366 functions (99%) have at least one type annotation.
 
 **Statistics:**
 
-- total_functions: `1326`
-- annotated_functions: `1081`
-- fully_annotated_functions: `285`
-- any_annotation_coverage: `0.815`
-- full_annotation_coverage: `0.215`
+- total_functions: `366`
+- annotated_functions: `362`
+- fully_annotated_functions: `225`
+- any_annotation_coverage: `0.989`
+- full_annotation_coverage: `0.615`
 
 **Evidence:**
 
@@ -242,6 +313,64 @@ def callback():
 
 
 def iter_all_lang_paths(lang_path_root: Path) -> Iterable[Path]:
+```
+
+---
+
+### Modern f-string formatting
+
+**ID:** `python.conventions.string_formatting`  
+**Category:** code_style  
+**Language:** python  
+**Confidence:** 95%
+
+Uses f-strings consistently for string formatting. 209/211 (99%) use f-strings.
+
+**Statistics:**
+
+- total_formats: `211`
+- fstring_count: `209`
+- format_method_count: `2`
+- percent_count: `0`
+- fstring_ratio: `0.991`
+- dominant_style: `fstring`
+
+**Evidence:**
+
+1. `fastapi/params.py:132-138`
+
+```
+        super().__init__(**use_kwargs)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.default})"
+
+
+class Path(Param):  # type: ignore[misc]
+```
+
+2. `fastapi/params.py:576-582`
+
+```
+        super().__init__(**use_kwargs)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.default})"
+
+
+class Form(Body):  # type: ignore[misc]
+```
+
+3. `fastapi/applications.py:1100-1106`
+
+```
+                    oauth2_redirect_url = root_path + oauth2_redirect_url
+                return get_swagger_ui_html(
+                    openapi_url=openapi_url,
+                    title=f"{self.title} - Swagger UI",
+                    oauth2_redirect_url=oauth2_redirect_url,
+                    init_oauth=self.swagger_ui_init_oauth,
+                    swagger_ui_parameters=self.swagger_ui_parameters,
 ```
 
 ---
@@ -338,6 +467,114 @@ from ruff.__main__ import find_ruff_bin
 
 ---
 
+### Context manager usage
+
+**ID:** `python.conventions.context_managers`  
+**Category:** resource_management  
+**Language:** python  
+**Confidence:** 90%
+
+Uses context managers for resource management. 25 with statements (17 sync, 8 async). Types: file_io (2).
+
+**Statistics:**
+
+- total_with_statements: `25`
+- sync_count: `17`
+- async_count: `8`
+- context_types: `{'file_io': 2}`
+
+**Evidence:**
+
+1. `scripts/docs.py:460-466`
+
+```
+    in_code_block4 = False
+    permalinks = set()
+
+    with path.open("r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    for line in lines:
+```
+
+2. `scripts/docs.py:496-502`
+
+```
+
+        updated_lines.append(line)
+
+    with path.open("w", encoding="utf-8") as f:
+        f.writelines(updated_lines)
+
+
+```
+
+---
+
+### Caching decorator pattern
+
+**ID:** `python.conventions.decorator_caching`  
+**Category:** decorators  
+**Language:** python  
+**Confidence:** 90%
+
+Uses caching decorators for memoization. Found 14 usages.
+
+**Statistics:**
+
+- usage_count: `14`
+- top_decorator: `cached_property`
+- category: `caching`
+
+**Evidence:**
+
+1. `fastapi/dependencies/models.py:48-58`
+
+```
+    parent_oauth_scopes: Optional[list[str]] = None
+    use_cache: bool = True
+    path: Optional[str] = None
+    scope: Union[Literal["function", "request"], None] = None
+
+    @cached_property
+    def oauth_scopes(self) -> list[str]:
+        scopes = self.parent_oauth_scopes.copy() if self.parent_oauth_scopes else []
+        # This doesn't use a set to preserve order, just in case
+        for scope in self.own_oauth_scopes or []:
+```
+
+2. `fastapi/dependencies/models.py:57-67`
+
+```
+        for scope in self.own_oauth_scopes or []:
+            if scope not in scopes:
+                scopes.append(scope)
+        return scopes
+
+    @cached_property
+    def cache_key(self) -> DependencyCacheKey:
+        scopes_for_cache = (
+            tuple(sorted(set(self.oauth_scopes or []))) if self._uses_scopes else ()
+        )
+```
+
+3. `fastapi/dependencies/models.py:68-78`
+
+```
+            self.call,
+            scopes_for_cache,
+            self.computed_scope or "",
+        )
+
+    @cached_property
+    def _uses_scopes(self) -> bool:
+        if self.own_oauth_scopes:
+            return True
+        if self.security_scopes_param_name is not None:
+```
+
+---
+
 ### Import sorting: Ruff (isort rules)
 
 **ID:** `python.conventions.import_sorting`  
@@ -355,20 +592,20 @@ Uses Ruff (isort rules) for import organization.
 
 ---
 
-### Centralized pytest fixtures in conftest.py
+### pytest fixtures for test setup
 
-**ID:** `python.conventions.testing_fixtures`  
+**ID:** `python.test_conventions.fixtures`  
 **Category:** testing  
 **Language:** python  
 **Confidence:** 90%
 
-Uses pytest fixtures with 1 conftest.py file(s). Found 186 fixture definitions.
+Uses pytest @fixture decorator for test setup. Found 186 fixtures. Uses 1 conftest.py file(s) for shared fixtures.
 
 **Statistics:**
 
-- fixture_count: `186`
-- conftest_count: `1`
-- async_fixture_count: `0`
+- fixture_counts: `{'pytest_fixture': 186}`
+- conftest_files: `1`
+- pattern: `pytest_fixture`
 
 **Evidence:**
 
@@ -419,23 +656,23 @@ def get_client():
 
 ---
 
-### Uses unittest.mock for mocking
+### Mocking with unittest.mock / Mock
 
-**ID:** `python.conventions.testing_mocking`  
+**ID:** `python.test_conventions.mocking`  
 **Category:** testing  
 **Language:** python  
 **Confidence:** 90%
 
-Exclusively uses unittest.mock. Found 14 usages.
+Uses unittest.mock / Mock for test mocking. Found 14 usages. Also uses: pytest monkeypatch fixture, @patch decorator.
 
 **Statistics:**
 
-- mock_library_counts: `{'unittest_mock': 14}`
-- primary_mock_library: `unittest_mock`
+- mock_counts: `{'monkeypatch': 10, 'unittest_mock': 14, 'patch_decorator': 1}`
+- primary_pattern: `unittest_mock`
 
 **Evidence:**
 
-1. `tests/test_fastapi_cli.py:1-7`
+1. `tests/test_fastapi_cli.py:1-9`
 
 ```
 import os
@@ -445,9 +682,11 @@ from unittest.mock import patch
 
 import fastapi.cli
 import pytest
+
+
 ```
 
-2. `tests/test_tutorial/test_generate_clients/test_tutorial004.py:1-7`
+2. `tests/test_tutorial/test_generate_clients/test_tutorial004.py:1-9`
 
 ```
 import importlib
@@ -457,127 +696,81 @@ from unittest.mock import patch
 
 from docs_src.generate_clients import tutorial003_py39
 
+
+def test_remove_tags(tmp_path: pathlib.Path):
 ```
 
-3. `tests/test_tutorial/test_python_types/test_tutorial008.py:1-4`
+3. `tests/test_tutorial/test_python_types/test_tutorial008.py:1-6`
 
 ```
 from unittest.mock import patch
 
 from docs_src.python_types.tutorial008_py39 import process_items
 
+
+def test_process_items():
 ```
 
 ---
 
-### Async-first API design
+### Parametrized tests
 
-**ID:** `python.conventions.async_style`  
-**Category:** concurrency  
+**ID:** `python.test_conventions.parametrized`  
+**Category:** testing  
 **Language:** python  
 **Confidence:** 90%
 
-API endpoints are predominantly async. 12/12 endpoint functions are async. Uses asyncio concurrency patterns (1 usages).
+Uses @pytest.mark.parametrize for data-driven tests. Found 442 parametrized test functions.
 
 **Statistics:**
 
-- async_count: `12`
-- sync_count: `0`
-- async_ratio: `1.0`
-- asyncio_patterns: `1`
+- parametrize_count: `442`
 
 **Evidence:**
 
-1. `docs_src/bigger_applications/app_py39/routers/users.py:2-12`
+1. `tests/test_computed_fields.py:29-39`
 
 ```
 
-router = APIRouter()
+    client = TestClient(app)
+    return client
 
 
-@router.get("/users/", tags=["users"])
-async def read_users():
-    return [{"username": "Rick"}, {"username": "Morty"}]
-
-
-@router.get("/users/me", tags=["users"])
+@pytest.mark.parametrize("client", [True, False], indirect=True)
+@pytest.mark.parametrize("path", ["/", "/responses"])
+def test_get(client: TestClient, path: str):
+    response = client.get(path)
+    assert response.status_code == 200, response.text
 ```
 
-2. `docs_src/bigger_applications/app_py39/routers/users.py:7-17`
+2. `tests/test_computed_fields.py:30-40`
 
 ```
-async def read_users():
-    return [{"username": "Rick"}, {"username": "Morty"}]
+    client = TestClient(app)
+    return client
 
 
-@router.get("/users/me", tags=["users"])
-async def read_user_me():
-    return {"username": "fakecurrentuser"}
-
-
-@router.get("/users/{username}", tags=["users"])
+@pytest.mark.parametrize("client", [True, False], indirect=True)
+@pytest.mark.parametrize("path", ["/", "/responses"])
+def test_get(client: TestClient, path: str):
+    response = client.get(path)
+    assert response.status_code == 200, response.text
+    assert response.json() == {"width": 3, "length": 4, "area": 12}
 ```
 
----
-
-### Background jobs with FastAPI BackgroundTasks
-
-**ID:** `python.conventions.background_jobs`  
-**Category:** concurrency  
-**Language:** python  
-**Confidence:** 90%
-
-Uses FastAPI BackgroundTasks for background task processing. Found 10 usages.
-
-**Statistics:**
-
-- job_library_counts: `{'fastapi_background': 10}`
-- primary_library: `fastapi_background`
-- task_decorators: `0`
-
-**Evidence:**
-
-1. `tests/test_dependency_contextmanager.py:1-9`
+3. `tests/test_computed_fields.py:37-47`
 
 ```
-import json
-
-import pytest
-from fastapi import BackgroundTasks, Depends, FastAPI
-from fastapi.responses import StreamingResponse
-from fastapi.testclient import TestClient
-
-app = FastAPI()
-state = {
-```
-
-2. `fastapi/background.py:1-9`
-
-```
-from typing import Annotated, Any, Callable
-
-from annotated_doc import Doc
-from starlette.background import BackgroundTasks as StarletteBackgroundTasks
-from typing_extensions import ParamSpec
-
-P = ParamSpec("P")
+    response = client.get(path)
+    assert response.status_code == 200, response.text
+    assert response.json() == {"width": 3, "length": 4, "area": 12}
 
 
-```
-
-3. `fastapi/__init__.py:3-13`
-
-```
-__version__ = "0.128.0"
-
-from starlette import status as status
-
-from .applications import FastAPI as FastAPI
-from .background import BackgroundTasks as BackgroundTasks
-from .datastructures import UploadFile as UploadFile
-from .exceptions import HTTPException as HTTPException
-from .exceptions import WebSocketException as WebSocketException
-from .param_functions import Body as Body
+@pytest.mark.parametrize("client", [True, False], indirect=True)
+def test_openapi_schema(client: TestClient):
+    response = client.get("/openapi.json")
+    assert response.status_code == 200, response.text
+    assert response.json() == {
 ```
 
 ---
@@ -647,55 +840,6 @@ def read_heroes(
 
 ---
 
-### Sphinx/reST style docstrings
-
-**ID:** `python.conventions.docstring_style`  
-**Category:** documentation  
-**Language:** python  
-**Confidence:** 90%
-
-Docstrings follow Sphinx/reST style. 2/2 docstrings use this style.
-
-**Statistics:**
-
-- style_counts: `{'sphinx': 2}`
-- primary_style: `sphinx`
-- primary_ratio: `1.0`
-
-**Evidence:**
-
-1. `docs_src/path_operation_advanced_configuration/tutorial004_py39.py:10-26`
-
-```
-    name: str
-    description: Union[str, None] = None
-    price: float
-    tax: Union[float, None] = None
-    tags: set[str] = set()
-
-
-@app.post("/items/", response_model=Item, summary="Create an item")
-async def create_item(item: Item):
-    """
-```
-
-2. `docs_src/path_operation_advanced_configuration/tutorial004_py310.py:8-24`
-
-```
-    name: str
-    description: str | None = None
-    price: float
-    tax: float | None = None
-    tags: set[str] = set()
-
-
-@app.post("/items/", response_model=Item, summary="Create an item")
-async def create_item(item: Item):
-    """
-```
-
----
-
 ### Linters: Ruff, mypy
 
 **ID:** `python.conventions.linter`  
@@ -758,6 +902,125 @@ from github import Github
 
 ---
 
+### Plain assert statements
+
+**ID:** `python.test_conventions.assertions`  
+**Category:** testing  
+**Language:** python  
+**Confidence:** 89%
+
+Uses plain Python assert statements for test assertions. 4113 assert statements. Uses pytest.raises for exception testing (94 usages).
+
+**Statistics:**
+
+- assertion_counts: `{'plain_assert': 4113, 'pytest_raises': 94, 'pytest_warns': 15}`
+- style: `plain_assert`
+
+**Evidence:**
+
+1. `tests/test_datastructures.py:8-14`
+
+```
+
+
+def test_upload_file_invalid_pydantic_v2():
+    with pytest.raises(ValueError):
+        UploadFile._validate("not a Starlette UploadFile", {})
+
+
+```
+
+2. `tests/test_openapi_schema_type.py:22-26`
+
+```
+
+def test_invalid_type_value() -> None:
+    """Test that Schema raises ValueError for invalid type values."""
+    with pytest.raises(ValueError, match="2 validation errors for Schema"):
+        Schema(type=True)  # type: ignore[arg-type]
+```
+
+3. `tests/test_response_model_invalid.py:8-14`
+
+```
+
+
+def test_invalid_response_model_raises():
+    with pytest.raises(FastAPIError):
+        app = FastAPI()
+
+        @app.get("/", response_model=NonPydanticModel)
+```
+
+---
+
+### Data classes: Pydantic models
+
+**ID:** `python.conventions.class_style`  
+**Category:** code_style  
+**Language:** python  
+**Confidence:** 86%
+
+Uses Pydantic models for structured data. 84/98 structured classes use this pattern.
+
+**Statistics:**
+
+- dataclass_count: `6`
+- pydantic_count: `84`
+- attrs_count: `0`
+- namedtuple_count: `8`
+- plain_count: `58`
+- dominant_style: `pydantic`
+
+**Evidence:**
+
+1. `fastapi/security/http.py:11-21`
+
+```
+from pydantic import BaseModel
+from starlette.requests import Request
+from starlette.status import HTTP_401_UNAUTHORIZED
+
+
+class HTTPBasicCredentials(BaseModel):
+    """
+    The HTTP Basic credentials given as the result of using `HTTPBasic` in a
+    dependency.
+
+```
+
+2. `fastapi/security/http.py:24-34`
+
+```
+
+    username: Annotated[str, Doc("The HTTP Basic username.")]
+    password: Annotated[str, Doc("The HTTP Basic password.")]
+
+
+class HTTPAuthorizationCredentials(BaseModel):
+    """
+    The HTTP authorization credentials in the result of using `HTTPBearer` or
+    `HTTPDigest` in a dependency.
+
+```
+
+3. `fastapi/openapi/models.py:52-62`
+
+```
+            cls, source: type[Any], handler: Callable[[Any], Mapping[str, Any]]
+        ) -> Mapping[str, Any]:
+            return with_info_plain_validator_function(cls._validate)
+
+
+class BaseModelWithConfig(BaseModel):
+    model_config = {"extra": "allow"}
+
+
+class Contact(BaseModelWithConfig):
+```
+
+---
+
 ### JWT-based authentication
 
 **ID:** `python.conventions.auth_pattern`  
@@ -770,7 +1033,6 @@ Uses JWT tokens for authentication. JWT imports: 16.
 **Statistics:**
 
 - oauth2: `49`
-- form_auth: `3`
 - jwt: `16`
 - dependency_auth: `53`
 
@@ -915,6 +1177,62 @@ settings = Settings()
 if settings.debug:
     logging.basicConfig(level=logging.DEBUG)
 else:
+```
+
+---
+
+### Test naming: Simple style (test_feature)
+
+**ID:** `python.conventions.test_naming`  
+**Category:** testing  
+**Language:** python  
+**Confidence:** 84%
+
+Uses Simple style (test_feature) naming. 2006/2047 (98%) test functions.
+
+**Statistics:**
+
+- total_test_functions: `2047`
+- pattern_counts: `{'simple': 2006, 'action_result': 41}`
+- test_class_count: `0`
+- dominant_pattern: `simple`
+
+**Evidence:**
+
+1. `tests/test_datastructures.py:7-13`
+
+```
+from fastapi.testclient import TestClient
+
+
+def test_upload_file_invalid_pydantic_v2():
+    with pytest.raises(ValueError):
+        UploadFile._validate("not a Starlette UploadFile", {})
+
+```
+
+2. `tests/test_datastructures.py:12-18`
+
+```
+        UploadFile._validate("not a Starlette UploadFile", {})
+
+
+def test_default_placeholder_equals():
+    placeholder_1 = Default("a")
+    placeholder_2 = Default("a")
+    assert placeholder_1 == placeholder_2
+```
+
+3. `tests/test_datastructures.py:19-25`
+
+```
+    assert placeholder_1.value == placeholder_2.value
+
+
+def test_default_placeholder_bool():
+    placeholder_a = Default("a")
+    placeholder_b = Default("")
+    assert placeholder_a
 ```
 
 ---
@@ -1082,20 +1400,175 @@ def get_missing_translation_content(docs_dir: str) -> str:
 
 ---
 
-### Structured logging with request/trace IDs
+### Enum usage: Enum
 
-**ID:** `python.conventions.logging_fields`  
-**Category:** logging  
+**ID:** `python.conventions.enum_usage`  
+**Category:** code_style  
 **Language:** python  
 **Confidence:** 80%
 
-Structured logging includes request correlation fields. Common fields: requestBody, content, schema, name, format.
+Uses Python enums for categorical values. Found 4 enum class(es).
 
 **Statistics:**
 
-- top_fields: `{'requestBody': 3, 'content': 3, 'schema': 3, 'name': 3, 'format': 2, 'type': 2, 'examples': 2, 'description': 2, 'price': 2, 'tax': 2}`
-- total_field_uses: `26`
-- has_request_correlation: `True`
+- enum_count: `4`
+- enum_types: `{'Enum': 4}`
+- enum_names: `['ParamTypes', 'ParameterInType', 'SecuritySchemeType', 'APIKeyIn']`
+
+**Evidence:**
+
+1. `fastapi/params.py:15-25`
+
+```
+)
+
+_Unset: Any = Undefined
+
+
+class ParamTypes(Enum):
+    query = "query"
+    header = "header"
+    path = "path"
+    cookie = "cookie"
+```
+
+2. `fastapi/openapi/models.py:219-229`
+
+```
+    externalValue: Optional[AnyUrl]
+
+    __pydantic_config__ = {"extra": "allow"}  # type: ignore[misc]
+
+
+class ParameterInType(Enum):
+    query = "query"
+    header = "header"
+    path = "path"
+    cookie = "cookie"
+```
+
+3. `fastapi/openapi/models.py:319-329`
+
+```
+    trace: Optional[Operation] = None
+    servers: Optional[list[Server]] = None
+    parameters: Optional[list[Union[Parameter, Reference]]] = None
+
+
+class SecuritySchemeType(Enum):
+    apiKey = "apiKey"
+    http = "http"
+    oauth2 = "oauth2"
+    openIdConnect = "openIdConnect"
+```
+
+---
+
+### Optional type annotations
+
+**ID:** `python.conventions.optional_usage`  
+**Category:** typing  
+**Language:** python  
+**Confidence:** 80%
+
+Uses Optional type hint for nullable values. Found 20 imports of Optional.
+
+**Statistics:**
+
+- optional_imports: `20`
+
+**Evidence:**
+
+1. `fastapi/params.py:2-8`
+
+```
+from collections.abc import Sequence
+from dataclasses import dataclass
+from enum import Enum
+from typing import Annotated, Any, Callable, Optional, Union
+
+from fastapi.exceptions import FastAPIDeprecationWarning
+from fastapi.openapi.models import Example
+```
+
+2. `fastapi/applications.py:1-6`
+
+```
+from collections.abc import Awaitable, Coroutine, Sequence
+from enum import Enum
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+```
+
+3. `fastapi/encoders.py:14-20`
+
+```
+from pathlib import Path, PurePath
+from re import Pattern
+from types import GeneratorType
+from typing import Annotated, Any, Callable, Optional, Union
+from uuid import UUID
+
+from annotated_doc import Doc
+```
+
+---
+
+### Cursor-based pagination
+
+**ID:** `python.conventions.pagination_pattern`  
+**Category:** api  
+**Language:** python  
+**Confidence:** 80%
+
+Uses cursor-based pagination. 8 cursor/after/before usages.
+
+**Statistics:**
+
+- offset_count: `0`
+- cursor_count: `8`
+- page_count: `0`
+- pattern: `cursor`
+
+---
+
+### Examples with main() entry point
+
+**ID:** `python.docs_conventions.example_structure`  
+**Category:** documentation  
+**Language:** python  
+**Confidence:** 80%
+
+Examples use main() function as entry point. Found 14 examples with main().
+
+**Statistics:**
+
+- total_example_files: `622`
+- standalone_count: `1`
+- main_function_count: `14`
+- example_directories: `{'docs_src': 622}`
+- topics: `{}`
+- pattern: `main_function`
+
+---
+
+### Tutorial-style documentation
+
+**ID:** `python.docs_conventions.organization`  
+**Category:** documentation  
+**Language:** python  
+**Confidence:** 80%
+
+Documentation organized as tutorials. Found 496 tutorial files. Common types: tutorial.
+
+**Statistics:**
+
+- total_files: `622`
+- file_prefixes: `{'tutorial': 496}`
+- dir_structure: `{'depth_2': 567, 'depth_3': 45, 'depth_4': 10}`
+- style: `tutorials`
 
 ---
 
@@ -1128,6 +1601,7 @@ Automated dependency updates via Dependabot for github-actions.
 
 - tools: `['dependabot']`
 - tool_details: `{'dependabot': {'name': 'Dependabot', 'ecosystems': ['github-actions']}}`
+- primary_tool: `dependabot`
 
 ---
 
@@ -1144,63 +1618,64 @@ Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatti
 
 - hooks_tools: `['pre-commit']`
 - hooks_configured: `['whitespace', 'file validation', 'formatting']`
+- hook_tool: `pre-commit`
 - has_pre_commit: `True`
 - has_husky: `False`
 - has_lefthook: `False`
 
 ---
 
-### Primary database library: SQLModel
+### Pydantic validation
 
-**ID:** `python.conventions.db_library`  
-**Category:** database  
+**ID:** `python.conventions.validation_style`  
+**Category:** validation  
 **Language:** python  
-**Confidence:** 79%
+**Confidence:** 78%
 
-Uses SQLModel as primary database library (14/17 imports). Also uses: SQLModel.
+Uses Pydantic validation for input validation. 17/28 (61%) validation patterns use this approach.
 
 **Statistics:**
 
-- library_counts: `{'sqlalchemy': 3, 'sqlmodel': 14}`
-- primary_library: `sqlmodel`
-- primary_ratio: `0.824`
+- validation_counts: `{'pydantic': 17, 'manual': 11}`
+- dominant_style: `pydantic`
+- dominant_ratio: `0.607`
 
 **Evidence:**
 
-1. `tests/test_tutorial/test_sql_databases/test_tutorial002.py:6-12`
+1. `fastapi/encoders.py:20-26`
 
 ```
-from fastapi.testclient import TestClient
-from inline_snapshot import Is, snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
-
-from tests.utils import needs_py310
+from annotated_doc import Doc
+from fastapi.exceptions import PydanticV1NotSupportedError
+from fastapi.types import IncEx
+from pydantic import BaseModel
+from pydantic.color import Color
+from pydantic.networks import AnyUrl, NameEmail
+from pydantic.types import SecretBytes, SecretStr
 ```
 
-2. `tests/test_tutorial/test_sql_databases/test_tutorial002.py:7-13`
+2. `fastapi/types.py:2-8`
 
 ```
-from inline_snapshot import Is, snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
+from enum import Enum
+from typing import Any, Callable, Optional, TypeVar, Union
 
-from tests.utils import needs_py310
+from pydantic import BaseModel
 
+DecoratedCallable = TypeVar("DecoratedCallable", bound=Callable[..., Any])
+UnionType = getattr(types, "UnionType", Union)
 ```
 
-3. `tests/test_tutorial/test_sql_databases/test_tutorial001.py:6-12`
+3. `fastapi/utils.py:21-27`
 
 ```
-from fastapi.testclient import TestClient
-from inline_snapshot import snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
+)
+from fastapi.datastructures import DefaultPlaceholder, DefaultType
+from fastapi.exceptions import FastAPIDeprecationWarning, PydanticV1NotSupportedError
+from pydantic import BaseModel
+from pydantic.fields import FieldInfo
+from typing_extensions import Literal
 
-from tests.utils import needs_py310
 ```
 
 ---
@@ -1268,67 +1743,65 @@ class Termynal {
 
 ---
 
-### Mixed DI patterns: FastAPI Depends dominant
+### Background jobs with FastAPI BackgroundTasks
 
-**ID:** `python.conventions.di_style`  
-**Category:** dependency_injection  
+**ID:** `python.conventions.background_jobs`  
+**Category:** concurrency  
 **Language:** python  
-**Confidence:** 73%
+**Confidence:** 72%
 
-Uses multiple DI patterns. Primary: FastAPI Depends (421/454). Also uses: Container-based DI.
+Uses FastAPI BackgroundTasks for background task processing. Found 4 usages.
 
 **Statistics:**
 
-- pattern_counts: `{'fastapi_depends': 421, 'container_di': 33}`
-- dominant_pattern: `fastapi_depends`
-- depends_count: `372`
-- common_dependency_names: `{'get_current_user': 32, 'get_session': 10, 'get_settings': 4, 'get_db': 3}`
+- job_library_counts: `{'fastapi_background': 4}`
+- primary_library: `fastapi_background`
+- task_decorators: `0`
 
 **Evidence:**
 
-1. `tests/test_security_oauth2.py:26-36`
+1. `fastapi/background.py:1-9`
 
 ```
-    return user
+from typing import Annotated, Any, Callable
 
+from annotated_doc import Doc
+from starlette.background import BackgroundTasks as StarletteBackgroundTasks
+from typing_extensions import ParamSpec
 
-@app.post("/login")
-# Here we use string annotations to test them
-def login(form_data: "OAuth2PasswordRequestFormStrict" = Depends()):
-    return form_data
+P = ParamSpec("P")
 
-
-@app.get("/users/me")
-```
-
-2. `tests/test_security_oauth2.py:32-42`
-
-```
-    return form_data
-
-
-@app.get("/users/me")
-# Here we use string annotations to test them
-def read_current_user(current_user: "User" = Depends(get_current_user)):
-    return current_user
-
-
-client = TestClient(app)
-```
-
-3. `tests/test_param_in_path_and_dependency.py:6-16`
 
 ```
 
-async def user_exists(user_id: int):
-    return True
+2. `fastapi/__init__.py:3-13`
 
+```
+__version__ = "0.128.0"
 
-@app.get("/users/{user_id}", dependencies=[Depends(user_exists)])
-async def read_users(user_id: int):
-    pass
+from starlette import status as status
 
+from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException
+from .exceptions import WebSocketException as WebSocketException
+from .param_functions import Body as Body
+```
 
+3. `fastapi/dependencies/utils.py:38-48`
+
+```
+    lenient_issubclass,
+    sequence_types,
+    serialize_sequence_value,
+    value_is_sequence,
+)
+from fastapi.background import BackgroundTasks
+from fastapi.concurrency import (
+    asynccontextmanager,
+    contextmanager_in_threadpool,
+)
 ```
 
 ---
@@ -1348,6 +1821,56 @@ Repository has standard directories: tests (tests), docs (documentation), script
 
 ---
 
+### lowercase constant naming
+
+**ID:** `python.conventions.constant_naming`  
+**Category:** naming  
+**Language:** python  
+**Confidence:** 70%
+
+Uses lowercase naming for module-level values. 87/91 use lowercase.
+
+**Statistics:**
+
+- all_caps_count: `4`
+- lowercase_count: `87`
+- all_caps_ratio: `0.044`
+- style: `lowercase`
+
+**Evidence:**
+
+1. `fastapi/params.py:19-23`
+
+```
+
+class ParamTypes(Enum):
+    query = "query"
+    header = "header"
+    path = "path"
+```
+
+2. `fastapi/params.py:20-24`
+
+```
+class ParamTypes(Enum):
+    query = "query"
+    header = "header"
+    path = "path"
+    cookie = "cookie"
+```
+
+3. `fastapi/params.py:21-25`
+
+```
+    query = "query"
+    header = "header"
+    path = "path"
+    cookie = "cookie"
+
+```
+
+---
+
 ### HTTP errors raised in service layer
 
 **ID:** `python.conventions.error_handling_boundary`  
@@ -1355,13 +1878,13 @@ Repository has standard directories: tests (tests), docs (documentation), script
 **Language:** python  
 **Confidence:** 70%
 
-HTTPException is frequently raised outside the API layer. Service: 0, API: 4, Other: 132.
+HTTPException is frequently raised outside the API layer. Service: 0, API: 0, Other: 136.
 
 **Statistics:**
 
 - total_http_exceptions: `136`
-- by_role: `{'test': 10, 'other': 122, 'api': 4}`
-- api_ratio: `0.029`
+- by_role: `{'test': 10, 'other': 5, 'docs': 121}`
+- api_ratio: `0.0`
 
 **Evidence:**
 
@@ -1412,6 +1935,165 @@ async def read_starlette_item(item_id: str):
 
 ---
 
+### Absolute imports preferred
+
+**ID:** `python.conventions.import_style`  
+**Category:** code_style  
+**Language:** python  
+**Confidence:** 70%
+
+Prefers absolute imports. 74 relative vs 491 absolute imports.
+
+**Statistics:**
+
+- relative_count: `74`
+- absolute_count: `491`
+- relative_ratio: `0.131`
+- style: `absolute`
+
+**Evidence:**
+
+1. `fastapi/params.py:10-16`
+
+```
+from pydantic.fields import FieldInfo
+from typing_extensions import Literal, deprecated
+
+from ._compat import (
+    Undefined,
+)
+
+```
+
+2. `fastapi/__init__.py:4-10`
+
+```
+
+from starlette import status as status
+
+from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException
+```
+
+3. `fastapi/__init__.py:5-11`
+
+```
+from starlette import status as status
+
+from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException
+from .exceptions import WebSocketException as WebSocketException
+```
+
+---
+
+### Response envelope classes
+
+**ID:** `python.conventions.response_envelope`  
+**Category:** api  
+**Language:** python  
+**Confidence:** 70%
+
+Uses response envelope classes (5 found).
+
+**Statistics:**
+
+- envelope_classes: `5`
+- field_counts: `{'errors': 4, 'message': 2, 'items': 5}`
+- pattern: `class_based`
+
+**Evidence:**
+
+1. `fastapi/responses.py:18-28`
+
+```
+    import orjson
+except ImportError:  # pragma: nocover
+    orjson = None  # type: ignore
+
+
+class UJSONResponse(JSONResponse):
+    """
+    JSON response using the high-performance ujson library to serialize data to JSON.
+
+    Read more about it in the
+```
+
+2. `fastapi/responses.py:31-41`
+
+```
+    def render(self, content: Any) -> bytes:
+        assert ujson is not None, "ujson must be installed to use UJSONResponse"
+        return ujson.dumps(content, ensure_ascii=False).encode("utf-8")
+
+
+class ORJSONResponse(JSONResponse):
+    """
+    JSON response using the high-performance orjson library to serialize data to JSON.
+
+    Read more about it in the
+```
+
+3. `scripts/contributors.py:102-112`
+
+```
+
+class PRsRepository(BaseModel):
+    pullRequests: PullRequests
+
+
+class PRsResponseData(BaseModel):
+    repository: PRsRepository
+
+
+class PRsResponse(BaseModel):
+```
+
+---
+
+### Distributed test files
+
+**ID:** `python.conventions.test_structure`  
+**Category:** testing  
+**Language:** python  
+**Confidence:** 70%
+
+Test files spread across 2 directories. 465 total test files.
+
+**Statistics:**
+
+- test_file_count: `465`
+- test_directories: `{'tests': 454, 'scripts': 11}`
+- has_unit: `False`
+- has_integration: `False`
+- has_e2e: `False`
+- structure: `distributed`
+- categories: `[]`
+
+---
+
+### Snippet-style examples
+
+**ID:** `python.docs_conventions.example_completeness`  
+**Category:** documentation  
+**Language:** python  
+**Confidence:** 70%
+
+Documentation uses code snippets (may require context from docs). Only 77/530 examples have all imports.
+
+**Statistics:**
+
+- complete_examples: `77`
+- incomplete_examples: `453`
+- complete_ratio: `0.145`
+- style: `snippets`
+
+---
+
 ### Standard repository files
 
 **ID:** `generic.conventions.standard_files`  
@@ -1451,16 +2133,16 @@ Relies on autocommit or implicit transactions. Found 20 explicit commit calls.
 **Language:** python  
 **Confidence:** 60%
 
-Few functions have docstrings. Only 82/1326 (6%).
+Few functions have docstrings. Only 72/366 (20%).
 
 **Statistics:**
 
-- total_public_functions: `1326`
-- documented_functions: `82`
-- function_doc_ratio: `0.062`
-- total_classes: `529`
+- total_public_functions: `366`
+- documented_functions: `72`
+- function_doc_ratio: `0.197`
+- total_classes: `170`
 - documented_classes: `29`
-- class_doc_ratio: `0.055`
+- class_doc_ratio: `0.171`
 
 **Evidence:**
 
@@ -1579,7 +2261,7 @@ Exception handlers are spread across 6 modules.
 - total_handlers: `31`
 - decorator_handlers: `12`
 - call_handlers: `19`
-- handler_files: `['docs_src/handling_errors/tutorial005_py39.py', 'docs_src/handling_errors/tutorial006_py39.py', 'docs_src/handling_errors/tutorial003_py39.py', 'fastapi/applications.py', 'tests/test_validation_error_context.py', 'docs_src/handling_errors/tutorial004_py39.py']`
+- handler_files: `['docs_src/handling_errors/tutorial005_py39.py', 'tests/test_validation_error_context.py', 'docs_src/handling_errors/tutorial004_py39.py', 'docs_src/handling_errors/tutorial006_py39.py', 'docs_src/handling_errors/tutorial003_py39.py', 'fastapi/applications.py']`
 
 **Evidence:**
 
@@ -1681,6 +2363,72 @@ Timeouts are rarely specified on external calls. Only 4 calls with explicit time
         github_graphql_url,
         headers=headers,
         timeout=settings.httpx_timeout,
+```
+
+---
+
+### Error wrapper pattern: time.sleep
+
+**ID:** `python.conventions.error_wrapper`  
+**Category:** error_handling  
+**Language:** python  
+**Confidence:** 59%
+
+Uses 'time.sleep' as a common error handler function. Called in 6/28 (21%) except blocks. Also uses: errors.append, RuntimeError.
+
+**Statistics:**
+
+- wrapper_function: `time.sleep`
+- usage_count: `6`
+- total_handlers: `28`
+- usage_ratio: `0.214`
+- other_wrappers: `['errors.append', 'RuntimeError']`
+
+**Evidence:**
+
+1. `scripts/playwright/cookie_param_models/image01.py:28-38`
+
+```
+)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get("http://localhost:8000/docs")
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+```
+
+2. `scripts/playwright/sql_databases/image01.py:26-36`
+
+```
+)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get("http://localhost:8000/docs")
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+```
+
+3. `scripts/playwright/sql_databases/image02.py:26-36`
+
+```
+)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get("http://localhost:8000/docs")
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
 ```
 
 ---

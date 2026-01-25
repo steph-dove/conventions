@@ -33,6 +33,9 @@ class PythonErrorConventionsDetector(PythonDetector):
         # Detect exception handler patterns
         self._detect_exception_handlers(ctx, index, result)
 
+        # Detect custom error wrapper patterns
+        self._detect_error_wrapper_patterns(ctx, index, result)
+
         return result
 
     def _detect_http_exception_boundary(
@@ -267,3 +270,193 @@ class PythonErrorConventionsDetector(PythonDetector):
                 "handler_files": list(handler_files),
             },
         ))
+
+    def _detect_error_wrapper_patterns(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect custom error wrapper/abstraction patterns.
+
+        This looks for patterns like:
+        - A common function called in many except handlers (error wrapper)
+        - A custom exception raised in many except handlers (error transformation)
+        - A function consistently returned from except handlers (error response)
+        """
+        # Collect statistics from all except handlers
+        calls_in_handlers: Counter[str] = Counter()
+        raises_in_handlers: Counter[str] = Counter()
+        return_calls: Counter[str] = Counter()
+        handler_examples: dict[str, list[tuple[str, int]]] = {}
+
+        total_handlers = 0
+
+        for rel_path, handler in index.get_all_except_handlers():
+            # Skip test files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
+            total_handlers += 1
+
+            # Count function calls in handlers
+            for call in handler.calls_in_handler:
+                # Skip common logging calls and re-raises
+                if any(skip in call.lower() for skip in ["log", "print", "raise", "logger"]):
+                    continue
+                calls_in_handlers[call] += 1
+                if call not in handler_examples:
+                    handler_examples[call] = []
+                if len(handler_examples[call]) < 5:
+                    handler_examples[call].append((rel_path, handler.line))
+
+            # Count exceptions raised in handlers
+            for raise_name in handler.raises_in_handler:
+                raises_in_handlers[raise_name] += 1
+                key = f"raise:{raise_name}"
+                if key not in handler_examples:
+                    handler_examples[key] = []
+                if len(handler_examples[key]) < 5:
+                    handler_examples[key].append((rel_path, handler.line))
+
+            # Count return calls
+            if handler.returns_call:
+                return_calls[handler.returns_call] += 1
+                key = f"return:{handler.returns_call}"
+                if key not in handler_examples:
+                    handler_examples[key] = []
+                if len(handler_examples[key]) < 5:
+                    handler_examples[key].append((rel_path, handler.line))
+
+        if total_handlers < 5:
+            return  # Not enough handlers to detect patterns
+
+        # Find significant patterns (used in at least 20% of handlers or 5+ times)
+        min_threshold = max(3, int(total_handlers * 0.15))
+
+        # Detect error wrapper functions
+        wrapper_functions = [
+            (func, count) for func, count in calls_in_handlers.most_common(5)
+            if count >= min_threshold
+        ]
+
+        # Detect error transformation (custom exceptions raised)
+        error_transformations = [
+            (exc, count) for exc, count in raises_in_handlers.most_common(5)
+            if count >= min_threshold and exc not in ("Exception", "RuntimeError", "ValueError")
+        ]
+
+        # Detect error response patterns
+        response_patterns = [
+            (func, count) for func, count in return_calls.most_common(3)
+            if count >= min_threshold
+        ]
+
+        # Generate rules for detected patterns
+        if wrapper_functions:
+            top_wrapper, top_count = wrapper_functions[0]
+            usage_ratio = top_count / total_handlers
+
+            title = f"Error wrapper pattern: {top_wrapper}"
+            description = (
+                f"Uses '{top_wrapper}' as a common error handler function. "
+                f"Called in {top_count}/{total_handlers} ({usage_ratio:.0%}) except blocks."
+            )
+            if len(wrapper_functions) > 1:
+                others = ", ".join(f[0] for f in wrapper_functions[1:3])
+                description += f" Also uses: {others}."
+
+            confidence = min(0.9, 0.5 + usage_ratio * 0.4)
+
+            evidence = []
+            for rel_path, line in handler_examples.get(top_wrapper, [])[:ctx.max_evidence_snippets]:
+                ev = make_evidence(index, rel_path, line, radius=5)
+                if ev:
+                    evidence.append(ev)
+
+            result.rules.append(self.make_rule(
+                rule_id="python.conventions.error_wrapper",
+                category="error_handling",
+                title=title,
+                description=description,
+                confidence=confidence,
+                language="python",
+                evidence=evidence,
+                stats={
+                    "wrapper_function": top_wrapper,
+                    "usage_count": top_count,
+                    "total_handlers": total_handlers,
+                    "usage_ratio": round(usage_ratio, 3),
+                    "other_wrappers": [f[0] for f in wrapper_functions[1:]],
+                },
+            ))
+
+        if error_transformations:
+            top_exc, top_count = error_transformations[0]
+            usage_ratio = top_count / total_handlers
+
+            title = f"Error transformation: {top_exc}"
+            description = (
+                f"Transforms caught exceptions to '{top_exc}'. "
+                f"Raised in {top_count}/{total_handlers} ({usage_ratio:.0%}) except blocks."
+            )
+
+            confidence = min(0.85, 0.5 + usage_ratio * 0.35)
+
+            evidence = []
+            for rel_path, line in handler_examples.get(f"raise:{top_exc}", [])[:ctx.max_evidence_snippets]:
+                ev = make_evidence(index, rel_path, line, radius=5)
+                if ev:
+                    evidence.append(ev)
+
+            result.rules.append(self.make_rule(
+                rule_id="python.conventions.error_transformation",
+                category="error_handling",
+                title=title,
+                description=description,
+                confidence=confidence,
+                language="python",
+                evidence=evidence,
+                stats={
+                    "target_exception": top_exc,
+                    "usage_count": top_count,
+                    "total_handlers": total_handlers,
+                    "usage_ratio": round(usage_ratio, 3),
+                    "other_transforms": [e[0] for e in error_transformations[1:]],
+                },
+            ))
+
+        if response_patterns:
+            top_response, top_count = response_patterns[0]
+            usage_ratio = top_count / total_handlers
+
+            title = f"Standardized error response: {top_response}"
+            description = (
+                f"Uses '{top_response}' to generate standardized error responses. "
+                f"Returned in {top_count}/{total_handlers} ({usage_ratio:.0%}) except blocks."
+            )
+
+            confidence = min(0.85, 0.5 + usage_ratio * 0.35)
+
+            evidence = []
+            for rel_path, line in handler_examples.get(f"return:{top_response}", [])[:ctx.max_evidence_snippets]:
+                ev = make_evidence(index, rel_path, line, radius=5)
+                if ev:
+                    evidence.append(ev)
+
+            result.rules.append(self.make_rule(
+                rule_id="python.conventions.error_response_pattern",
+                category="error_handling",
+                title=title,
+                description=description,
+                confidence=confidence,
+                language="python",
+                evidence=evidence,
+                stats={
+                    "response_function": top_response,
+                    "usage_count": top_count,
+                    "total_handlers": total_handlers,
+                    "usage_ratio": round(usage_ratio, 3),
+                },
+            ))

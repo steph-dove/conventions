@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conventions Report - /private/tmp/fastapi_test</title>
+    <title>Conventions Report - /private/tmp/fastapi</title>
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -251,7 +251,7 @@
     <div class="header">
         <div>
             <h1>Conventions Report</h1>
-            <p class="meta">Generated: 2026-01-19 16:33:32 | Repository: <code>/private/tmp/fastapi_test</code></p>
+            <p class="meta">Generated: 2026-01-24 21:05:01 | Repository: <code>/private/tmp/fastapi</code></p>
         </div>
         <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
     </div>
@@ -261,11 +261,11 @@
         <h2>Summary</h2>
         <div class="summary-cards">
             <div class="card">
-                <div class="card-value">38</div>
+                <div class="card-value">53</div>
                 <div class="card-label">Conventions Detected</div>
             </div>
             <div class="card">
-                <div class="card-value">3.5</div>
+                <div class="card-value">3.4</div>
                 <div class="card-label">Average Score</div>
             </div>
             <div class="card">
@@ -283,11 +283,11 @@
                 <div class="card-label">Excellent (5)</div>
             </div>
             <div class="card">
-                <div class="card-value" style="color: #28a745;">10</div>
+                <div class="card-value" style="color: #28a745;">14</div>
                 <div class="card-label">Good (4)</div>
             </div>
             <div class="card">
-                <div class="card-value" style="color: #ffc107;">13</div>
+                <div class="card-value" style="color: #ffc107;">24</div>
                 <div class="card-label">Average (3)</div>
             </div>
             <div class="card">
@@ -338,13 +338,22 @@
             </thead>
             <tbody>
                 
-            <tr data-language="python" data-category="concurrency" data-score="5">
-                <td><code>python.conventions.async_style</code></td>
-                <td>Async-first API design</td>
-                <td>python</td>
-                <td>concurrency</td>
+            <tr data-language="generic" data-category="dependencies" data-score="5">
+                <td><code>generic.conventions.dependency_updates</code></td>
+                <td>Dependency updates: Dependabot</td>
+                <td>generic</td>
+                <td>dependencies</td>
                 <td><span class="badge" style="background-color: #20c997;">5/5 - Excellent</span></td>
-                <td>90%</td>
+                <td>80%</td>
+            </tr>
+        
+            <tr data-language="generic" data-category="git" data-score="5">
+                <td><code>generic.conventions.git_hooks</code></td>
+                <td>Git hooks: pre-commit</td>
+                <td>generic</td>
+                <td>git</td>
+                <td><span class="badge" style="background-color: #20c997;">5/5 - Excellent</span></td>
+                <td>80%</td>
             </tr>
         
             <tr data-language="python" data-category="cli" data-score="5">
@@ -383,15 +392,6 @@
                 <td>90%</td>
             </tr>
         
-            <tr data-language="python" data-category="logging" data-score="5">
-                <td><code>python.conventions.logging_fields</code></td>
-                <td>Structured logging with request/trace IDs</td>
-                <td>python</td>
-                <td>logging</td>
-                <td><span class="badge" style="background-color: #20c997;">5/5 - Excellent</span></td>
-                <td>80%</td>
-            </tr>
-        
             <tr data-language="python" data-category="style" data-score="5">
                 <td><code>python.conventions.naming</code></td>
                 <td>PEP 8 snake_case naming</td>
@@ -402,19 +402,19 @@
             </tr>
         
             <tr data-language="python" data-category="testing" data-score="5">
-                <td><code>python.conventions.testing_fixtures</code></td>
-                <td>Centralized pytest fixtures in conftest.py</td>
-                <td>python</td>
-                <td>testing</td>
-                <td><span class="badge" style="background-color: #20c997;">5/5 - Excellent</span></td>
-                <td>90%</td>
-            </tr>
-        
-            <tr data-language="python" data-category="testing" data-score="5">
                 <td><code>python.conventions.testing_framework</code></td>
                 <td>pytest-based testing</td>
                 <td>python</td>
                 <td>testing</td>
+                <td><span class="badge" style="background-color: #20c997;">5/5 - Excellent</span></td>
+                <td>95%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="typing" data-score="5">
+                <td><code>python.conventions.typing_coverage</code></td>
+                <td>High type annotation coverage</td>
+                <td>python</td>
+                <td>typing</td>
                 <td><span class="badge" style="background-color: #20c997;">5/5 - Excellent</span></td>
                 <td>95%</td>
             </tr>
@@ -464,13 +464,31 @@
                 <td>85%</td>
             </tr>
         
-            <tr data-language="python" data-category="documentation" data-score="4">
-                <td><code>python.conventions.docstring_style</code></td>
-                <td>Sphinx/reST style docstrings</td>
+            <tr data-language="python" data-category="resource_management" data-score="4">
+                <td><code>python.conventions.context_managers</code></td>
+                <td>Context manager usage</td>
                 <td>python</td>
-                <td>documentation</td>
+                <td>resource_management</td>
                 <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
                 <td>90%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="decorators" data-score="4">
+                <td><code>python.conventions.decorator_caching</code></td>
+                <td>Caching decorator pattern</td>
+                <td>python</td>
+                <td>decorators</td>
+                <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
+                <td>90%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="code_style" data-score="4">
+                <td><code>python.conventions.path_handling</code></td>
+                <td>Modern pathlib for path handling</td>
+                <td>python</td>
+                <td>code_style</td>
+                <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
+                <td>95%</td>
             </tr>
         
             <tr data-language="python" data-category="api" data-score="4">
@@ -491,22 +509,40 @@
                 <td>85%</td>
             </tr>
         
+            <tr data-language="python" data-category="code_style" data-score="4">
+                <td><code>python.conventions.string_formatting</code></td>
+                <td>Modern f-string formatting</td>
+                <td>python</td>
+                <td>code_style</td>
+                <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
+                <td>95%</td>
+            </tr>
+        
             <tr data-language="python" data-category="testing" data-score="4">
-                <td><code>python.conventions.testing_mocking</code></td>
-                <td>Uses unittest.mock for mocking</td>
+                <td><code>python.test_conventions.fixtures</code></td>
+                <td>pytest fixtures for test setup</td>
                 <td>python</td>
                 <td>testing</td>
                 <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
                 <td>90%</td>
             </tr>
         
-            <tr data-language="python" data-category="typing" data-score="4">
-                <td><code>python.conventions.typing_coverage</code></td>
-                <td>High type annotation coverage</td>
+            <tr data-language="python" data-category="testing" data-score="4">
+                <td><code>python.test_conventions.mocking</code></td>
+                <td>Mocking with unittest.mock / Mock</td>
                 <td>python</td>
-                <td>typing</td>
+                <td>testing</td>
                 <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
-                <td>95%</td>
+                <td>90%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="testing" data-score="4">
+                <td><code>python.test_conventions.parametrized</code></td>
+                <td>Parametrized tests</td>
+                <td>python</td>
+                <td>testing</td>
+                <td><span class="badge" style="background-color: #28a745;">4/5 - Good</span></td>
+                <td>90%</td>
             </tr>
         
             <tr data-language="generic" data-category="ci_cd" data-score="3">
@@ -514,24 +550,6 @@
                 <td>CI/CD: GitHub Actions</td>
                 <td>generic</td>
                 <td>ci_cd</td>
-                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
-                <td>80%</td>
-            </tr>
-        
-            <tr data-language="generic" data-category="dependencies" data-score="3">
-                <td><code>generic.conventions.dependency_updates</code></td>
-                <td>Dependency updates: Dependabot</td>
-                <td>generic</td>
-                <td>dependencies</td>
-                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
-                <td>80%</td>
-            </tr>
-        
-            <tr data-language="generic" data-category="git" data-score="3">
-                <td><code>generic.conventions.git_hooks</code></td>
-                <td>Git hooks: pre-commit</td>
-                <td>generic</td>
-                <td>git</td>
                 <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
                 <td>80%</td>
             </tr>
@@ -551,7 +569,7 @@
                 <td>python</td>
                 <td>concurrency</td>
                 <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
-                <td>90%</td>
+                <td>72%</td>
             </tr>
         
             <tr data-language="python" data-category="performance" data-score="3">
@@ -563,13 +581,22 @@
                 <td>80%</td>
             </tr>
         
-            <tr data-language="python" data-category="database" data-score="3">
-                <td><code>python.conventions.db_library</code></td>
-                <td>Primary database library: SQLModel</td>
+            <tr data-language="python" data-category="code_style" data-score="3">
+                <td><code>python.conventions.class_style</code></td>
+                <td>Data classes: Pydantic models</td>
                 <td>python</td>
-                <td>database</td>
+                <td>code_style</td>
                 <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
-                <td>79%</td>
+                <td>86%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="naming" data-score="3">
+                <td><code>python.conventions.constant_naming</code></td>
+                <td>lowercase constant naming</td>
+                <td>python</td>
+                <td>naming</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>70%</td>
             </tr>
         
             <tr data-language="python" data-category="database" data-score="3">
@@ -590,13 +617,13 @@
                 <td>85%</td>
             </tr>
         
-            <tr data-language="python" data-category="dependency_injection" data-score="3">
-                <td><code>python.conventions.di_style</code></td>
-                <td>Mixed DI patterns: FastAPI Depends dominant</td>
+            <tr data-language="python" data-category="code_style" data-score="3">
+                <td><code>python.conventions.enum_usage</code></td>
+                <td>Enum usage: Enum</td>
                 <td>python</td>
-                <td>dependency_injection</td>
+                <td>code_style</td>
                 <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
-                <td>73%</td>
+                <td>80%</td>
             </tr>
         
             <tr data-language="python" data-category="error_handling" data-score="3">
@@ -608,6 +635,15 @@
                 <td>60%</td>
             </tr>
         
+            <tr data-language="python" data-category="error_handling" data-score="3">
+                <td><code>python.conventions.error_wrapper</code></td>
+                <td>Error wrapper pattern: time.sleep</td>
+                <td>python</td>
+                <td>error_handling</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>59%</td>
+            </tr>
+        
             <tr data-language="python" data-category="tooling" data-score="3">
                 <td><code>python.conventions.import_sorting</code></td>
                 <td>Import sorting: Ruff (isort rules)</td>
@@ -617,6 +653,15 @@
                 <td>90%</td>
             </tr>
         
+            <tr data-language="python" data-category="code_style" data-score="3">
+                <td><code>python.conventions.import_style</code></td>
+                <td>Absolute imports preferred</td>
+                <td>python</td>
+                <td>code_style</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>70%</td>
+            </tr>
+        
             <tr data-language="python" data-category="logging" data-score="3">
                 <td><code>python.conventions.logging_library</code></td>
                 <td>Uses Python standard logging</td>
@@ -624,6 +669,96 @@
                 <td>logging</td>
                 <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
                 <td>90%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="typing" data-score="3">
+                <td><code>python.conventions.optional_usage</code></td>
+                <td>Optional type annotations</td>
+                <td>python</td>
+                <td>typing</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>80%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="api" data-score="3">
+                <td><code>python.conventions.pagination_pattern</code></td>
+                <td>Cursor-based pagination</td>
+                <td>python</td>
+                <td>api</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>80%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="api" data-score="3">
+                <td><code>python.conventions.response_envelope</code></td>
+                <td>Response envelope classes</td>
+                <td>python</td>
+                <td>api</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>70%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="testing" data-score="3">
+                <td><code>python.conventions.test_naming</code></td>
+                <td>Test naming: Simple style (test_feature)</td>
+                <td>python</td>
+                <td>testing</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>84%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="testing" data-score="3">
+                <td><code>python.conventions.test_structure</code></td>
+                <td>Distributed test files</td>
+                <td>python</td>
+                <td>testing</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>70%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="validation" data-score="3">
+                <td><code>python.conventions.validation_style</code></td>
+                <td>Pydantic validation</td>
+                <td>python</td>
+                <td>validation</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>78%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="documentation" data-score="3">
+                <td><code>python.docs_conventions.example_completeness</code></td>
+                <td>Snippet-style examples</td>
+                <td>python</td>
+                <td>documentation</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>70%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="documentation" data-score="3">
+                <td><code>python.docs_conventions.example_structure</code></td>
+                <td>Examples with main() entry point</td>
+                <td>python</td>
+                <td>documentation</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>80%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="documentation" data-score="3">
+                <td><code>python.docs_conventions.organization</code></td>
+                <td>Tutorial-style documentation</td>
+                <td>python</td>
+                <td>documentation</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>80%</td>
+            </tr>
+        
+            <tr data-language="python" data-category="testing" data-score="3">
+                <td><code>python.test_conventions.assertions</code></td>
+                <td>Plain assert statements</td>
+                <td>python</td>
+                <td>testing</td>
+                <td><span class="badge" style="background-color: #ffc107;">3/5 - Average</span></td>
+                <td>89%</td>
             </tr>
         
             <tr data-language="generic" data-category="structure" data-score="2">
@@ -688,11 +823,11 @@
     <section id="details">
         <h2>Detailed Analysis</h2>
         
-            <div class="rule-detail" id="rule-python-conventions-async_style">
+            <div class="rule-detail" id="rule-generic-conventions-dependency_updates">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
-                        <strong>Async-first API design</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.async_style</code></span>
+                        <strong>Dependency updates: Dependabot</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>generic.conventions.dependency_updates</code></span>
                     </div>
                     <div>
                         <span class="badge" style="background-color: #20c997;">5/5 - Excellent</span>
@@ -701,55 +836,50 @@
                 </div>
                 <div class="rule-body">
                     <div class="rule-meta">
-                        <span><strong>Category:</strong> concurrency</span>
-                        <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 90%</span>
+                        <span><strong>Category:</strong> dependencies</span>
+                        <span><strong>Language:</strong> generic</span>
+                        <span><strong>Confidence:</strong> 80%</span>
                     </div>
-                    <p>API endpoints are predominantly async. 12/12 endpoint functions are async. Uses asyncio concurrency patterns (1 usages).</p>
-                    <p><strong>Assessment:</strong> API style: 12 async, 0 sync (100% async)</p>
+                    <p>Automated dependency updates via Dependabot for github-actions.</p>
+                    <p><strong>Assessment:</strong> Dependency updates: dependabot</p>
                     
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>async_count</code>: 12</li><li><code>sync_count</code>: 0</li><li><code>async_ratio</code>: 1.0</li><li><code>asyncio_patterns</code>: 1</li></ul>
+                    <ul><li><code>tools</code>: [&#x27;dependabot&#x27;]</li><li><code>tool_details</code>: {&#x27;dependabot&#x27;: {&#x27;name&#x27;: &#x27;Dependabot&#x27;, &#x27;ecosystems&#x27;: [&#x27;github-actions&#x27;]}}</li><li><code>primary_tool</code>: dependabot</li></ul>
                 </div>
             
                     
-                <div class="evidence">
-                    <strong>Evidence:</strong>
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-generic-conventions-git_hooks">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Git hooks: pre-commit</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>generic.conventions.git_hooks</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #20c997;">5/5 - Excellent</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> git</span>
+                        <span><strong>Language:</strong> generic</span>
+                        <span><strong>Confidence:</strong> 80%</span>
+                    </div>
+                    <p>Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting.</p>
+                    <p><strong>Assessment:</strong> Git hooks: pre-commit</p>
                     
-                    <div class="evidence-item">
-                        <div class="evidence-path">docs_src/bigger_applications/app_py39/routers/users.py:2-12</div>
-                        <pre><code>
-router = APIRouter()
-
-
-@router.get(&quot;/users/&quot;, tags=[&quot;users&quot;])
-async def read_users():
-    return [{&quot;username&quot;: &quot;Rick&quot;}, {&quot;username&quot;: &quot;Morty&quot;}]
-
-
-@router.get(&quot;/users/me&quot;, tags=[&quot;users&quot;])
-async def read_user_me():</code></pre>
-                    </div>
-                
-                    <div class="evidence-item">
-                        <div class="evidence-path">docs_src/bigger_applications/app_py39/routers/users.py:7-17</div>
-                        <pre><code>async def read_users():
-    return [{&quot;username&quot;: &quot;Rick&quot;}, {&quot;username&quot;: &quot;Morty&quot;}]
-
-
-@router.get(&quot;/users/me&quot;, tags=[&quot;users&quot;])
-async def read_user_me():
-    return {&quot;username&quot;: &quot;fakecurrentuser&quot;}
-
-
-@router.get(&quot;/users/{username}&quot;, tags=[&quot;users&quot;])
-async def read_user(username: str):</code></pre>
-                    </div>
-                
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>hooks_tools</code>: [&#x27;pre-commit&#x27;]</li><li><code>hooks_configured</code>: [&#x27;whitespace&#x27;, &#x27;file validation&#x27;, &#x27;formatting&#x27;]</li><li><code>hook_tool</code>: pre-commit</li><li><code>has_pre_commit</code>: True</li><li><code>has_husky</code>: False</li><li><code>has_lefthook</code>: False</li></ul>
                 </div>
             
+                    
                 </div>
             </div>
         
@@ -956,36 +1086,6 @@ from strawberry.fastapi import GraphQLRouter
                 </div>
             </div>
         
-            <div class="rule-detail" id="rule-python-conventions-logging_fields">
-                <div class="rule-header" onclick="toggleRule(this)">
-                    <div>
-                        <strong>Structured logging with request/trace IDs</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.logging_fields</code></span>
-                    </div>
-                    <div>
-                        <span class="badge" style="background-color: #20c997;">5/5 - Excellent</span>
-                        <span class="expand-icon">&#9654;</span>
-                    </div>
-                </div>
-                <div class="rule-body">
-                    <div class="rule-meta">
-                        <span><strong>Category:</strong> logging</span>
-                        <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 80%</span>
-                    </div>
-                    <p>Structured logging includes request correlation fields. Common fields: requestBody, content, schema, name, format.</p>
-                    <p><strong>Assessment:</strong> Structured logging with request correlation (26 field uses)</p>
-                    
-                    
-                <div>
-                    <strong>Statistics:</strong>
-                    <ul><li><code>top_fields</code>: {&#x27;requestBody&#x27;: 3, &#x27;content&#x27;: 3, &#x27;schema&#x27;: 3, &#x27;name&#x27;: 3, &#x27;format&#x27;: 2, &#x27;type&#x27;: 2, &#x27;examples&#x27;: 2, &#x27;description&#x27;: 2, &#x27;price&#x27;: 2, &#x27;tax&#x27;: 2}</li><li><code>total_field_uses</code>: 26</li><li><code>has_request_correlation</code>: True</li></ul>
-                </div>
-            
-                    
-                </div>
-            </div>
-        
             <div class="rule-detail" id="rule-python-conventions-naming">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
@@ -1003,126 +1103,16 @@ from strawberry.fastapi import GraphQLRouter
                         <span><strong>Language:</strong> python</span>
                         <span><strong>Confidence:</strong> 95%</span>
                     </div>
-                    <p>Function names follow PEP 8 snake_case convention. 1243/1243 functions use snake_case. Found 45 module-level constants.</p>
+                    <p>Function names follow PEP 8 snake_case convention. 305/305 functions use snake_case. Found 21 module-level constants.</p>
                     <p><strong>Assessment:</strong> PEP 8 snake_case compliance is 100%</p>
                     
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>snake_case_functions</code>: 1243</li><li><code>camel_case_functions</code>: 0</li><li><code>snake_case_ratio</code>: 1.0</li><li><code>module_constants</code>: 45</li></ul>
+                    <ul><li><code>snake_case_functions</code>: 305</li><li><code>camel_case_functions</code>: 0</li><li><code>snake_case_ratio</code>: 1.0</li><li><code>module_constants</code>: 21</li></ul>
                 </div>
             
                     
-                </div>
-            </div>
-        
-            <div class="rule-detail" id="rule-python-conventions-testing_fixtures">
-                <div class="rule-header" onclick="toggleRule(this)">
-                    <div>
-                        <strong>Centralized pytest fixtures in conftest.py</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.testing_fixtures</code></span>
-                    </div>
-                    <div>
-                        <span class="badge" style="background-color: #20c997;">5/5 - Excellent</span>
-                        <span class="expand-icon">&#9654;</span>
-                    </div>
-                </div>
-                <div class="rule-body">
-                    <div class="rule-meta">
-                        <span><strong>Category:</strong> testing</span>
-                        <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 90%</span>
-                    </div>
-                    <p>Uses pytest fixtures with 1 conftest.py file(s). Found 186 fixture definitions.</p>
-                    <p><strong>Assessment:</strong> Found 186 fixtures, 1 conftest.py file(s)</p>
-                    
-                    
-                <div>
-                    <strong>Statistics:</strong>
-                    <ul><li><code>fixture_count</code>: 186</li><li><code>conftest_count</code>: 1</li><li><code>async_fixture_count</code>: 0</li></ul>
-                </div>
-            
-                    
-                <div class="evidence">
-                    <strong>Evidence:</strong>
-                    
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_union_body_discriminator_annotated.py:7-17</div>
-                        <pre><code>from fastapi.testclient import TestClient
-from inline_snapshot import snapshot
-from pydantic import BaseModel
-
-
-@pytest.fixture(name=&quot;client&quot;)
-def client_fixture() -&gt; TestClient:
-    from fastapi import Body
-    from pydantic import Discriminator, Tag
-
-    class Cat(BaseModel):</code></pre>
-                    </div>
-                
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_computed_fields.py:1-11</div>
-                        <pre><code>import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-
-
-@pytest.fixture(name=&quot;client&quot;)
-def get_client(request):
-    separate_input_output_schemas = request.param
-    app = FastAPI(separate_input_output_schemas=separate_input_output_schemas)
-
-    from pydantic import BaseModel, computed_field</code></pre>
-                    </div>
-                
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_schema_ref_pydantic_v2.py:5-15</div>
-                        <pre><code>from fastapi.testclient import TestClient
-from inline_snapshot import snapshot
-from pydantic import BaseModel, ConfigDict, Field
-
-
-@pytest.fixture(name=&quot;client&quot;)
-def get_client():
-    app = FastAPI()
-
-    class ModelWithRef(BaseModel):
-        ref: str = Field(validation_alias=&quot;$ref&quot;, serialization_alias=&quot;$ref&quot;)</code></pre>
-                    </div>
-                
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_arbitrary_types.py:4-14</div>
-                        <pre><code>from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from inline_snapshot import snapshot
-
-
-@pytest.fixture(name=&quot;client&quot;)
-def get_client():
-    from pydantic import (
-        BaseModel,
-        ConfigDict,
-        PlainSerializer,</code></pre>
-                    </div>
-                
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_schema_compat_pydantic_v2.py:5-15</div>
-                        <pre><code>from pydantic import BaseModel
-
-from tests.utils import needs_py310
-
-
-@pytest.fixture(name=&quot;client&quot;)
-def get_client():
-    from enum import Enum
-
-    app = FastAPI()
-</code></pre>
-                    </div>
-                
-                </div>
-            
                 </div>
             </div>
         
@@ -1143,13 +1133,13 @@ def get_client():
                         <span><strong>Language:</strong> python</span>
                         <span><strong>Confidence:</strong> 95%</span>
                     </div>
-                    <p>Uses pytest as primary testing framework. Found 888 pytest usages.</p>
-                    <p><strong>Assessment:</strong> Uses pytest with 559 test file(s)</p>
+                    <p>Uses pytest as primary testing framework. Found 887 pytest usages across 465 test files.</p>
+                    <p><strong>Assessment:</strong> Uses pytest with 465 test file(s)</p>
                     
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>framework_counts</code>: {&#x27;pytest&#x27;: 888, &#x27;unittest&#x27;: 1}</li><li><code>primary_framework</code>: pytest</li><li><code>test_file_count</code>: 559</li></ul>
+                    <ul><li><code>framework_counts</code>: {&#x27;pytest&#x27;: 887, &#x27;unittest&#x27;: 1}</li><li><code>primary_framework</code>: pytest</li><li><code>test_file_count</code>: 465</li></ul>
                 </div>
             
                     
@@ -1202,6 +1192,101 @@ import pytest
 from fastapi.openapi.models import Schema, SchemaType
 
 </code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-typing_coverage">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>High type annotation coverage</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.typing_coverage</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #20c997;">5/5 - Excellent</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> typing</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 95%</span>
+                    </div>
+                    <p>Type annotations are commonly used in this codebase. 362/366 functions (99%) have at least one type annotation.</p>
+                    <p><strong>Assessment:</strong> Type annotation coverage is 99%</p>
+                    
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>total_functions</code>: 366</li><li><code>annotated_functions</code>: 362</li><li><code>fully_annotated_functions</code>: 225</li><li><code>any_annotation_coverage</code>: 0.989</li><li><code>full_annotation_coverage</code>: 0.615</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">pdm_build.py:4-14</div>
+                        <pre><code>from pdm.backend.hooks import Context
+
+TIANGOLO_BUILD_PACKAGE = os.getenv(&quot;TIANGOLO_BUILD_PACKAGE&quot;, &quot;fastapi&quot;)
+
+
+def pdm_build_initialize(context: Context) -&gt; None:
+    metadata = context.config.metadata
+    # Get custom config for the current package, from the env var
+    config: dict[str, Any] = context.config.data[&quot;tool&quot;][&quot;tiangolo&quot;][
+        &quot;_internal-slim-build&quot;
+    ][&quot;packages&quot;].get(TIANGOLO_BUILD_PACKAGE)</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:25-35</div>
+                        <pre><code>
+
+class Param(FieldInfo):  # type: ignore[misc]
+    in_: ParamTypes
+
+    def __init__(
+        self,
+        default: Any = Undefined,
+        *,
+        default_factory: Union[Callable[[], Any], None] = _Unset,
+        annotation: Optional[Any] = None,</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/translation_fixer.py:21-31</div>
+                        <pre><code>
+cli = typer.Typer()
+
+
+@cli.callback()
+def callback():
+    pass
+
+
+def iter_all_lang_paths(lang_path_root: Path) -&gt; Iterable[Path]:
+    &quot;&quot;&quot;</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/docs.py:62-72</div>
+                        <pre><code>
+
+class VisibleTextExtractor(HTMLParser):
+    &quot;&quot;&quot;Extract visible text from a string with HTML tags.&quot;&quot;&quot;
+
+    def __init__(self):
+        super().__init__()
+        self.text_parts = []
+
+    def handle_data(self, data):
+        self.text_parts.append(data)</code></pre>
                     </div>
                 
                 </div>
@@ -1494,7 +1579,7 @@ app = FastAPI()</code></pre>
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>oauth2</code>: 49</li><li><code>form_auth</code>: 3</li><li><code>jwt</code>: 16</li><li><code>dependency_auth</code>: 53</li></ul>
+                    <ul><li><code>oauth2</code>: 49</li><li><code>jwt</code>: 16</li><li><code>dependency_auth</code>: 53</li></ul>
                 </div>
             
                     
@@ -1575,11 +1660,11 @@ from fastapi.testclient import TestClient
                 </div>
             </div>
         
-            <div class="rule-detail" id="rule-python-conventions-docstring_style">
+            <div class="rule-detail" id="rule-python-conventions-context_managers">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
-                        <strong>Sphinx/reST style docstrings</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.docstring_style</code></span>
+                        <strong>Context manager usage</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.context_managers</code></span>
                     </div>
                     <div>
                         <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
@@ -1588,21 +1673,17 @@ from fastapi.testclient import TestClient
                 </div>
                 <div class="rule-body">
                     <div class="rule-meta">
-                        <span><strong>Category:</strong> documentation</span>
+                        <span><strong>Category:</strong> resource_management</span>
                         <span><strong>Language:</strong> python</span>
                         <span><strong>Confidence:</strong> 90%</span>
                     </div>
-                    <p>Docstrings follow Sphinx/reST style. 2/2 docstrings use this style.</p>
-                    <p><strong>Assessment:</strong> Primary docstring style is sphinx (100% consistency)</p>
+                    <p>Uses context managers for resource management. 25 with statements (17 sync, 8 async). Types: file_io (2).</p>
+                    <p><strong>Assessment:</strong> Convention detected with 90% confidence</p>
                     
-                <div class="suggestion">
-                    <strong>Suggestion:</strong> Consider migrating to Google or NumPy docstring style for better readability. Currently using sphinx.
-                </div>
-            
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>style_counts</code>: {&#x27;sphinx&#x27;: 2}</li><li><code>primary_style</code>: sphinx</li><li><code>primary_ratio</code>: 1.0</li></ul>
+                    <ul><li><code>total_with_statements</code>: 25</li><li><code>sync_count</code>: 17</li><li><code>async_count</code>: 8</li><li><code>context_types</code>: {&#x27;file_io&#x27;: 2}</li></ul>
                 </div>
             
                     
@@ -1610,45 +1691,224 @@ from fastapi.testclient import TestClient
                     <strong>Evidence:</strong>
                     
                     <div class="evidence-item">
-                        <div class="evidence-path">docs_src/path_operation_advanced_configuration/tutorial004_py39.py:10-26</div>
-                        <pre><code>    name: str
-    description: Union[str, None] = None
-    price: float
-    tax: Union[float, None] = None
-    tags: set[str] = set()
+                        <div class="evidence-path">scripts/docs.py:460-466</div>
+                        <pre><code>    in_code_block4 = False
+    permalinks = set()
 
+    with path.open(&quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+        lines = f.readlines()
 
-@app.post(&quot;/items/&quot;, response_model=Item, summary=&quot;Create an item&quot;)
-async def create_item(item: Item):
-    &quot;&quot;&quot;
-    Create an item with all the information:
-
-    - **name**: each item must have a name
-    - **description**: a long description
-    - **price**: required
-    - **tax**: if the item doesn&#x27;t have tax, you can omit this
-    - **tags**: a set of unique tag strings for this item</code></pre>
+    for line in lines:</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">docs_src/path_operation_advanced_configuration/tutorial004_py310.py:8-24</div>
-                        <pre><code>    name: str
-    description: str | None = None
-    price: float
-    tax: float | None = None
-    tags: set[str] = set()
+                        <div class="evidence-path">scripts/docs.py:496-502</div>
+                        <pre><code>
+        updated_lines.append(line)
 
+    with path.open(&quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        f.writelines(updated_lines)
 
-@app.post(&quot;/items/&quot;, response_model=Item, summary=&quot;Create an item&quot;)
-async def create_item(item: Item):
-    &quot;&quot;&quot;
-    Create an item with all the information:
+</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-decorator_caching">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Caching decorator pattern</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.decorator_caching</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> decorators</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 90%</span>
+                    </div>
+                    <p>Uses caching decorators for memoization. Found 14 usages.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 90% confidence</p>
+                    
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>usage_count</code>: 14</li><li><code>top_decorator</code>: cached_property</li><li><code>category</code>: caching</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/dependencies/models.py:48-58</div>
+                        <pre><code>    parent_oauth_scopes: Optional[list[str]] = None
+    use_cache: bool = True
+    path: Optional[str] = None
+    scope: Union[Literal[&quot;function&quot;, &quot;request&quot;], None] = None
 
-    - **name**: each item must have a name
-    - **description**: a long description
-    - **price**: required
-    - **tax**: if the item doesn&#x27;t have tax, you can omit this
-    - **tags**: a set of unique tag strings for this item</code></pre>
+    @cached_property
+    def oauth_scopes(self) -&gt; list[str]:
+        scopes = self.parent_oauth_scopes.copy() if self.parent_oauth_scopes else []
+        # This doesn&#x27;t use a set to preserve order, just in case
+        for scope in self.own_oauth_scopes or []:
+            if scope not in scopes:</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/dependencies/models.py:57-67</div>
+                        <pre><code>        for scope in self.own_oauth_scopes or []:
+            if scope not in scopes:
+                scopes.append(scope)
+        return scopes
+
+    @cached_property
+    def cache_key(self) -&gt; DependencyCacheKey:
+        scopes_for_cache = (
+            tuple(sorted(set(self.oauth_scopes or []))) if self._uses_scopes else ()
+        )
+        return (</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/dependencies/models.py:68-78</div>
+                        <pre><code>            self.call,
+            scopes_for_cache,
+            self.computed_scope or &quot;&quot;,
+        )
+
+    @cached_property
+    def _uses_scopes(self) -&gt; bool:
+        if self.own_oauth_scopes:
+            return True
+        if self.security_scopes_param_name is not None:
+            return True</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/dependencies/models.py:81-91</div>
+                        <pre><code>        for sub_dep in self.dependencies:
+            if sub_dep._uses_scopes:
+                return True
+        return False
+
+    @cached_property
+    def _is_security_scheme(self) -&gt; bool:
+        if self.call is None:
+            return False  # pragma: no cover
+        unwrapped = _unwrapped_call(self.call)
+        return isinstance(unwrapped, SecurityBase)</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/dependencies/models.py:89-99</div>
+                        <pre><code>            return False  # pragma: no cover
+        unwrapped = _unwrapped_call(self.call)
+        return isinstance(unwrapped, SecurityBase)
+
+    # Mainly to get the type of SecurityBase, but it&#x27;s the same self.call
+    @cached_property
+    def _security_scheme(self) -&gt; SecurityBase:
+        unwrapped = _unwrapped_call(self.call)
+        assert isinstance(unwrapped, SecurityBase)
+        return unwrapped
+</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-path_handling">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Modern pathlib for path handling</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.path_handling</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> code_style</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 95%</span>
+                    </div>
+                    <p>Uses pathlib consistently for file paths. 66/66 (100%) use pathlib.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 95% confidence</p>
+                    
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>pathlib_count</code>: 66</li><li><code>ospath_count</code>: 0</li><li><code>pathlib_ratio</code>: 1.0</li><li><code>style</code>: pathlib</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/__init__.py:15-21</div>
+                        <pre><code>from .param_functions import File as File
+from .param_functions import Form as Form
+from .param_functions import Header as Header
+from .param_functions import Path as Path
+from .param_functions import Query as Query
+from .param_functions import Security as Security
+from .requests import Request as Request</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/encoders.py:11-17</div>
+                        <pre><code>    IPv6Interface,
+    IPv6Network,
+)
+from pathlib import Path, PurePath
+from re import Pattern
+from types import GeneratorType
+from typing import Annotated, Any, Callable, Optional, Union</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/contributors.py:3-9</div>
+                        <pre><code>import subprocess
+from collections import Counter
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+import httpx</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/translate.py:4-10</div>
+                        <pre><code>from collections.abc import Iterable
+from functools import lru_cache
+from os import sep as pathsep
+from pathlib import Path
+from typing import Annotated
+
+import git</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/translation_fixer.py:1-6</div>
+                        <pre><code>import os
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Annotated
+
+import typer</code></pre>
                     </div>
                 
                 </div>
@@ -1844,11 +2104,101 @@ def main() -&gt; None:
                 </div>
             </div>
         
-            <div class="rule-detail" id="rule-python-conventions-testing_mocking">
+            <div class="rule-detail" id="rule-python-conventions-string_formatting">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
-                        <strong>Uses unittest.mock for mocking</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.testing_mocking</code></span>
+                        <strong>Modern f-string formatting</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.string_formatting</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> code_style</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 95%</span>
+                    </div>
+                    <p>Uses f-strings consistently for string formatting. 209/211 (99%) use f-strings.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 95% confidence</p>
+                    
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>total_formats</code>: 211</li><li><code>fstring_count</code>: 209</li><li><code>format_method_count</code>: 2</li><li><code>percent_count</code>: 0</li><li><code>fstring_ratio</code>: 0.991</li><li><code>dominant_style</code>: fstring</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:132-138</div>
+                        <pre><code>        super().__init__(**use_kwargs)
+
+    def __repr__(self) -&gt; str:
+        return f&quot;{self.__class__.__name__}({self.default})&quot;
+
+
+class Path(Param):  # type: ignore[misc]</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:576-582</div>
+                        <pre><code>        super().__init__(**use_kwargs)
+
+    def __repr__(self) -&gt; str:
+        return f&quot;{self.__class__.__name__}({self.default})&quot;
+
+
+class Form(Body):  # type: ignore[misc]</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/applications.py:1100-1106</div>
+                        <pre><code>                    oauth2_redirect_url = root_path + oauth2_redirect_url
+                return get_swagger_ui_html(
+                    openapi_url=openapi_url,
+                    title=f&quot;{self.title} - Swagger UI&quot;,
+                    oauth2_redirect_url=oauth2_redirect_url,
+                    init_oauth=self.swagger_ui_init_oauth,
+                    swagger_ui_parameters=self.swagger_ui_parameters,</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/applications.py:1124-1130</div>
+                        <pre><code>                root_path = req.scope.get(&quot;root_path&quot;, &quot;&quot;).rstrip(&quot;/&quot;)
+                openapi_url = root_path + self.openapi_url
+                return get_redoc_html(
+                    openapi_url=openapi_url, title=f&quot;{self.title} - ReDoc&quot;
+                )
+
+            self.add_route(self.redoc_url, redoc_html, include_in_schema=False)</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/encoders.py:320-326</div>
+                        <pre><code>            return encoder(obj)
+    if is_pydantic_v1_model_instance(obj):
+        raise PydanticV1NotSupportedError(
+            &quot;pydantic.v1 models are no longer supported by FastAPI.&quot;
+            f&quot; Please update the model {obj!r}.&quot;
+        )
+    try:</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-test_conventions-fixtures">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>pytest fixtures for test setup</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.test_conventions.fixtures</code></span>
                     </div>
                     <div>
                         <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
@@ -1861,17 +2211,13 @@ def main() -&gt; None:
                         <span><strong>Language:</strong> python</span>
                         <span><strong>Confidence:</strong> 90%</span>
                     </div>
-                    <p>Exclusively uses unittest.mock. Found 14 usages.</p>
-                    <p><strong>Assessment:</strong> Primary mocking library is unittest_mock, using 1 library/libraries</p>
+                    <p>Uses pytest @fixture decorator for test setup. Found 186 fixtures. Uses 1 conftest.py file(s) for shared fixtures.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 90% confidence</p>
                     
-                <div class="suggestion">
-                    <strong>Suggestion:</strong> Consider using pytest-mock for cleaner fixture-based mocking syntax.
-                </div>
-            
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>mock_library_counts</code>: {&#x27;unittest_mock&#x27;: 14}</li><li><code>primary_mock_library</code>: unittest_mock</li></ul>
+                    <ul><li><code>fixture_counts</code>: {&#x27;pytest_fixture&#x27;: 186}</li><li><code>conftest_files</code>: 1</li><li><code>pattern</code>: pytest_fixture</li></ul>
                 </div>
             
                     
@@ -1879,49 +2225,77 @@ def main() -&gt; None:
                     <strong>Evidence:</strong>
                     
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_fastapi_cli.py:1-7</div>
-                        <pre><code>import os
-import subprocess
-import sys
-from unittest.mock import patch
+                        <div class="evidence-path">tests/test_union_body_discriminator_annotated.py:7-17</div>
+                        <pre><code>from fastapi.testclient import TestClient
+from inline_snapshot import snapshot
+from pydantic import BaseModel
 
-import fastapi.cli
-import pytest</code></pre>
+
+@pytest.fixture(name=&quot;client&quot;)
+def client_fixture() -&gt; TestClient:
+    from fastapi import Body
+    from pydantic import Discriminator, Tag
+
+    class Cat(BaseModel):</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_generate_clients/test_tutorial004.py:1-7</div>
-                        <pre><code>import importlib
-import json
-import pathlib
-from unittest.mock import patch
+                        <div class="evidence-path">tests/test_computed_fields.py:1-11</div>
+                        <pre><code>import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
-from docs_src.generate_clients import tutorial003_py39
-</code></pre>
+
+@pytest.fixture(name=&quot;client&quot;)
+def get_client(request):
+    separate_input_output_schemas = request.param
+    app = FastAPI(separate_input_output_schemas=separate_input_output_schemas)
+
+    from pydantic import BaseModel, computed_field</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_python_types/test_tutorial008.py:1-4</div>
-                        <pre><code>from unittest.mock import patch
+                        <div class="evidence-path">tests/test_schema_ref_pydantic_v2.py:5-15</div>
+                        <pre><code>from fastapi.testclient import TestClient
+from inline_snapshot import snapshot
+from pydantic import BaseModel, ConfigDict, Field
 
-from docs_src.python_types.tutorial008_py39 import process_items
-</code></pre>
+
+@pytest.fixture(name=&quot;client&quot;)
+def get_client():
+    app = FastAPI()
+
+    class ModelWithRef(BaseModel):
+        ref: str = Field(validation_alias=&quot;$ref&quot;, serialization_alias=&quot;$ref&quot;)</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_python_types/test_tutorial006.py:1-4</div>
-                        <pre><code>from unittest.mock import patch
+                        <div class="evidence-path">tests/test_arbitrary_types.py:4-14</div>
+                        <pre><code>from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from inline_snapshot import snapshot
 
-from docs_src.python_types.tutorial006_py39 import process_items
-</code></pre>
+
+@pytest.fixture(name=&quot;client&quot;)
+def get_client():
+    from pydantic import (
+        BaseModel,
+        ConfigDict,
+        PlainSerializer,</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_python_types/test_tutorial011.py:1-5</div>
-                        <pre><code>import runpy
-from unittest.mock import patch
+                        <div class="evidence-path">tests/test_schema_compat_pydantic_v2.py:5-15</div>
+                        <pre><code>from pydantic import BaseModel
 
-import pytest
+from tests.utils import needs_py310
+
+
+@pytest.fixture(name=&quot;client&quot;)
+def get_client():
+    from enum import Enum
+
+    app = FastAPI()
 </code></pre>
                     </div>
                 
@@ -1930,11 +2304,11 @@ import pytest
                 </div>
             </div>
         
-            <div class="rule-detail" id="rule-python-conventions-typing_coverage">
+            <div class="rule-detail" id="rule-python-test_conventions-mocking">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
-                        <strong>High type annotation coverage</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.typing_coverage</code></span>
+                        <strong>Mocking with unittest.mock / Mock</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.test_conventions.mocking</code></span>
                     </div>
                     <div>
                         <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
@@ -1943,21 +2317,17 @@ import pytest
                 </div>
                 <div class="rule-body">
                     <div class="rule-meta">
-                        <span><strong>Category:</strong> typing</span>
+                        <span><strong>Category:</strong> testing</span>
                         <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 95%</span>
+                        <span><strong>Confidence:</strong> 90%</span>
                     </div>
-                    <p>Type annotations are commonly used in this codebase. 1081/1326 functions (82%) have at least one type annotation.</p>
-                    <p><strong>Assessment:</strong> Type annotation coverage is 82%</p>
+                    <p>Uses unittest.mock / Mock for test mocking. Found 14 usages. Also uses: pytest monkeypatch fixture, @patch decorator.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 90% confidence</p>
                     
-                <div class="suggestion">
-                    <strong>Suggestion:</strong> Continue adding type hints to remaining functions. Focus on return types and complex function signatures.
-                </div>
-            
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>total_functions</code>: 1326</li><li><code>annotated_functions</code>: 1081</li><li><code>fully_annotated_functions</code>: 285</li><li><code>any_annotation_coverage</code>: 0.815</li><li><code>full_annotation_coverage</code>: 0.215</li></ul>
+                    <ul><li><code>mock_counts</code>: {&#x27;monkeypatch&#x27;: 10, &#x27;unittest_mock&#x27;: 14, &#x27;patch_decorator&#x27;: 1}</li><li><code>primary_pattern</code>: unittest_mock</li></ul>
                 </div>
             
                     
@@ -1965,63 +2335,170 @@ import pytest
                     <strong>Evidence:</strong>
                     
                     <div class="evidence-item">
-                        <div class="evidence-path">pdm_build.py:4-14</div>
-                        <pre><code>from pdm.backend.hooks import Context
+                        <div class="evidence-path">tests/test_fastapi_cli.py:1-9</div>
+                        <pre><code>import os
+import subprocess
+import sys
+from unittest.mock import patch
 
-TIANGOLO_BUILD_PACKAGE = os.getenv(&quot;TIANGOLO_BUILD_PACKAGE&quot;, &quot;fastapi&quot;)
+import fastapi.cli
+import pytest
 
-
-def pdm_build_initialize(context: Context) -&gt; None:
-    metadata = context.config.metadata
-    # Get custom config for the current package, from the env var
-    config: dict[str, Any] = context.config.data[&quot;tool&quot;][&quot;tiangolo&quot;][
-        &quot;_internal-slim-build&quot;
-    ][&quot;packages&quot;].get(TIANGOLO_BUILD_PACKAGE)</code></pre>
+</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">fastapi/params.py:25-35</div>
-                        <pre><code>
+                        <div class="evidence-path">tests/test_tutorial/test_generate_clients/test_tutorial004.py:1-9</div>
+                        <pre><code>import importlib
+import json
+import pathlib
+from unittest.mock import patch
 
-class Param(FieldInfo):  # type: ignore[misc]
-    in_: ParamTypes
+from docs_src.generate_clients import tutorial003_py39
 
-    def __init__(
-        self,
-        default: Any = Undefined,
-        *,
-        default_factory: Union[Callable[[], Any], None] = _Unset,
-        annotation: Optional[Any] = None,</code></pre>
+
+def test_remove_tags(tmp_path: pathlib.Path):</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">scripts/translation_fixer.py:21-31</div>
-                        <pre><code>
-cli = typer.Typer()
+                        <div class="evidence-path">tests/test_tutorial/test_python_types/test_tutorial008.py:1-6</div>
+                        <pre><code>from unittest.mock import patch
+
+from docs_src.python_types.tutorial008_py39 import process_items
 
 
-@cli.callback()
-def callback():
-    pass
-
-
-def iter_all_lang_paths(lang_path_root: Path) -&gt; Iterable[Path]:
-    &quot;&quot;&quot;</code></pre>
+def test_process_items():</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">scripts/docs.py:62-72</div>
+                        <div class="evidence-path">tests/test_tutorial/test_python_types/test_tutorial006.py:1-6</div>
+                        <pre><code>from unittest.mock import patch
+
+from docs_src.python_types.tutorial006_py39 import process_items
+
+
+def test_process_items():</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_tutorial/test_python_types/test_tutorial011.py:1-7</div>
+                        <pre><code>import runpy
+from unittest.mock import patch
+
+import pytest
+
+from ...utils import needs_py310
+</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-test_conventions-parametrized">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Parametrized tests</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.test_conventions.parametrized</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #28a745;">4/5 - Good</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> testing</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 90%</span>
+                    </div>
+                    <p>Uses @pytest.mark.parametrize for data-driven tests. Found 442 parametrized test functions.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 90% confidence</p>
+                    
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>parametrize_count</code>: 442</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_computed_fields.py:29-39</div>
                         <pre><code>
+    client = TestClient(app)
+    return client
 
-class VisibleTextExtractor(HTMLParser):
-    &quot;&quot;&quot;Extract visible text from a string with HTML tags.&quot;&quot;&quot;
 
-    def __init__(self):
-        super().__init__()
-        self.text_parts = []
+@pytest.mark.parametrize(&quot;client&quot;, [True, False], indirect=True)
+@pytest.mark.parametrize(&quot;path&quot;, [&quot;/&quot;, &quot;/responses&quot;])
+def test_get(client: TestClient, path: str):
+    response = client.get(path)
+    assert response.status_code == 200, response.text
+    assert response.json() == {&quot;width&quot;: 3, &quot;length&quot;: 4, &quot;area&quot;: 12}</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_computed_fields.py:30-40</div>
+                        <pre><code>    client = TestClient(app)
+    return client
 
-    def handle_data(self, data):
-        self.text_parts.append(data)</code></pre>
+
+@pytest.mark.parametrize(&quot;client&quot;, [True, False], indirect=True)
+@pytest.mark.parametrize(&quot;path&quot;, [&quot;/&quot;, &quot;/responses&quot;])
+def test_get(client: TestClient, path: str):
+    response = client.get(path)
+    assert response.status_code == 200, response.text
+    assert response.json() == {&quot;width&quot;: 3, &quot;length&quot;: 4, &quot;area&quot;: 12}
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_computed_fields.py:37-47</div>
+                        <pre><code>    response = client.get(path)
+    assert response.status_code == 200, response.text
+    assert response.json() == {&quot;width&quot;: 3, &quot;length&quot;: 4, &quot;area&quot;: 12}
+
+
+@pytest.mark.parametrize(&quot;client&quot;, [True, False], indirect=True)
+def test_openapi_schema(client: TestClient):
+    response = client.get(&quot;/openapi.json&quot;)
+    assert response.status_code == 200, response.text
+    assert response.json() == {
+        &quot;openapi&quot;: &quot;3.1.0&quot;,</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_security_oauth2.py:100-110</div>
+                        <pre><code>            }
+        ]
+    }
+
+
+@pytest.mark.parametrize(
+    argnames=[&quot;grant_type&quot;],
+    argvalues=[
+        pytest.param(&quot;incorrect&quot;, id=&quot;incorrect value&quot;),
+        pytest.param(&quot;passwordblah&quot;, id=&quot;password with suffix&quot;),
+        pytest.param(&quot;blahpassword&quot;, id=&quot;password with prefix&quot;),</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_openapi_schema_type.py:2-12</div>
+                        <pre><code>
+import pytest
+from fastapi.openapi.models import Schema, SchemaType
+
+
+@pytest.mark.parametrize(
+    &quot;type_value&quot;,
+    [
+        &quot;array&quot;,
+        [&quot;string&quot;, &quot;null&quot;],
+        None,</code></pre>
                     </div>
                 
                 </div>
@@ -2057,74 +2534,6 @@ class VisibleTextExtractor(HTMLParser):
                 <div>
                     <strong>Statistics:</strong>
                     <ul><li><code>platforms</code>: [&#x27;github_actions&#x27;]</li><li><code>platform_details</code>: {&#x27;github_actions&#x27;: {&#x27;name&#x27;: &#x27;GitHub Actions&#x27;, &#x27;workflow_count&#x27;: 19, &#x27;files&#x27;: [&#x27;smokeshow.yml&#x27;, &#x27;issue-manager.yml&#x27;, &#x27;deploy-docs.yml&#x27;, &#x27;publish.yml&#x27;, &#x27;labeler.yml&#x27;]}}</li></ul>
-                </div>
-            
-                    
-                </div>
-            </div>
-        
-            <div class="rule-detail" id="rule-generic-conventions-dependency_updates">
-                <div class="rule-header" onclick="toggleRule(this)">
-                    <div>
-                        <strong>Dependency updates: Dependabot</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>generic.conventions.dependency_updates</code></span>
-                    </div>
-                    <div>
-                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
-                        <span class="expand-icon">&#9654;</span>
-                    </div>
-                </div>
-                <div class="rule-body">
-                    <div class="rule-meta">
-                        <span><strong>Category:</strong> dependencies</span>
-                        <span><strong>Language:</strong> generic</span>
-                        <span><strong>Confidence:</strong> 80%</span>
-                    </div>
-                    <p>Automated dependency updates via Dependabot for github-actions.</p>
-                    <p><strong>Assessment:</strong> Dependency updates: not configured</p>
-                    
-                <div class="suggestion">
-                    <strong>Suggestion:</strong> Configure Dependabot or Renovate for automated dependency updates.
-                </div>
-            
-                    
-                <div>
-                    <strong>Statistics:</strong>
-                    <ul><li><code>tools</code>: [&#x27;dependabot&#x27;]</li><li><code>tool_details</code>: {&#x27;dependabot&#x27;: {&#x27;name&#x27;: &#x27;Dependabot&#x27;, &#x27;ecosystems&#x27;: [&#x27;github-actions&#x27;]}}</li></ul>
-                </div>
-            
-                    
-                </div>
-            </div>
-        
-            <div class="rule-detail" id="rule-generic-conventions-git_hooks">
-                <div class="rule-header" onclick="toggleRule(this)">
-                    <div>
-                        <strong>Git hooks: pre-commit</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>generic.conventions.git_hooks</code></span>
-                    </div>
-                    <div>
-                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
-                        <span class="expand-icon">&#9654;</span>
-                    </div>
-                </div>
-                <div class="rule-body">
-                    <div class="rule-meta">
-                        <span><strong>Category:</strong> git</span>
-                        <span><strong>Language:</strong> generic</span>
-                        <span><strong>Confidence:</strong> 80%</span>
-                    </div>
-                    <p>Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting.</p>
-                    <p><strong>Assessment:</strong> Git hooks: none configured</p>
-                    
-                <div class="suggestion">
-                    <strong>Suggestion:</strong> Configure pre-commit hooks for automated quality checks.
-                </div>
-            
-                    
-                <div>
-                    <strong>Statistics:</strong>
-                    <ul><li><code>hooks_tools</code>: [&#x27;pre-commit&#x27;]</li><li><code>hooks_configured</code>: [&#x27;whitespace&#x27;, &#x27;file validation&#x27;, &#x27;formatting&#x27;]</li><li><code>has_pre_commit</code>: True</li><li><code>has_husky</code>: False</li><li><code>has_lefthook</code>: False</li></ul>
                 </div>
             
                     
@@ -2180,10 +2589,10 @@ class VisibleTextExtractor(HTMLParser):
                     <div class="rule-meta">
                         <span><strong>Category:</strong> concurrency</span>
                         <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 90%</span>
+                        <span><strong>Confidence:</strong> 72%</span>
                     </div>
-                    <p>Uses FastAPI BackgroundTasks for background task processing. Found 10 usages.</p>
-                    <p><strong>Assessment:</strong> Convention detected with 90% confidence</p>
+                    <p>Uses FastAPI BackgroundTasks for background task processing. Found 4 usages.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 72% confidence</p>
                     
                 <div class="suggestion">
                     <strong>Suggestion:</strong> Use appropriate synchronization primitives and handle async errors properly.
@@ -2192,26 +2601,13 @@ class VisibleTextExtractor(HTMLParser):
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>job_library_counts</code>: {&#x27;fastapi_background&#x27;: 10}</li><li><code>primary_library</code>: fastapi_background</li><li><code>task_decorators</code>: 0</li></ul>
+                    <ul><li><code>job_library_counts</code>: {&#x27;fastapi_background&#x27;: 4}</li><li><code>primary_library</code>: fastapi_background</li><li><code>task_decorators</code>: 0</li></ul>
                 </div>
             
                     
                 <div class="evidence">
                     <strong>Evidence:</strong>
                     
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_dependency_contextmanager.py:1-9</div>
-                        <pre><code>import json
-
-import pytest
-from fastapi import BackgroundTasks, Depends, FastAPI
-from fastapi.responses import StreamingResponse
-from fastapi.testclient import TestClient
-
-app = FastAPI()
-state = {</code></pre>
-                    </div>
-                
                     <div class="evidence-item">
                         <div class="evidence-path">fastapi/background.py:1-9</div>
                         <pre><code>from typing import Annotated, Any, Callable
@@ -2369,11 +2765,11 @@ def get_settings():
                 </div>
             </div>
         
-            <div class="rule-detail" id="rule-python-conventions-db_library">
+            <div class="rule-detail" id="rule-python-conventions-class_style">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
-                        <strong>Primary database library: SQLModel</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.db_library</code></span>
+                        <strong>Data classes: Pydantic models</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.class_style</code></span>
                     </div>
                     <div>
                         <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
@@ -2382,12 +2778,12 @@ def get_settings():
                 </div>
                 <div class="rule-body">
                     <div class="rule-meta">
-                        <span><strong>Category:</strong> database</span>
+                        <span><strong>Category:</strong> code_style</span>
                         <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 79%</span>
+                        <span><strong>Confidence:</strong> 86%</span>
                     </div>
-                    <p>Uses SQLModel as primary database library (14/17 imports). Also uses: SQLModel.</p>
-                    <p><strong>Assessment:</strong> Convention detected with 79% confidence</p>
+                    <p>Uses Pydantic models for structured data. 84/98 structured classes use this pattern.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 86% confidence</p>
                     
                 <div class="suggestion">
                     <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
@@ -2396,7 +2792,7 @@ def get_settings():
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>library_counts</code>: {&#x27;sqlalchemy&#x27;: 3, &#x27;sqlmodel&#x27;: 14}</li><li><code>primary_library</code>: sqlmodel</li><li><code>primary_ratio</code>: 0.824</li></ul>
+                    <ul><li><code>dataclass_count</code>: 6</li><li><code>pydantic_count</code>: 84</li><li><code>attrs_count</code>: 0</li><li><code>namedtuple_count</code>: 8</li><li><code>plain_count</code>: 58</li><li><code>dominant_style</code>: pydantic</li></ul>
                 </div>
             
                     
@@ -2404,58 +2800,162 @@ def get_settings():
                     <strong>Evidence:</strong>
                     
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_sql_databases/test_tutorial002.py:6-12</div>
-                        <pre><code>from fastapi.testclient import TestClient
-from inline_snapshot import Is, snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
+                        <div class="evidence-path">fastapi/security/http.py:11-21</div>
+                        <pre><code>from pydantic import BaseModel
+from starlette.requests import Request
+from starlette.status import HTTP_401_UNAUTHORIZED
 
-from tests.utils import needs_py310</code></pre>
+
+class HTTPBasicCredentials(BaseModel):
+    &quot;&quot;&quot;
+    The HTTP Basic credentials given as the result of using `HTTPBasic` in a
+    dependency.
+
+    Read more about it in the</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_sql_databases/test_tutorial002.py:7-13</div>
-                        <pre><code>from inline_snapshot import Is, snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
+                        <div class="evidence-path">fastapi/security/http.py:24-34</div>
+                        <pre><code>
+    username: Annotated[str, Doc(&quot;The HTTP Basic username.&quot;)]
+    password: Annotated[str, Doc(&quot;The HTTP Basic password.&quot;)]
 
-from tests.utils import needs_py310
+
+class HTTPAuthorizationCredentials(BaseModel):
+    &quot;&quot;&quot;
+    The HTTP authorization credentials in the result of using `HTTPBearer` or
+    `HTTPDigest` in a dependency.
+
+    The HTTP authorization header value is split by the first space.</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/openapi/models.py:52-62</div>
+                        <pre><code>            cls, source: type[Any], handler: Callable[[Any], Mapping[str, Any]]
+        ) -&gt; Mapping[str, Any]:
+            return with_info_plain_validator_function(cls._validate)
+
+
+class BaseModelWithConfig(BaseModel):
+    model_config = {&quot;extra&quot;: &quot;allow&quot;}
+
+
+class Contact(BaseModelWithConfig):
+    name: Optional[str] = None</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/openapi/models.py:56-66</div>
+                        <pre><code>
+class BaseModelWithConfig(BaseModel):
+    model_config = {&quot;extra&quot;: &quot;allow&quot;}
+
+
+class Contact(BaseModelWithConfig):
+    name: Optional[str] = None
+    url: Optional[AnyUrl] = None
+    email: Optional[EmailStr] = None
+
 </code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_sql_databases/test_tutorial001.py:6-12</div>
-                        <pre><code>from fastapi.testclient import TestClient
-from inline_snapshot import snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
+                        <div class="evidence-path">fastapi/openapi/models.py:62-72</div>
+                        <pre><code>    name: Optional[str] = None
+    url: Optional[AnyUrl] = None
+    email: Optional[EmailStr] = None
 
-from tests.utils import needs_py310</code></pre>
+
+class License(BaseModelWithConfig):
+    name: str
+    identifier: Optional[str] = None
+    url: Optional[AnyUrl] = None
+
+</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-constant_naming">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>lowercase constant naming</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.constant_naming</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> naming</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 70%</span>
+                    </div>
+                    <p>Uses lowercase naming for module-level values. 87/91 use lowercase.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 70% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>all_caps_count</code>: 4</li><li><code>lowercase_count</code>: 87</li><li><code>all_caps_ratio</code>: 0.044</li><li><code>style</code>: lowercase</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:19-23</div>
+                        <pre><code>
+class ParamTypes(Enum):
+    query = &quot;query&quot;
+    header = &quot;header&quot;
+    path = &quot;path&quot;</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_tutorial/test_sql_databases/test_tutorial001.py:7-13</div>
-                        <pre><code>from inline_snapshot import snapshot
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.main import default_registry
-
-from tests.utils import needs_py310
+                        <div class="evidence-path">fastapi/params.py:20-24</div>
+                        <pre><code>class ParamTypes(Enum):
+    query = &quot;query&quot;
+    header = &quot;header&quot;
+    path = &quot;path&quot;
+    cookie = &quot;cookie&quot;</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:21-25</div>
+                        <pre><code>    query = &quot;query&quot;
+    header = &quot;header&quot;
+    path = &quot;path&quot;
+    cookie = &quot;cookie&quot;
 </code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">docs_src/sql_databases/tutorial002_an_py310.py:1-7</div>
-                        <pre><code>from typing import Annotated
+                        <div class="evidence-path">fastapi/params.py:22-26</div>
+                        <pre><code>    header = &quot;header&quot;
+    path = &quot;path&quot;
+    cookie = &quot;cookie&quot;
 
-from fastapi import Depends, FastAPI, HTTPException, Query
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-
-
-class HeroBase(SQLModel):</code></pre>
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/cli.py:8-12</div>
+                        <pre><code>def main() -&gt; None:
+    if not cli_main:  # type: ignore[truthy-function]
+        message = &#x27;To use the fastapi command, please install &quot;fastapi[standard]&quot;:\n\n\tpip install &quot;fastapi[standard]&quot;\n&#x27;
+        print(message)
+        raise RuntimeError(message)  # noqa: B904</code></pre>
                     </div>
                 
                 </div>
@@ -2641,11 +3141,11 @@ def app_fixture(call_counter: dict[str, int]):
                 </div>
             </div>
         
-            <div class="rule-detail" id="rule-python-conventions-di_style">
+            <div class="rule-detail" id="rule-python-conventions-enum_usage">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
-                        <strong>Mixed DI patterns: FastAPI Depends dominant</strong>
-                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.di_style</code></span>
+                        <strong>Enum usage: Enum</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.enum_usage</code></span>
                     </div>
                     <div>
                         <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
@@ -2654,12 +3154,12 @@ def app_fixture(call_counter: dict[str, int]):
                 </div>
                 <div class="rule-body">
                     <div class="rule-meta">
-                        <span><strong>Category:</strong> dependency_injection</span>
+                        <span><strong>Category:</strong> code_style</span>
                         <span><strong>Language:</strong> python</span>
-                        <span><strong>Confidence:</strong> 73%</span>
+                        <span><strong>Confidence:</strong> 80%</span>
                     </div>
-                    <p>Uses multiple DI patterns. Primary: FastAPI Depends (421/454). Also uses: Container-based DI.</p>
-                    <p><strong>Assessment:</strong> Convention detected with 73% confidence</p>
+                    <p>Uses Python enums for categorical values. Found 4 enum class(es).</p>
+                    <p><strong>Assessment:</strong> Convention detected with 80% confidence</p>
                     
                 <div class="suggestion">
                     <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
@@ -2668,7 +3168,7 @@ def app_fixture(call_counter: dict[str, int]):
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>pattern_counts</code>: {&#x27;fastapi_depends&#x27;: 421, &#x27;container_di&#x27;: 33}</li><li><code>dominant_pattern</code>: fastapi_depends</li><li><code>depends_count</code>: 372</li><li><code>common_dependency_names</code>: {&#x27;get_current_user&#x27;: 32, &#x27;get_session&#x27;: 10, &#x27;get_settings&#x27;: 4, &#x27;get_db&#x27;: 3}</li></ul>
+                    <ul><li><code>enum_count</code>: 4</li><li><code>enum_types</code>: {&#x27;Enum&#x27;: 4}</li><li><code>enum_names</code>: [&#x27;ParamTypes&#x27;, &#x27;ParameterInType&#x27;, &#x27;SecuritySchemeType&#x27;, &#x27;APIKeyIn&#x27;]</li></ul>
                 </div>
             
                     
@@ -2676,78 +3176,63 @@ def app_fixture(call_counter: dict[str, int]):
                     <strong>Evidence:</strong>
                     
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_security_oauth2.py:26-36</div>
-                        <pre><code>    return user
+                        <div class="evidence-path">fastapi/params.py:15-25</div>
+                        <pre><code>)
+
+_Unset: Any = Undefined
 
 
-@app.post(&quot;/login&quot;)
-# Here we use string annotations to test them
-def login(form_data: &quot;OAuth2PasswordRequestFormStrict&quot; = Depends()):
-    return form_data
-
-
-@app.get(&quot;/users/me&quot;)
-# Here we use string annotations to test them</code></pre>
-                    </div>
-                
-                    <div class="evidence-item">
-                        <div class="evidence-path">tests/test_security_oauth2.py:32-42</div>
-                        <pre><code>    return form_data
-
-
-@app.get(&quot;/users/me&quot;)
-# Here we use string annotations to test them
-def read_current_user(current_user: &quot;User&quot; = Depends(get_current_user)):
-    return current_user
-
-
-client = TestClient(app)
+class ParamTypes(Enum):
+    query = &quot;query&quot;
+    header = &quot;header&quot;
+    path = &quot;path&quot;
+    cookie = &quot;cookie&quot;
 </code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_param_in_path_and_dependency.py:6-16</div>
-                        <pre><code>
-async def user_exists(user_id: int):
-    return True
+                        <div class="evidence-path">fastapi/openapi/models.py:219-229</div>
+                        <pre><code>    externalValue: Optional[AnyUrl]
+
+    __pydantic_config__ = {&quot;extra&quot;: &quot;allow&quot;}  # type: ignore[misc]
 
 
-@app.get(&quot;/users/{user_id}&quot;, dependencies=[Depends(user_exists)])
-async def read_users(user_id: int):
-    pass
-
-
-client = TestClient(app)</code></pre>
+class ParameterInType(Enum):
+    query = &quot;query&quot;
+    header = &quot;header&quot;
+    path = &quot;path&quot;
+    cookie = &quot;cookie&quot;
+</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_depends_hashable.py:9-19</div>
-                        <pre><code>    pass
+                        <div class="evidence-path">fastapi/openapi/models.py:319-329</div>
+                        <pre><code>    trace: Optional[Operation] = None
+    servers: Optional[list[Server]] = None
+    parameters: Optional[list[Union[Parameter, Reference]]] = None
 
 
-def test_depends_hashable():
-    dep()  # just for coverage
-    d1 = Depends(dep)
-    d2 = Depends(dep)
-    d3 = Depends(dep, scope=&quot;function&quot;)
-    d4 = Depends(dep, scope=&quot;function&quot;)
-
-    s1 = Security(dep)</code></pre>
+class SecuritySchemeType(Enum):
+    apiKey = &quot;apiKey&quot;
+    http = &quot;http&quot;
+    oauth2 = &quot;oauth2&quot;
+    openIdConnect = &quot;openIdConnect&quot;
+</code></pre>
                     </div>
                 
                     <div class="evidence-item">
-                        <div class="evidence-path">tests/test_depends_hashable.py:10-20</div>
-                        <pre><code>
+                        <div class="evidence-path">fastapi/openapi/models.py:331-341</div>
+                        <pre><code>class SecurityBase(BaseModelWithConfig):
+    type_: SecuritySchemeType = Field(alias=&quot;type&quot;)
+    description: Optional[str] = None
 
-def test_depends_hashable():
-    dep()  # just for coverage
-    d1 = Depends(dep)
-    d2 = Depends(dep)
-    d3 = Depends(dep, scope=&quot;function&quot;)
-    d4 = Depends(dep, scope=&quot;function&quot;)
 
-    s1 = Security(dep)
-    s2 = Security(dep)</code></pre>
+class APIKeyIn(Enum):
+    query = &quot;query&quot;
+    header = &quot;header&quot;
+    cookie = &quot;cookie&quot;
+
+</code></pre>
                     </div>
                 
                 </div>
@@ -2849,6 +3334,120 @@ class CustomError(Exception):
                 </div>
             </div>
         
+            <div class="rule-detail" id="rule-python-conventions-error_wrapper">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Error wrapper pattern: time.sleep</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.error_wrapper</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> error_handling</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 59%</span>
+                    </div>
+                    <p>Uses &#x27;time.sleep&#x27; as a common error handler function. Called in 6/28 (21%) except blocks. Also uses: errors.append, RuntimeError.</p>
+                    <p><strong>Assessment:</strong> Error wrapper &#x27;time.sleep&#x27; used in 6/28 handlers (21%)</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Consider using &#x27;time.sleep&#x27; more consistently across all exception handlers.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>wrapper_function</code>: time.sleep</li><li><code>usage_count</code>: 6</li><li><code>total_handlers</code>: 28</li><li><code>usage_ratio</code>: 0.214</li><li><code>other_wrappers</code>: [&#x27;errors.append&#x27;, &#x27;RuntimeError&#x27;]</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/playwright/cookie_param_models/image01.py:28-38</div>
+                        <pre><code>)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get(&quot;http://localhost:8000/docs&quot;)
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+finally:</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/playwright/sql_databases/image01.py:26-36</div>
+                        <pre><code>)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get(&quot;http://localhost:8000/docs&quot;)
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+finally:</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/playwright/sql_databases/image02.py:26-36</div>
+                        <pre><code>)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get(&quot;http://localhost:8000/docs&quot;)
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+finally:</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/playwright/query_param_models/image01.py:30-40</div>
+                        <pre><code>)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get(&quot;http://localhost:8000/docs&quot;)
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+finally:</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/playwright/header_param_models/image01.py:27-37</div>
+                        <pre><code>)
+try:
+    for _ in range(3):
+        try:
+            response = httpx.get(&quot;http://localhost:8000/docs&quot;)
+        except httpx.ConnectError:
+            time.sleep(1)
+            break
+    with sync_playwright() as playwright:
+        run(playwright)
+finally:</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
             <div class="rule-detail" id="rule-python-conventions-import_sorting">
                 <div class="rule-header" onclick="toggleRule(this)">
                     <div>
@@ -2880,6 +3479,100 @@ class CustomError(Exception):
                 </div>
             
                     
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-import_style">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Absolute imports preferred</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.import_style</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> code_style</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 70%</span>
+                    </div>
+                    <p>Prefers absolute imports. 74 relative vs 491 absolute imports.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 70% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>relative_count</code>: 74</li><li><code>absolute_count</code>: 491</li><li><code>relative_ratio</code>: 0.131</li><li><code>style</code>: absolute</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:10-16</div>
+                        <pre><code>from pydantic.fields import FieldInfo
+from typing_extensions import Literal, deprecated
+
+from ._compat import (
+    Undefined,
+)
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/__init__.py:4-10</div>
+                        <pre><code>
+from starlette import status as status
+
+from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/__init__.py:5-11</div>
+                        <pre><code>from starlette import status as status
+
+from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException
+from .exceptions import WebSocketException as WebSocketException</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/__init__.py:6-12</div>
+                        <pre><code>
+from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException
+from .exceptions import WebSocketException as WebSocketException
+from .param_functions import Body as Body</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/__init__.py:7-13</div>
+                        <pre><code>from .applications import FastAPI as FastAPI
+from .background import BackgroundTasks as BackgroundTasks
+from .datastructures import UploadFile as UploadFile
+from .exceptions import HTTPException as HTTPException
+from .exceptions import WebSocketException as WebSocketException
+from .param_functions import Body as Body
+from .param_functions import Cookie as Cookie</code></pre>
+                    </div>
+                
+                </div>
+            
                 </div>
             </div>
         
@@ -2954,6 +3647,640 @@ import time</code></pre>
 import secrets
 import subprocess
 from collections import defaultdict</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-optional_usage">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Optional type annotations</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.optional_usage</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> typing</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 80%</span>
+                    </div>
+                    <p>Uses Optional type hint for nullable values. Found 20 imports of Optional.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 80% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add type annotations to function parameters and return types. Start with public APIs.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>optional_imports</code>: 20</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/params.py:2-8</div>
+                        <pre><code>from collections.abc import Sequence
+from dataclasses import dataclass
+from enum import Enum
+from typing import Annotated, Any, Callable, Optional, Union
+
+from fastapi.exceptions import FastAPIDeprecationWarning
+from fastapi.openapi.models import Example</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/applications.py:1-6</div>
+                        <pre><code>from collections.abc import Awaitable, Coroutine, Sequence
+from enum import Enum
+from typing import (
+    Annotated,
+    Any,
+    Callable,</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/encoders.py:14-20</div>
+                        <pre><code>from pathlib import Path, PurePath
+from re import Pattern
+from types import GeneratorType
+from typing import Annotated, Any, Callable, Optional, Union
+from uuid import UUID
+
+from annotated_doc import Doc</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/types.py:1-6</div>
+                        <pre><code>import types
+from enum import Enum
+from typing import Any, Callable, Optional, TypeVar, Union
+
+from pydantic import BaseModel
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/utils.py:1-7</div>
+                        <pre><code>import re
+import warnings
+from collections.abc import MutableMapping
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Optional,</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-pagination_pattern">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Cursor-based pagination</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.pagination_pattern</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> api</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 80%</span>
+                    </div>
+                    <p>Uses cursor-based pagination. 8 cursor/after/before usages.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 80% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>offset_count</code>: 0</li><li><code>cursor_count</code>: 8</li><li><code>page_count</code>: 0</li><li><code>pattern</code>: cursor</li></ul>
+                </div>
+            
+                    
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-response_envelope">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Response envelope classes</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.response_envelope</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> api</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 70%</span>
+                    </div>
+                    <p>Uses response envelope classes (5 found).</p>
+                    <p><strong>Assessment:</strong> Convention detected with 70% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>envelope_classes</code>: 5</li><li><code>field_counts</code>: {&#x27;errors&#x27;: 4, &#x27;message&#x27;: 2, &#x27;items&#x27;: 5}</li><li><code>pattern</code>: class_based</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/responses.py:18-28</div>
+                        <pre><code>    import orjson
+except ImportError:  # pragma: nocover
+    orjson = None  # type: ignore
+
+
+class UJSONResponse(JSONResponse):
+    &quot;&quot;&quot;
+    JSON response using the high-performance ujson library to serialize data to JSON.
+
+    Read more about it in the
+    [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/).</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/responses.py:31-41</div>
+                        <pre><code>    def render(self, content: Any) -&gt; bytes:
+        assert ujson is not None, &quot;ujson must be installed to use UJSONResponse&quot;
+        return ujson.dumps(content, ensure_ascii=False).encode(&quot;utf-8&quot;)
+
+
+class ORJSONResponse(JSONResponse):
+    &quot;&quot;&quot;
+    JSON response using the high-performance orjson library to serialize data to JSON.
+
+    Read more about it in the
+    [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/).</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/contributors.py:102-112</div>
+                        <pre><code>
+class PRsRepository(BaseModel):
+    pullRequests: PullRequests
+
+
+class PRsResponseData(BaseModel):
+    repository: PRsRepository
+
+
+class PRsResponse(BaseModel):
+    data: PRsResponseData</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/sponsors.py:72-82</div>
+                        <pre><code>
+class SponsorsUser(BaseModel):
+    sponsorshipsAsMaintainer: SponsorshipAsMaintainer
+
+
+class SponsorsResponseData(BaseModel):
+    user: SponsorsUser
+
+
+class SponsorsResponse(BaseModel):
+    data: SponsorsResponseData</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">scripts/people.py:106-116</div>
+                        <pre><code>
+class DiscussionsRepository(BaseModel):
+    discussions: Discussions
+
+
+class DiscussionsResponseData(BaseModel):
+    repository: DiscussionsRepository
+
+
+class DiscussionsResponse(BaseModel):
+    data: DiscussionsResponseData</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-test_naming">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Test naming: Simple style (test_feature)</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.test_naming</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> testing</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 84%</span>
+                    </div>
+                    <p>Uses Simple style (test_feature) naming. 2006/2047 (98%) test functions.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 84% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add more test cases and increase coverage of edge cases and error paths.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>total_test_functions</code>: 2047</li><li><code>pattern_counts</code>: {&#x27;simple&#x27;: 2006, &#x27;action_result&#x27;: 41}</li><li><code>test_class_count</code>: 0</li><li><code>dominant_pattern</code>: simple</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_datastructures.py:7-13</div>
+                        <pre><code>from fastapi.testclient import TestClient
+
+
+def test_upload_file_invalid_pydantic_v2():
+    with pytest.raises(ValueError):
+        UploadFile._validate(&quot;not a Starlette UploadFile&quot;, {})
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_datastructures.py:12-18</div>
+                        <pre><code>        UploadFile._validate(&quot;not a Starlette UploadFile&quot;, {})
+
+
+def test_default_placeholder_equals():
+    placeholder_1 = Default(&quot;a&quot;)
+    placeholder_2 = Default(&quot;a&quot;)
+    assert placeholder_1 == placeholder_2</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_datastructures.py:19-25</div>
+                        <pre><code>    assert placeholder_1.value == placeholder_2.value
+
+
+def test_default_placeholder_bool():
+    placeholder_a = Default(&quot;a&quot;)
+    placeholder_b = Default(&quot;&quot;)
+    assert placeholder_a</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-test_structure">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Distributed test files</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.test_structure</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> testing</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 70%</span>
+                    </div>
+                    <p>Test files spread across 2 directories. 465 total test files.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 70% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add more test cases and increase coverage of edge cases and error paths.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>test_file_count</code>: 465</li><li><code>test_directories</code>: {&#x27;tests&#x27;: 454, &#x27;scripts&#x27;: 11}</li><li><code>has_unit</code>: False</li><li><code>has_integration</code>: False</li><li><code>has_e2e</code>: False</li><li><code>structure</code>: distributed</li><li><code>categories</code>: []</li></ul>
+                </div>
+            
+                    
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-conventions-validation_style">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Pydantic validation</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.conventions.validation_style</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> validation</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 78%</span>
+                    </div>
+                    <p>Uses Pydantic validation for input validation. 17/28 (61%) validation patterns use this approach.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 78% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Review this convention and consider industry best practices for improvement.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>validation_counts</code>: {&#x27;pydantic&#x27;: 17, &#x27;manual&#x27;: 11}</li><li><code>dominant_style</code>: pydantic</li><li><code>dominant_ratio</code>: 0.607</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/encoders.py:20-26</div>
+                        <pre><code>from annotated_doc import Doc
+from fastapi.exceptions import PydanticV1NotSupportedError
+from fastapi.types import IncEx
+from pydantic import BaseModel
+from pydantic.color import Color
+from pydantic.networks import AnyUrl, NameEmail
+from pydantic.types import SecretBytes, SecretStr</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/types.py:2-8</div>
+                        <pre><code>from enum import Enum
+from typing import Any, Callable, Optional, TypeVar, Union
+
+from pydantic import BaseModel
+
+DecoratedCallable = TypeVar(&quot;DecoratedCallable&quot;, bound=Callable[..., Any])
+UnionType = getattr(types, &quot;UnionType&quot;, Union)</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/utils.py:21-27</div>
+                        <pre><code>)
+from fastapi.datastructures import DefaultPlaceholder, DefaultType
+from fastapi.exceptions import FastAPIDeprecationWarning, PydanticV1NotSupportedError
+from pydantic import BaseModel
+from pydantic.fields import FieldInfo
+from typing_extensions import Literal
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/exceptions.py:2-8</div>
+                        <pre><code>from typing import Annotated, Any, Optional, TypedDict, Union
+
+from annotated_doc import Doc
+from pydantic import BaseModel, create_model
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.exceptions import WebSocketException as StarletteWebSocketException
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">fastapi/security/http.py:8-14</div>
+                        <pre><code>from fastapi.openapi.models import HTTPBearer as HTTPBearerModel
+from fastapi.security.base import SecurityBase
+from fastapi.security.utils import get_authorization_scheme_param
+from pydantic import BaseModel
+from starlette.requests import Request
+from starlette.status import HTTP_401_UNAUTHORIZED
+</code></pre>
+                    </div>
+                
+                </div>
+            
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-docs_conventions-example_completeness">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Snippet-style examples</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.docs_conventions.example_completeness</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> documentation</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 70%</span>
+                    </div>
+                    <p>Documentation uses code snippets (may require context from docs). Only 77/530 examples have all imports.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 70% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add docstrings to public functions and classes explaining purpose and parameters.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>complete_examples</code>: 77</li><li><code>incomplete_examples</code>: 453</li><li><code>complete_ratio</code>: 0.145</li><li><code>style</code>: snippets</li></ul>
+                </div>
+            
+                    
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-docs_conventions-example_structure">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Examples with main() entry point</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.docs_conventions.example_structure</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> documentation</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 80%</span>
+                    </div>
+                    <p>Examples use main() function as entry point. Found 14 examples with main().</p>
+                    <p><strong>Assessment:</strong> Convention detected with 80% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add docstrings to public functions and classes explaining purpose and parameters.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>total_example_files</code>: 622</li><li><code>standalone_count</code>: 1</li><li><code>main_function_count</code>: 14</li><li><code>example_directories</code>: {&#x27;docs_src&#x27;: 622}</li><li><code>topics</code>: {}</li><li><code>pattern</code>: main_function</li></ul>
+                </div>
+            
+                    
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-docs_conventions-organization">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Tutorial-style documentation</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.docs_conventions.organization</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> documentation</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 80%</span>
+                    </div>
+                    <p>Documentation organized as tutorials. Found 496 tutorial files. Common types: tutorial.</p>
+                    <p><strong>Assessment:</strong> Convention detected with 80% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add docstrings to public functions and classes explaining purpose and parameters.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>total_files</code>: 622</li><li><code>file_prefixes</code>: {&#x27;tutorial&#x27;: 496}</li><li><code>dir_structure</code>: {&#x27;depth_2&#x27;: 567, &#x27;depth_3&#x27;: 45, &#x27;depth_4&#x27;: 10}</li><li><code>style</code>: tutorials</li></ul>
+                </div>
+            
+                    
+                </div>
+            </div>
+        
+            <div class="rule-detail" id="rule-python-test_conventions-assertions">
+                <div class="rule-header" onclick="toggleRule(this)">
+                    <div>
+                        <strong>Plain assert statements</strong>
+                        <span class="meta" style="margin-left: 10px;"><code>python.test_conventions.assertions</code></span>
+                    </div>
+                    <div>
+                        <span class="badge" style="background-color: #ffc107;">3/5 - Average</span>
+                        <span class="expand-icon">&#9654;</span>
+                    </div>
+                </div>
+                <div class="rule-body">
+                    <div class="rule-meta">
+                        <span><strong>Category:</strong> testing</span>
+                        <span><strong>Language:</strong> python</span>
+                        <span><strong>Confidence:</strong> 89%</span>
+                    </div>
+                    <p>Uses plain Python assert statements for test assertions. 4113 assert statements. Uses pytest.raises for exception testing (94 usages).</p>
+                    <p><strong>Assessment:</strong> Convention detected with 89% confidence</p>
+                    
+                <div class="suggestion">
+                    <strong>Suggestion:</strong> Add more test cases and increase coverage of edge cases and error paths.
+                </div>
+            
+                    
+                <div>
+                    <strong>Statistics:</strong>
+                    <ul><li><code>assertion_counts</code>: {&#x27;plain_assert&#x27;: 4113, &#x27;pytest_raises&#x27;: 94, &#x27;pytest_warns&#x27;: 15}</li><li><code>style</code>: plain_assert</li></ul>
+                </div>
+            
+                    
+                <div class="evidence">
+                    <strong>Evidence:</strong>
+                    
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_datastructures.py:8-14</div>
+                        <pre><code>
+
+def test_upload_file_invalid_pydantic_v2():
+    with pytest.raises(ValueError):
+        UploadFile._validate(&quot;not a Starlette UploadFile&quot;, {})
+
+</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_openapi_schema_type.py:22-26</div>
+                        <pre><code>
+def test_invalid_type_value() -&gt; None:
+    &quot;&quot;&quot;Test that Schema raises ValueError for invalid type values.&quot;&quot;&quot;
+    with pytest.raises(ValueError, match=&quot;2 validation errors for Schema&quot;):
+        Schema(type=True)  # type: ignore[arg-type]</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_response_model_invalid.py:8-14</div>
+                        <pre><code>
+
+def test_invalid_response_model_raises():
+    with pytest.raises(FastAPIError):
+        app = FastAPI()
+
+        @app.get(&quot;/&quot;, response_model=NonPydanticModel)</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_response_model_invalid.py:17-23</div>
+                        <pre><code>
+
+def test_invalid_response_model_sub_type_raises():
+    with pytest.raises(FastAPIError):
+        app = FastAPI()
+
+        @app.get(&quot;/&quot;, response_model=list[NonPydanticModel])</code></pre>
+                    </div>
+                
+                    <div class="evidence-item">
+                        <div class="evidence-path">tests/test_response_model_invalid.py:26-32</div>
+                        <pre><code>
+
+def test_invalid_response_model_in_responses_raises():
+    with pytest.raises(FastAPIError):
+        app = FastAPI()
+
+        @app.get(&quot;/&quot;, responses={&quot;500&quot;: {&quot;model&quot;: NonPydanticModel}})</code></pre>
                     </div>
                 
                 </div>
@@ -3129,8 +4456,8 @@ from collections import defaultdict</code></pre>
                         <span><strong>Language:</strong> python</span>
                         <span><strong>Confidence:</strong> 60%</span>
                     </div>
-                    <p>Few functions have docstrings. Only 82/1326 (6%).</p>
-                    <p><strong>Assessment:</strong> Docstring coverage is 6% of public functions</p>
+                    <p>Few functions have docstrings. Only 72/366 (20%).</p>
+                    <p><strong>Assessment:</strong> Docstring coverage is 20% of public functions</p>
                     
                 <div class="suggestion">
                     <strong>Suggestion:</strong> Add docstrings to public functions and classes. Focus on explaining the &#x27;why&#x27; and documenting parameters/return values.
@@ -3139,7 +4466,7 @@ from collections import defaultdict</code></pre>
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>total_public_functions</code>: 1326</li><li><code>documented_functions</code>: 82</li><li><code>function_doc_ratio</code>: 0.062</li><li><code>total_classes</code>: 529</li><li><code>documented_classes</code>: 29</li><li><code>class_doc_ratio</code>: 0.055</li></ul>
+                    <ul><li><code>total_public_functions</code>: 366</li><li><code>documented_functions</code>: 72</li><li><code>function_doc_ratio</code>: 0.197</li><li><code>total_classes</code>: 170</li><li><code>documented_classes</code>: 29</li><li><code>class_doc_ratio</code>: 0.171</li></ul>
                 </div>
             
                     
@@ -3220,8 +4547,8 @@ def pdm_build_initialize(context: Context) -&gt; None:
                         <span><strong>Language:</strong> python</span>
                         <span><strong>Confidence:</strong> 70%</span>
                     </div>
-                    <p>HTTPException is frequently raised outside the API layer. Service: 0, API: 4, Other: 132.</p>
-                    <p><strong>Assessment:</strong> HTTPException raised in API layer 3% of the time</p>
+                    <p>HTTPException is frequently raised outside the API layer. Service: 0, API: 0, Other: 136.</p>
+                    <p><strong>Assessment:</strong> HTTPException raised in API layer 0% of the time</p>
                     
                 <div class="suggestion">
                     <strong>Suggestion:</strong> Ensure HTTP errors are raised only at the API boundary layer.
@@ -3230,7 +4557,7 @@ def pdm_build_initialize(context: Context) -&gt; None:
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>total_http_exceptions</code>: 136</li><li><code>by_role</code>: {&#x27;test&#x27;: 10, &#x27;other&#x27;: 122, &#x27;api&#x27;: 4}</li><li><code>api_ratio</code>: 0.029</li></ul>
+                    <ul><li><code>total_http_exceptions</code>: 136</li><li><code>by_role</code>: {&#x27;test&#x27;: 10, &#x27;other&#x27;: 5, &#x27;docs&#x27;: 121}</li><li><code>api_ratio</code>: 0.0</li></ul>
                 </div>
             
                     
@@ -3344,7 +4671,7 @@ SessionDefaultDep = Annotated[Session, Depends(dep_session)]</code></pre>
                     
                 <div>
                     <strong>Statistics:</strong>
-                    <ul><li><code>total_handlers</code>: 31</li><li><code>decorator_handlers</code>: 12</li><li><code>call_handlers</code>: 19</li><li><code>handler_files</code>: [&#x27;docs_src/handling_errors/tutorial005_py39.py&#x27;, &#x27;docs_src/handling_errors/tutorial006_py39.py&#x27;, &#x27;docs_src/handling_errors/tutorial003_py39.py&#x27;, &#x27;fastapi/applications.py&#x27;, &#x27;tests/test_validation_error_context.py&#x27;, &#x27;docs_src/handling_errors/tutorial004_py39.py&#x27;]</li></ul>
+                    <ul><li><code>total_handlers</code>: 31</li><li><code>decorator_handlers</code>: 12</li><li><code>call_handlers</code>: 19</li><li><code>handler_files</code>: [&#x27;docs_src/handling_errors/tutorial005_py39.py&#x27;, &#x27;tests/test_validation_error_context.py&#x27;, &#x27;docs_src/handling_errors/tutorial004_py39.py&#x27;, &#x27;docs_src/handling_errors/tutorial006_py39.py&#x27;, &#x27;docs_src/handling_errors/tutorial003_py39.py&#x27;, &#x27;fastapi/applications.py&#x27;]</li></ul>
                 </div>
             
                     

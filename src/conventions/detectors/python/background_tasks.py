@@ -25,62 +25,79 @@ class PythonBackgroundTaskDetector(PythonDetector):
         libraries: dict[str, dict] = {}
         examples: dict[str, list[tuple[str, int]]] = {}
 
+        # Helper to filter out test/docs files
+        def filter_imports(imports):
+            """Filter out imports from test and docs files.
+
+            Args:
+                imports: List of (rel_path, ImportInfo) tuples
+            Returns:
+                Filtered list of (rel_path, ImportInfo) tuples
+            """
+            filtered = []
+            for rel_path, imp in imports:
+                file_idx = index.files.get(rel_path)
+                if file_idx and file_idx.role in ("test", "docs"):
+                    continue
+                filtered.append((rel_path, imp))
+            return filtered
+
         # Celery
-        celery_imports = index.find_imports_matching("celery", limit=30)
+        celery_imports = filter_imports(index.find_imports_matching("celery", limit=30))
         if celery_imports:
             libraries["celery"] = {
                 "name": "Celery",
                 "import_count": len(celery_imports),
             }
-            examples["celery"] = [(f.file_path, f.line) for f in celery_imports[:5]]
+            examples["celery"] = [(rel_path, imp.line) for rel_path, imp in celery_imports[:5]]
 
         # RQ (Redis Queue)
-        rq_imports = index.find_imports_matching("rq", limit=20)
+        rq_imports = filter_imports(index.find_imports_matching("rq", limit=20))
         # Filter out false positives
-        rq_imports = [i for i in rq_imports if i.module in ("rq", "rq.job", "rq.queue", "rq.worker")]
+        rq_imports = [(p, i) for p, i in rq_imports if i.module in ("rq", "rq.job", "rq.queue", "rq.worker")]
         if rq_imports:
             libraries["rq"] = {
                 "name": "RQ (Redis Queue)",
                 "import_count": len(rq_imports),
             }
-            examples["rq"] = [(f.file_path, f.line) for f in rq_imports[:5]]
+            examples["rq"] = [(rel_path, imp.line) for rel_path, imp in rq_imports[:5]]
 
         # Dramatiq
-        dramatiq_imports = index.find_imports_matching("dramatiq", limit=20)
+        dramatiq_imports = filter_imports(index.find_imports_matching("dramatiq", limit=20))
         if dramatiq_imports:
             libraries["dramatiq"] = {
                 "name": "Dramatiq",
                 "import_count": len(dramatiq_imports),
             }
-            examples["dramatiq"] = [(f.file_path, f.line) for f in dramatiq_imports[:5]]
+            examples["dramatiq"] = [(rel_path, imp.line) for rel_path, imp in dramatiq_imports[:5]]
 
         # Huey
-        huey_imports = index.find_imports_matching("huey", limit=20)
+        huey_imports = filter_imports(index.find_imports_matching("huey", limit=20))
         if huey_imports:
             libraries["huey"] = {
                 "name": "Huey",
                 "import_count": len(huey_imports),
             }
-            examples["huey"] = [(f.file_path, f.line) for f in huey_imports[:5]]
+            examples["huey"] = [(rel_path, imp.line) for rel_path, imp in huey_imports[:5]]
 
         # APScheduler
-        apscheduler_imports = index.find_imports_matching("apscheduler", limit=20)
+        apscheduler_imports = filter_imports(index.find_imports_matching("apscheduler", limit=20))
         if apscheduler_imports:
             libraries["apscheduler"] = {
                 "name": "APScheduler",
                 "import_count": len(apscheduler_imports),
             }
-            examples["apscheduler"] = [(f.file_path, f.line) for f in apscheduler_imports[:5]]
+            examples["apscheduler"] = [(rel_path, imp.line) for rel_path, imp in apscheduler_imports[:5]]
 
         # arq (async)
-        arq_imports = index.find_imports_matching("arq", limit=20)
-        arq_imports = [i for i in arq_imports if i.module in ("arq", "arq.jobs", "arq.worker")]
+        arq_imports = filter_imports(index.find_imports_matching("arq", limit=20))
+        arq_imports = [(p, i) for p, i in arq_imports if i.module in ("arq", "arq.jobs", "arq.worker")]
         if arq_imports:
             libraries["arq"] = {
                 "name": "arq",
                 "import_count": len(arq_imports),
             }
-            examples["arq"] = [(f.file_path, f.line) for f in arq_imports[:5]]
+            examples["arq"] = [(rel_path, imp.line) for rel_path, imp in arq_imports[:5]]
 
         if not libraries:
             return result

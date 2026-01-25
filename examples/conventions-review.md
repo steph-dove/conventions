@@ -1,6 +1,6 @@
 # Conventions Review Report
 
-*Generated: 2026-01-19 16:33:32*
+*Generated: 2026-01-24 21:05:01*
 
 ## Score Legend
 
@@ -14,11 +14,11 @@
 
 ## Summary
 
-- **Conventions Reviewed:** 38
-- **Average Score:** 3.5/5 (Good)
+- **Conventions Reviewed:** 53
+- **Average Score:** 3.4/5 (Average)
 - **Excellent (5):** 9
-- **Good (4):** 10
-- **Average (3):** 13
+- **Good (4):** 14
+- **Average (3):** 24
 - **Below Average (2):** 3
 - **Poor (1):** 3
 
@@ -26,38 +26,53 @@
 
 | Convention | Score | Rating |
 |:-----------|:-----:|:-------|
-| Async-first API design | 5/5 | Excellent |
+| Dependency updates: Dependabot | 5/5 | Excellent |
+| Git hooks: pre-commit | 5/5 | Excellent |
 | CLI framework: Typer | 5/5 | Excellent |
 | Dependency management: uv | 5/5 | Excellent |
 | GraphQL: Strawberry | 5/5 | Excellent |
 | Linters: Ruff, mypy | 5/5 | Excellent |
-| Structured logging with request/trace IDs | 5/5 | Excellent |
 | PEP 8 snake_case naming | 5/5 | Excellent |
-| Centralized pytest fixtures in conftest.py | 5/5 | Excellent |
 | pytest-based testing | 5/5 | Excellent |
+| High type annotation coverage | 5/5 | Excellent |
 | CI/CD best practices | 4/5 | Good |
 | Partial JSDoc coverage | 4/5 | Good |
 | JavaScript codebase | 4/5 | Good |
 | Primary API framework: FastAPI | 4/5 | Good |
 | JWT-based authentication | 4/5 | Good |
-| Sphinx/reST style docstrings | 4/5 | Good |
+| Context manager usage | 4/5 | Good |
+| Caching decorator pattern | 4/5 | Good |
+| Modern pathlib for path handling | 4/5 | Good |
 | Primary schema library: Pydantic | 4/5 | Good |
 | Structured configuration with Pydantic Settings | 4/5 | Good |
-| Uses unittest.mock for mocking | 4/5 | Good |
-| High type annotation coverage | 4/5 | Good |
+| Modern f-string formatting | 4/5 | Good |
+| pytest fixtures for test setup | 4/5 | Good |
+| Mocking with unittest.mock / Mock | 4/5 | Good |
+| Parametrized tests | 4/5 | Good |
 | CI/CD: GitHub Actions | 3/5 | Average |
-| Dependency updates: Dependabot | 3/5 | Average |
-| Git hooks: pre-commit | 3/5 | Average |
 | Standard repository layout | 3/5 | Average |
 | Background jobs with FastAPI BackgroundTasks | 3/5 | Average |
 | Caching: functools.lru_cache | 3/5 | Average |
-| Primary database library: SQLModel | 3/5 | Average |
+| Data classes: Pydantic models | 3/5 | Average |
+| lowercase constant naming | 3/5 | Average |
 | SQLAlchemy 2.0 select() style | 3/5 | Average |
 | FastAPI-style session dependency injection | 3/5 | Average |
-| Mixed DI patterns: FastAPI Depends dominant | 3/5 | Average |
+| Enum usage: Enum | 3/5 | Average |
 | Mixed exception naming conventions | 3/5 | Average |
+| Error wrapper pattern: time.sleep | 3/5 | Average |
 | Import sorting: Ruff (isort rules) | 3/5 | Average |
+| Absolute imports preferred | 3/5 | Average |
 | Uses Python standard logging | 3/5 | Average |
+| Optional type annotations | 3/5 | Average |
+| Cursor-based pagination | 3/5 | Average |
+| Response envelope classes | 3/5 | Average |
+| Test naming: Simple style (test_feature) | 3/5 | Average |
+| Distributed test files | 3/5 | Average |
+| Pydantic validation | 3/5 | Average |
+| Snippet-style examples | 3/5 | Average |
+| Examples with main() entry point | 3/5 | Average |
+| Tutorial-style documentation | 3/5 | Average |
+| Plain assert statements | 3/5 | Average |
 | Standard repository files | 2/5 | Below Average |
 | Implicit transaction management | 2/5 | Below Average |
 | Infrequent timeout specification | 2/5 | Below Average |
@@ -69,12 +84,21 @@
 
 ### Excellent (5/5)
 
-#### Async-first API design
+#### Dependency updates: Dependabot
 
-**ID:** `python.conventions.async_style`  
+**ID:** `generic.conventions.dependency_updates`  
 **Score:** 5/5 (Excellent)
 
-**Assessment:** API style: 12 async, 0 sync (100% async)
+**Assessment:** Dependency updates: dependabot
+
+---
+
+#### Git hooks: pre-commit
+
+**ID:** `generic.conventions.git_hooks`  
+**Score:** 5/5 (Excellent)
+
+**Assessment:** Git hooks: pre-commit
 
 ---
 
@@ -114,15 +138,6 @@
 
 ---
 
-#### Structured logging with request/trace IDs
-
-**ID:** `python.conventions.logging_fields`  
-**Score:** 5/5 (Excellent)
-
-**Assessment:** Structured logging with request correlation (26 field uses)
-
----
-
 #### PEP 8 snake_case naming
 
 **ID:** `python.conventions.naming`  
@@ -132,21 +147,21 @@
 
 ---
 
-#### Centralized pytest fixtures in conftest.py
-
-**ID:** `python.conventions.testing_fixtures`  
-**Score:** 5/5 (Excellent)
-
-**Assessment:** Found 186 fixtures, 1 conftest.py file(s)
-
----
-
 #### pytest-based testing
 
 **ID:** `python.conventions.testing_framework`  
 **Score:** 5/5 (Excellent)
 
-**Assessment:** Uses pytest with 559 test file(s)
+**Assessment:** Uses pytest with 465 test file(s)
+
+---
+
+#### High type annotation coverage
+
+**ID:** `python.conventions.typing_coverage`  
+**Score:** 5/5 (Excellent)
+
+**Assessment:** Type annotation coverage is 99%
 
 ---
 
@@ -203,14 +218,30 @@
 
 ---
 
-#### Sphinx/reST style docstrings
+#### Context manager usage
 
-**ID:** `python.conventions.docstring_style`  
+**ID:** `python.conventions.context_managers`  
 **Score:** 4/5 (Good)
 
-**Assessment:** Primary docstring style is sphinx (100% consistency)
+**Assessment:** Convention detected with 90% confidence
 
-**Suggestion:** Consider migrating to Google or NumPy docstring style for better readability. Currently using sphinx.
+---
+
+#### Caching decorator pattern
+
+**ID:** `python.conventions.decorator_caching`  
+**Score:** 4/5 (Good)
+
+**Assessment:** Convention detected with 90% confidence
+
+---
+
+#### Modern pathlib for path handling
+
+**ID:** `python.conventions.path_handling`  
+**Score:** 4/5 (Good)
+
+**Assessment:** Convention detected with 95% confidence
 
 ---
 
@@ -236,25 +267,39 @@
 
 ---
 
-#### Uses unittest.mock for mocking
+#### Modern f-string formatting
 
-**ID:** `python.conventions.testing_mocking`  
+**ID:** `python.conventions.string_formatting`  
 **Score:** 4/5 (Good)
 
-**Assessment:** Primary mocking library is unittest_mock, using 1 library/libraries
-
-**Suggestion:** Consider using pytest-mock for cleaner fixture-based mocking syntax.
+**Assessment:** Convention detected with 95% confidence
 
 ---
 
-#### High type annotation coverage
+#### pytest fixtures for test setup
 
-**ID:** `python.conventions.typing_coverage`  
+**ID:** `python.test_conventions.fixtures`  
 **Score:** 4/5 (Good)
 
-**Assessment:** Type annotation coverage is 82%
+**Assessment:** Convention detected with 90% confidence
 
-**Suggestion:** Continue adding type hints to remaining functions. Focus on return types and complex function signatures.
+---
+
+#### Mocking with unittest.mock / Mock
+
+**ID:** `python.test_conventions.mocking`  
+**Score:** 4/5 (Good)
+
+**Assessment:** Convention detected with 90% confidence
+
+---
+
+#### Parametrized tests
+
+**ID:** `python.test_conventions.parametrized`  
+**Score:** 4/5 (Good)
+
+**Assessment:** Convention detected with 90% confidence
 
 ---
 
@@ -268,28 +313,6 @@
 **Assessment:** Convention detected with 80% confidence
 
 **Suggestion:** Add automated testing, linting, and deployment steps to your CI/CD pipeline.
-
----
-
-#### Dependency updates: Dependabot
-
-**ID:** `generic.conventions.dependency_updates`  
-**Score:** 3/5 (Average)
-
-**Assessment:** Dependency updates: not configured
-
-**Suggestion:** Configure Dependabot or Renovate for automated dependency updates.
-
----
-
-#### Git hooks: pre-commit
-
-**ID:** `generic.conventions.git_hooks`  
-**Score:** 3/5 (Average)
-
-**Assessment:** Git hooks: none configured
-
-**Suggestion:** Configure pre-commit hooks for automated quality checks.
 
 ---
 
@@ -309,7 +332,7 @@
 **ID:** `python.conventions.background_jobs`  
 **Score:** 3/5 (Average)
 
-**Assessment:** Convention detected with 90% confidence
+**Assessment:** Convention detected with 72% confidence
 
 **Suggestion:** Use appropriate synchronization primitives and handle async errors properly.
 
@@ -326,12 +349,23 @@
 
 ---
 
-#### Primary database library: SQLModel
+#### Data classes: Pydantic models
 
-**ID:** `python.conventions.db_library`  
+**ID:** `python.conventions.class_style`  
 **Score:** 3/5 (Average)
 
-**Assessment:** Convention detected with 79% confidence
+**Assessment:** Convention detected with 86% confidence
+
+**Suggestion:** Review this convention and consider industry best practices for improvement.
+
+---
+
+#### lowercase constant naming
+
+**ID:** `python.conventions.constant_naming`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 70% confidence
 
 **Suggestion:** Review this convention and consider industry best practices for improvement.
 
@@ -359,12 +393,12 @@
 
 ---
 
-#### Mixed DI patterns: FastAPI Depends dominant
+#### Enum usage: Enum
 
-**ID:** `python.conventions.di_style`  
+**ID:** `python.conventions.enum_usage`  
 **Score:** 3/5 (Average)
 
-**Assessment:** Convention detected with 73% confidence
+**Assessment:** Convention detected with 80% confidence
 
 **Suggestion:** Review this convention and consider industry best practices for improvement.
 
@@ -381,6 +415,17 @@
 
 ---
 
+#### Error wrapper pattern: time.sleep
+
+**ID:** `python.conventions.error_wrapper`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Error wrapper 'time.sleep' used in 6/28 handlers (21%)
+
+**Suggestion:** Consider using 'time.sleep' more consistently across all exception handlers.
+
+---
+
 #### Import sorting: Ruff (isort rules)
 
 **ID:** `python.conventions.import_sorting`  
@@ -392,6 +437,17 @@
 
 ---
 
+#### Absolute imports preferred
+
+**ID:** `python.conventions.import_style`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 70% confidence
+
+**Suggestion:** Review this convention and consider industry best practices for improvement.
+
+---
+
 #### Uses Python standard logging
 
 **ID:** `python.conventions.logging_library`  
@@ -400,6 +456,116 @@
 **Assessment:** Uses stdlib logging as primary logging library
 
 **Suggestion:** Consider adopting structlog or Loguru for structured logging with better context propagation.
+
+---
+
+#### Optional type annotations
+
+**ID:** `python.conventions.optional_usage`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 80% confidence
+
+**Suggestion:** Add type annotations to function parameters and return types. Start with public APIs.
+
+---
+
+#### Cursor-based pagination
+
+**ID:** `python.conventions.pagination_pattern`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 80% confidence
+
+**Suggestion:** Review this convention and consider industry best practices for improvement.
+
+---
+
+#### Response envelope classes
+
+**ID:** `python.conventions.response_envelope`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 70% confidence
+
+**Suggestion:** Review this convention and consider industry best practices for improvement.
+
+---
+
+#### Test naming: Simple style (test_feature)
+
+**ID:** `python.conventions.test_naming`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 84% confidence
+
+**Suggestion:** Add more test cases and increase coverage of edge cases and error paths.
+
+---
+
+#### Distributed test files
+
+**ID:** `python.conventions.test_structure`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 70% confidence
+
+**Suggestion:** Add more test cases and increase coverage of edge cases and error paths.
+
+---
+
+#### Pydantic validation
+
+**ID:** `python.conventions.validation_style`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 78% confidence
+
+**Suggestion:** Review this convention and consider industry best practices for improvement.
+
+---
+
+#### Snippet-style examples
+
+**ID:** `python.docs_conventions.example_completeness`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 70% confidence
+
+**Suggestion:** Add docstrings to public functions and classes explaining purpose and parameters.
+
+---
+
+#### Examples with main() entry point
+
+**ID:** `python.docs_conventions.example_structure`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 80% confidence
+
+**Suggestion:** Add docstrings to public functions and classes explaining purpose and parameters.
+
+---
+
+#### Tutorial-style documentation
+
+**ID:** `python.docs_conventions.organization`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 80% confidence
+
+**Suggestion:** Add docstrings to public functions and classes explaining purpose and parameters.
+
+---
+
+#### Plain assert statements
+
+**ID:** `python.test_conventions.assertions`  
+**Score:** 3/5 (Average)
+
+**Assessment:** Convention detected with 89% confidence
+
+**Suggestion:** Add more test cases and increase coverage of edge cases and error paths.
 
 ---
 
@@ -445,7 +611,7 @@
 **ID:** `python.conventions.docstrings`  
 **Score:** 1/5 (Poor)
 
-**Assessment:** Docstring coverage is 6% of public functions
+**Assessment:** Docstring coverage is 20% of public functions
 
 **Suggestion:** Add docstrings to public functions and classes. Focus on explaining the 'why' and documenting parameters/return values.
 
@@ -456,7 +622,7 @@
 **ID:** `python.conventions.error_handling_boundary`  
 **Score:** 1/5 (Poor)
 
-**Assessment:** HTTPException raised in API layer 3% of the time
+**Assessment:** HTTPException raised in API layer 0% of the time
 
 **Suggestion:** Ensure HTTP errors are raised only at the API boundary layer.
 
@@ -498,62 +664,86 @@ Conventions sorted by priority (lowest scores first):
 7. **CI/CD: GitHub Actions** (Score: 3/5)
    - Add automated testing, linting, and deployment steps to your CI/CD pipeline.
 
-8. **Dependency updates: Dependabot** (Score: 3/5)
-   - Configure Dependabot or Renovate for automated dependency updates.
-
-9. **Git hooks: pre-commit** (Score: 3/5)
-   - Configure pre-commit hooks for automated quality checks.
-
-10. **Standard repository layout** (Score: 3/5)
+8. **Standard repository layout** (Score: 3/5)
    - Review this convention and consider industry best practices for improvement.
 
-11. **Background jobs with FastAPI BackgroundTasks** (Score: 3/5)
+9. **Background jobs with FastAPI BackgroundTasks** (Score: 3/5)
    - Use appropriate synchronization primitives and handle async errors properly.
 
-12. **Caching: functools.lru_cache** (Score: 3/5)
+10. **Caching: functools.lru_cache** (Score: 3/5)
    - Use Redis or functools caching for performance.
 
-13. **Primary database library: SQLModel** (Score: 3/5)
+11. **Data classes: Pydantic models** (Score: 3/5)
    - Review this convention and consider industry best practices for improvement.
 
-14. **SQLAlchemy 2.0 select() style** (Score: 3/5)
+12. **lowercase constant naming** (Score: 3/5)
    - Review this convention and consider industry best practices for improvement.
 
-15. **FastAPI-style session dependency injection** (Score: 3/5)
+13. **SQLAlchemy 2.0 select() style** (Score: 3/5)
    - Review this convention and consider industry best practices for improvement.
 
-16. **Mixed DI patterns: FastAPI Depends dominant** (Score: 3/5)
+14. **FastAPI-style session dependency injection** (Score: 3/5)
    - Review this convention and consider industry best practices for improvement.
 
-17. **Mixed exception naming conventions** (Score: 3/5)
+15. **Enum usage: Enum** (Score: 3/5)
+   - Review this convention and consider industry best practices for improvement.
+
+16. **Mixed exception naming conventions** (Score: 3/5)
    - Standardize exception naming to use *Error suffix consistently.
+
+17. **Error wrapper pattern: time.sleep** (Score: 3/5)
+   - Consider using 'time.sleep' more consistently across all exception handlers.
 
 18. **Import sorting: Ruff (isort rules)** (Score: 3/5)
    - Use isort or Ruff for consistent import ordering.
 
-19. **Uses Python standard logging** (Score: 3/5)
+19. **Absolute imports preferred** (Score: 3/5)
+   - Review this convention and consider industry best practices for improvement.
+
+20. **Uses Python standard logging** (Score: 3/5)
    - Consider adopting structlog or Loguru for structured logging with better context propagation.
 
-20. **Partial JSDoc coverage** (Score: 4/5)
+21. **Optional type annotations** (Score: 3/5)
+   - Add type annotations to function parameters and return types. Start with public APIs.
+
+22. **Cursor-based pagination** (Score: 3/5)
+   - Review this convention and consider industry best practices for improvement.
+
+23. **Response envelope classes** (Score: 3/5)
+   - Review this convention and consider industry best practices for improvement.
+
+24. **Test naming: Simple style (test_feature)** (Score: 3/5)
+   - Add more test cases and increase coverage of edge cases and error paths.
+
+25. **Distributed test files** (Score: 3/5)
+   - Add more test cases and increase coverage of edge cases and error paths.
+
+26. **Pydantic validation** (Score: 3/5)
+   - Review this convention and consider industry best practices for improvement.
+
+27. **Snippet-style examples** (Score: 3/5)
+   - Add docstrings to public functions and classes explaining purpose and parameters.
+
+28. **Examples with main() entry point** (Score: 3/5)
+   - Add docstrings to public functions and classes explaining purpose and parameters.
+
+29. **Tutorial-style documentation** (Score: 3/5)
+   - Add docstrings to public functions and classes explaining purpose and parameters.
+
+30. **Plain assert statements** (Score: 3/5)
+   - Add more test cases and increase coverage of edge cases and error paths.
+
+31. **Partial JSDoc coverage** (Score: 4/5)
    - Add JSDoc comments with @param and @returns for better documentation.
 
-21. **Primary API framework: FastAPI** (Score: 4/5)
+32. **Primary API framework: FastAPI** (Score: 4/5)
    - Consolidate API frameworks to a single choice for consistency.
 
-22. **JWT-based authentication** (Score: 4/5)
+33. **JWT-based authentication** (Score: 4/5)
    - Use a dedicated password hashing library (passlib or bcrypt) for secure credential storage.
 
-23. **Sphinx/reST style docstrings** (Score: 4/5)
-   - Consider migrating to Google or NumPy docstring style for better readability. Currently using sphinx.
-
-24. **Primary schema library: Pydantic** (Score: 4/5)
+34. **Primary schema library: Pydantic** (Score: 4/5)
    - Ensure consistent schema library usage across the codebase.
 
-25. **Structured configuration with Pydantic Settings** (Score: 4/5)
+35. **Structured configuration with Pydantic Settings** (Score: 4/5)
    - Replace remaining os.environ accesses with Settings class properties.
-
-26. **Uses unittest.mock for mocking** (Score: 4/5)
-   - Consider using pytest-mock for cleaner fixture-based mocking syntax.
-
-27. **High type annotation coverage** (Score: 4/5)
-   - Continue adding type hints to remaining functions. Focus on return types and complex function signatures.

@@ -32,7 +32,7 @@ class PythonTypingConventionsDetector(PythonDetector):
         for rel_path, func in index.get_all_functions():
             # Skip test files for typing coverage
             file_idx = index.files.get(rel_path)
-            if file_idx and file_idx.role == "test":
+            if file_idx and file_idx.role in ("test", "docs"):
                 continue
 
             # Skip private/dunder methods for the aggregate count

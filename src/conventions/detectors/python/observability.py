@@ -271,7 +271,7 @@ class PythonObservabilityConventionsDetector(PythonDetector):
         ]
 
         for rel_path, file_idx in index.files.items():
-            if file_idx.role == "test":
+            if file_idx.role in ("test", "docs"):
                 continue
 
             content = "\n".join(file_idx.lines).lower()
