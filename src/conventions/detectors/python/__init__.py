@@ -17,14 +17,17 @@ from .di_patterns import PythonDIConventionsDetector
 from .docs_conventions import PythonDocsConventionsDetector
 from .documentation import PythonDocstringNamingConventionsDetector
 from .errors import PythonErrorConventionsDetector
+from .feature_flags import PythonFeatureFlagsDetector
 from .graphql import PythonGraphQLDetector
 from .index import PythonIndex, make_evidence
 from .logging import PythonLoggingConventionsDetector
+from .messaging import PythonMessagingDetector
 from .observability import PythonObservabilityConventionsDetector
-from .resilience import PythonRetriesTimeoutsConventionsDetector
+from .resilience import PythonResilienceConventionsDetector
 from .resource_management import PythonResourceManagementDetector
 from .return_patterns import PythonReturnPatternsDetector
 from .security import PythonSecurityConventionsDetector
+from .serialization import PythonSerializationDetector
 from .test_conventions import PythonTestConventionsDetector
 from .test_organization import PythonTestOrganizationDetector
 from .tooling import PythonToolingDetector
@@ -52,14 +55,17 @@ __all__ = [
     "PythonDocsConventionsDetector",
     "PythonDocstringNamingConventionsDetector",
     "PythonErrorConventionsDetector",
+    "PythonFeatureFlagsDetector",
     "PythonGraphQLDetector",
     "PythonLayeringConventionsDetector",
     "PythonLoggingConventionsDetector",
+    "PythonMessagingDetector",
     "PythonObservabilityConventionsDetector",
     "PythonResourceManagementDetector",
     "PythonReturnPatternsDetector",
-    "PythonRetriesTimeoutsConventionsDetector",
+    "PythonResilienceConventionsDetector",
     "PythonSecurityConventionsDetector",
+    "PythonSerializationDetector",
     "PythonTestConventionsDetector",
     "PythonTestOrganizationDetector",
     "PythonToolingDetector",

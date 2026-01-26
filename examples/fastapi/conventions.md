@@ -1,13 +1,13 @@
 # Code Conventions Report
 
-*Generated: 2026-01-24 21:05:01*
+*Generated: 2026-01-24 23:14:49*
 
 ## Summary
 
 - **Repository:** `/private/tmp/fastapi`
 - **Languages:** node, python
 - **Files scanned:** 1252
-- **Conventions detected:** 53
+- **Conventions detected:** 61
 
 ## Detected Conventions
 
@@ -15,6 +15,7 @@
 |:---|:------|:----------:|:--------:|
 | `python.conventions.dependency_management` | Dependency management: uv | 95% | 0 |
 | `python.conventions.graphql` | GraphQL: Strawberry | 95% | 2 |
+| `python.conventions.lock_file` | Lock file: uv.lock | 95% | 0 |
 | `python.conventions.naming` | PEP 8 snake_case naming | 95% | 0 |
 | `python.conventions.path_handling` | Modern pathlib for path handling | 95% | 5 |
 | `python.conventions.testing_framework` | pytest-based testing | 95% | 5 |
@@ -26,6 +27,8 @@
 | `python.conventions.context_managers` | Context manager usage | 90% | 2 |
 | `python.conventions.decorator_caching` | Caching decorator pattern | 90% | 5 |
 | `python.conventions.import_sorting` | Import sorting: Ruff (isort rules) | 90% | 0 |
+| `python.conventions.json_library` | JSON library: mixed | 90% | 4 |
+| `python.conventions.type_checker_strictness` | Type checker: mypy (strict mode) | 90% | 0 |
 | `python.test_conventions.fixtures` | pytest fixtures for test setup | 90% | 5 |
 | `python.test_conventions.mocking` | Mocking with unittest.mock / Mock | 90% | 5 |
 | `python.test_conventions.parametrized` | Parametrized tests | 90% | 5 |
@@ -34,8 +37,11 @@
 | `python.conventions.logging_library` | Uses Python standard logging | 90% | 5 |
 | `python.test_conventions.assertions` | Plain assert statements | 89% | 5 |
 | `python.conventions.class_style` | Data classes: Pydantic models | 86% | 5 |
+| `python.conventions.api_versioning` | URL-based API versioning | 85% | 5 |
+| `python.conventions.async_http_client` | Async HTTP client: httpx (recommended) | 85% | 5 |
 | `python.conventions.auth_pattern` | JWT-based authentication | 85% | 5 |
 | `python.conventions.db_session_lifecycle` | FastAPI-style session dependency injection | 85% | 2 |
+| `python.conventions.openapi_docs` | OpenAPI with FastAPI (customized) | 85% | 5 |
 | `python.conventions.secrets_access_style` | Structured configuration with Pydantic Settings | 85% | 5 |
 | `python.conventions.test_naming` | Test naming: Simple style (test_feature) | 84% | 3 |
 | `python.conventions.schema_library` | Primary schema library: Pydantic | 84% | 5 |
@@ -60,12 +66,14 @@
 | `python.conventions.test_structure` | Distributed test files | 70% | 0 |
 | `python.docs_conventions.example_completeness` | Snippet-style examples | 70% | 0 |
 | `generic.conventions.standard_files` | Standard repository files | 65% | 0 |
+| `python.conventions.db_connection_pooling` | Default connection pooling | 60% | 0 |
 | `python.conventions.db_transactions` | Implicit transaction management | 60% | 0 |
 | `python.conventions.docstrings` | Low docstring coverage | 60% | 4 |
 | `python.conventions.error_taxonomy` | Mixed exception naming conventions | 60% | 5 |
 | `python.conventions.exception_handlers` | Distributed exception handling | 60% | 5 |
 | `python.conventions.timeouts` | Infrequent timeout specification | 60% | 4 |
 | `python.conventions.error_wrapper` | Error wrapper pattern: time.sleep | 59% | 5 |
+| `python.conventions.health_checks` | Health check functions | 50% | 1 |
 
 ## Convention Details
 
@@ -122,6 +130,24 @@ from strawberry.fastapi import GraphQLRouter
 
 @strawberry.type
 ```
+
+---
+
+### Lock file: uv.lock
+
+**ID:** `python.conventions.lock_file`  
+**Category:** dependencies  
+**Language:** python  
+**Confidence:** 95%
+
+Dependencies locked with uv.lock.
+
+**Statistics:**
+
+- lock_files: `{'uv': 'uv.lock'}`
+- primary_lock: `uv`
+- quality: `modern`
+- has_lock: `True`
 
 ---
 
@@ -592,6 +618,73 @@ Uses Ruff (isort rules) for import organization.
 
 ---
 
+### JSON library: mixed
+
+**ID:** `python.conventions.json_library`  
+**Category:** serialization  
+**Language:** python  
+**Confidence:** 90%
+
+Uses both stdlib json and orjson. Consider standardizing on orjson.
+
+**Statistics:**
+
+- json_library_counts: `{'ujson': 3, 'orjson': 4, 'json': 34}`
+- primary_library: `json`
+- total_usages: `41`
+
+**Evidence:**
+
+1. `fastapi/routing.py:1-7`
+
+```
+import email.message
+import functools
+import inspect
+import json
+from collections.abc import (
+    AsyncIterator,
+    Awaitable,
+```
+
+2. `fastapi/openapi/docs.py:1-4`
+
+```
+import json
+from typing import Annotated, Any, Optional
+
+from annotated_doc import Doc
+```
+
+3. `scripts/translate.py:1-4`
+
+```
+import json
+import secrets
+import subprocess
+from collections.abc import Iterable
+```
+
+---
+
+### Type checker: mypy (strict mode)
+
+**ID:** `python.conventions.type_checker_strictness`  
+**Category:** tooling  
+**Language:** python  
+**Confidence:** 90%
+
+Uses mypy in strict mode - catches the most type errors.
+
+**Statistics:**
+
+- type_checker: `mypy`
+- strictness: `strict`
+- strict_options: `['strict mode']`
+- config_file: `pyproject.toml`
+
+---
+
 ### pytest fixtures for test setup
 
 **ID:** `python.test_conventions.fixtures`  
@@ -1021,6 +1114,115 @@ class Contact(BaseModelWithConfig):
 
 ---
 
+### URL-based API versioning
+
+**ID:** `python.conventions.api_versioning`  
+**Category:** api  
+**Language:** python  
+**Confidence:** 85%
+
+Uses URL path versioning (e.g., /v1/, /api/v2/). Found 2 versioned routes.
+
+**Statistics:**
+
+- versioning_patterns: `{'url_versioning': 2, 'header_versioning': 5, 'router_prefix': 6}`
+- primary_pattern: `url_versioning`
+
+**Evidence:**
+
+1. `fastapi/applications.py:220-226`
+
+```
+                ```python
+                from fastapi import FastAPI
+
+                app = FastAPI(openapi_url="/api/v1/openapi.json")
+                ```
+                """
+            ),
+```
+
+2. `fastapi/applications.py:659-665`
+
+```
+                ```python
+                from fastapi import FastAPI
+
+                app = FastAPI(root_path="/api/v1")
+                ```
+                """
+            ),
+```
+
+3. `fastapi/applications.py:871-877`
+
+```
+        self.separate_input_output_schemas = separate_input_output_schemas
+        self.openapi_external_docs = openapi_external_docs
+        self.extra = extra
+        self.openapi_version: Annotated[
+            str,
+            Doc(
+                """
+```
+
+---
+
+### Async HTTP client: httpx (recommended)
+
+**ID:** `python.conventions.async_http_client`  
+**Category:** async  
+**Language:** python  
+**Confidence:** 85%
+
+Uses httpx for HTTP requests.
+
+**Statistics:**
+
+- http_client_counts: `{'requests': 1, 'httpx': 11}`
+- primary_client: `httpx`
+- quality: `excellent`
+
+**Evidence:**
+
+1. `scripts/contributors.py:6-12`
+
+```
+from pathlib import Path
+from typing import Any
+
+import httpx
+import yaml
+from github import Github
+from pydantic import BaseModel, SecretStr
+```
+
+2. `scripts/notify_translations.py:5-11`
+
+```
+from pathlib import Path
+from typing import Any, Union, cast
+
+import httpx
+from github import Github
+from pydantic import BaseModel, SecretStr
+from pydantic_settings import BaseSettings
+```
+
+3. `scripts/sponsors.py:5-11`
+
+```
+from pathlib import Path
+from typing import Any
+
+import httpx
+import yaml
+from github import Github
+from pydantic import BaseModel, SecretStr
+```
+
+---
+
 ### JWT-based authentication
 
 **ID:** `python.conventions.auth_pattern`  
@@ -1123,6 +1325,60 @@ async def get_db():
         yield db
     finally:
         db.close()
+```
+
+---
+
+### OpenAPI with FastAPI (customized)
+
+**ID:** `python.conventions.openapi_docs`  
+**Category:** api  
+**Language:** python  
+**Confidence:** 85%
+
+Uses FastAPI's built-in OpenAPI with custom configuration.
+
+**Statistics:**
+
+- openapi_indicators: `{'fastapi_builtin': 1, 'fastapi_customized': 6}`
+- primary_tool: `fastapi_customized`
+
+**Evidence:**
+
+1. `docs_src/conditional_openapi/tutorial001_py39.py:8-14`
+
+```
+
+settings = Settings()
+
+app = FastAPI(openapi_url=settings.openapi_url)
+
+
+@app.get("/")
+```
+
+2. `docs_src/custom_docs_ui/tutorial002_py39.py:6-12`
+
+```
+)
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI(docs_url=None, redoc_url=None)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+```
+
+3. `docs_src/custom_docs_ui/tutorial001_py39.py:5-11`
+
+```
+    get_swagger_ui_oauth2_redirect_html,
+)
+
+app = FastAPI(docs_url=None, redoc_url=None)
+
+
+@app.get("/docs", include_in_schema=False)
 ```
 
 ---
@@ -2109,6 +2365,21 @@ Repository has standard files: README.md, LICENSE, CONTRIBUTING.md, .gitignore, 
 
 ---
 
+### Default connection pooling
+
+**ID:** `python.conventions.db_connection_pooling`  
+**Category:** database  
+**Language:** python  
+**Confidence:** 60%
+
+Uses default SQLAlchemy connection pooling without explicit configuration.
+
+**Statistics:**
+
+- default_pool: `12`
+
+---
+
 ### Implicit transaction management
 
 **ID:** `python.conventions.db_transactions`  
@@ -2261,7 +2532,7 @@ Exception handlers are spread across 6 modules.
 - total_handlers: `31`
 - decorator_handlers: `12`
 - call_handlers: `19`
-- handler_files: `['docs_src/handling_errors/tutorial005_py39.py', 'tests/test_validation_error_context.py', 'docs_src/handling_errors/tutorial004_py39.py', 'docs_src/handling_errors/tutorial006_py39.py', 'docs_src/handling_errors/tutorial003_py39.py', 'fastapi/applications.py']`
+- handler_files: `['docs_src/handling_errors/tutorial004_py39.py', 'docs_src/handling_errors/tutorial006_py39.py', 'fastapi/applications.py', 'tests/test_validation_error_context.py', 'docs_src/handling_errors/tutorial003_py39.py', 'docs_src/handling_errors/tutorial005_py39.py']`
 
 **Evidence:**
 
@@ -2429,6 +2700,38 @@ try:
             break
     with sync_playwright() as playwright:
         run(playwright)
+```
+
+---
+
+### Health check functions
+
+**ID:** `python.conventions.health_checks`  
+**Category:** resilience  
+**Language:** python  
+**Confidence:** 50%
+
+Has 1 health-related function(s) but no clear endpoints.
+
+**Statistics:**
+
+- health_endpoint_count: `0`
+- health_function_count: `1`
+- has_readiness: `False`
+- has_liveness: `True`
+
+**Evidence:**
+
+1. `scripts/docs.py:307-313`
+
+```
+
+
+@app.command()
+def live(
+    lang: str = typer.Argument(
+        None, callback=lang_callback, autocompletion=complete_existing_lang
+    ),
 ```
 
 ---

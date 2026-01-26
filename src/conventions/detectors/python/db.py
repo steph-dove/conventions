@@ -84,6 +84,12 @@ class PythonDBConventionsDetector(PythonDetector):
         # Detect transaction patterns
         self._detect_transactions(ctx, index, result)
 
+        # Detect migrations
+        self._detect_migrations(ctx, index, result)
+
+        # Detect connection pooling
+        self._detect_connection_pooling(ctx, index, result)
+
         return result
 
     def _detect_db_library(
@@ -420,4 +426,194 @@ class PythonDBConventionsDetector(PythonDetector):
                 "begin_nested_count": begin_nested_count,
                 "commit_count": commit_count,
             },
+        ))
+
+    def _detect_migrations(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect database migration tools (only if DB is used)."""
+        # First check if database is actually used
+        db_import_count = 0
+        for lib_info in DB_LIBRARIES.values():
+            for pattern in lib_info["imports"]:
+                db_import_count += index.count_imports_matching(pattern)
+
+        if db_import_count < 2:
+            return  # No significant DB usage, don't check for migrations
+
+        migration_tools: Counter[str] = Counter()
+        migration_examples: dict[str, list[tuple[str, int]]] = {}
+
+        for rel_path, imp in index.get_all_imports():
+            # Alembic
+            if "alembic" in imp.module:
+                migration_tools["alembic"] += 1
+                if "alembic" not in migration_examples:
+                    migration_examples["alembic"] = []
+                migration_examples["alembic"].append((rel_path, imp.line))
+
+            # Django migrations
+            if "django.db.migrations" in imp.module or "migrations" in imp.module:
+                if "django" in imp.module:
+                    migration_tools["django_migrations"] += 1
+                    if "django_migrations" not in migration_examples:
+                        migration_examples["django_migrations"] = []
+                    migration_examples["django_migrations"].append((rel_path, imp.line))
+
+            # yoyo-migrations
+            if "yoyo" in imp.module:
+                migration_tools["yoyo"] += 1
+                if "yoyo" not in migration_examples:
+                    migration_examples["yoyo"] = []
+                migration_examples["yoyo"].append((rel_path, imp.line))
+
+            # Tortoise aerich
+            if "aerich" in imp.module:
+                migration_tools["aerich"] += 1
+                if "aerich" not in migration_examples:
+                    migration_examples["aerich"] = []
+                migration_examples["aerich"].append((rel_path, imp.line))
+
+        # Check for alembic.ini or migrations directory
+        for rel_path in index.files.keys():
+            if "alembic.ini" in rel_path or "/migrations/" in rel_path or "/alembic/" in rel_path:
+                migration_tools["alembic"] += 1
+                if "alembic" not in migration_examples:
+                    migration_examples["alembic"] = []
+
+        if not migration_tools:
+            return  # DB used but no migrations - that's fine, not all projects need them
+
+        primary, primary_count = migration_tools.most_common(1)[0]
+
+        tool_names = {
+            "alembic": "Alembic",
+            "django_migrations": "Django Migrations",
+            "yoyo": "yoyo-migrations",
+            "aerich": "Aerich (Tortoise)",
+        }
+
+        title = f"Database migrations: {tool_names.get(primary, primary)}"
+        description = (
+            f"Uses {tool_names.get(primary, primary)} for database migrations. "
+            f"Found {primary_count} usages."
+        )
+        confidence = min(0.9, 0.6 + primary_count * 0.05)
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in migration_examples.get(primary, [])[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.db_migrations",
+            category="database",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "migration_tools": dict(migration_tools),
+                "primary_tool": primary,
+            },
+        ))
+
+    def _detect_connection_pooling(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect database connection pooling configuration."""
+        # First check if SQLAlchemy is used (main lib with pooling config)
+        sa_import_count = index.count_imports_matching("sqlalchemy")
+        asyncpg_count = index.count_imports_matching("asyncpg")
+
+        if sa_import_count < 2 and asyncpg_count < 2:
+            return  # No significant DB usage
+
+        pool_config: dict[str, int] = {}
+        pool_examples: list[tuple[str, int]] = []
+
+        for rel_path, call in index.get_all_calls():
+            # Check for create_engine with pool config
+            if "create_engine" in call.name or "create_async_engine" in call.name:
+                pool_args = ["pool_size", "max_overflow", "pool_timeout", "pool_recycle", "pool_pre_ping"]
+                has_pool_config = any(arg in call.kwargs for arg in pool_args)
+                if has_pool_config:
+                    pool_config["configured_pool"] = pool_config.get("configured_pool", 0) + 1
+                    if len(pool_examples) < 5:
+                        pool_examples.append((rel_path, call.line))
+                else:
+                    pool_config["default_pool"] = pool_config.get("default_pool", 0) + 1
+
+            # Check for NullPool (serverless)
+            if "NullPool" in call.name:
+                pool_config["null_pool"] = pool_config.get("null_pool", 0) + 1
+                if len(pool_examples) < 5:
+                    pool_examples.append((rel_path, call.line))
+
+            # Check for QueuePool explicitly
+            if "QueuePool" in call.name:
+                pool_config["queue_pool"] = pool_config.get("queue_pool", 0) + 1
+                if len(pool_examples) < 5:
+                    pool_examples.append((rel_path, call.line))
+
+            # asyncpg pool
+            if "create_pool" in call.name and asyncpg_count > 0:
+                pool_config["asyncpg_pool"] = pool_config.get("asyncpg_pool", 0) + 1
+                if len(pool_examples) < 5:
+                    pool_examples.append((rel_path, call.line))
+
+        if not pool_config:
+            return  # No pool configuration detected
+
+        if "configured_pool" in pool_config or "queue_pool" in pool_config:
+            title = "Configured connection pooling"
+            description = (
+                f"Connection pooling is explicitly configured. "
+                f"Found {pool_config.get('configured_pool', 0) + pool_config.get('queue_pool', 0)} configurations."
+            )
+            confidence = 0.85
+        elif "null_pool" in pool_config:
+            title = "NullPool for serverless"
+            description = (
+                f"Uses NullPool (no pooling) - suitable for serverless environments. "
+                f"Found {pool_config['null_pool']} usages."
+            )
+            confidence = 0.8
+        elif "asyncpg_pool" in pool_config:
+            title = "asyncpg connection pool"
+            description = (
+                f"Uses asyncpg's built-in connection pooling. "
+                f"Found {pool_config['asyncpg_pool']} pool creations."
+            )
+            confidence = 0.8
+        else:
+            title = "Default connection pooling"
+            description = "Uses default SQLAlchemy connection pooling without explicit configuration."
+            confidence = 0.6
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in pool_examples[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=5)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.db_connection_pooling",
+            category="database",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats=pool_config,
         ))

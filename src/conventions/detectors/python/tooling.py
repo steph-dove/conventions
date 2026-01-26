@@ -27,6 +27,9 @@ class PythonToolingDetector(PythonDetector):
         # Detect import sorting
         self._detect_import_sorting(ctx, result)
 
+        # Detect type checker strictness
+        self._detect_type_checker_strictness(ctx, result)
+
         return result
 
     def _detect_formatter(
@@ -312,5 +315,134 @@ class PythonToolingDetector(PythonDetector):
                 "sorters": list(sorters.keys()),
                 "primary_sorter": primary,
                 "sorter_details": sorters,
+            },
+        ))
+
+    def _detect_type_checker_strictness(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect type checker configuration and strictness level."""
+        type_checker = None
+        strictness = "unknown"
+        strict_options: list[str] = []
+        config_file = None
+
+        # Check mypy configuration
+        mypy_configs = [
+            (ctx.repo_root / "mypy.ini", "[mypy]"),
+            (ctx.repo_root / ".mypy.ini", "[mypy]"),
+            (ctx.repo_root / "pyproject.toml", "[tool.mypy]"),
+            (ctx.repo_root / "setup.cfg", "[mypy]"),
+        ]
+
+        for config_path, section_marker in mypy_configs:
+            if config_path.is_file():
+                content = read_file_safe(config_path)
+                if content and section_marker in content:
+                    type_checker = "mypy"
+                    config_file = config_path.name
+
+                    # Check for strict mode
+                    if "strict = true" in content.lower() or "strict=true" in content.lower():
+                        strictness = "strict"
+                        strict_options.append("strict mode")
+                    else:
+                        # Check individual strict options
+                        strict_flags = [
+                            ("disallow_untyped_defs", "disallow untyped defs"),
+                            ("disallow_any_generics", "disallow any generics"),
+                            ("warn_return_any", "warn return any"),
+                            ("strict_equality", "strict equality"),
+                            ("disallow_untyped_calls", "disallow untyped calls"),
+                            ("check_untyped_defs", "check untyped defs"),
+                            ("no_implicit_optional", "no implicit optional"),
+                            ("warn_unused_ignores", "warn unused ignores"),
+                        ]
+
+                        for flag, name in strict_flags:
+                            if f"{flag} = true" in content.lower() or f"{flag}=true" in content.lower():
+                                strict_options.append(name)
+
+                        if len(strict_options) >= 5:
+                            strictness = "mostly_strict"
+                        elif len(strict_options) >= 2:
+                            strictness = "moderate"
+                        elif strict_options:
+                            strictness = "basic"
+                        else:
+                            strictness = "minimal"
+                    break
+
+        # Check pyright configuration
+        pyright_config = ctx.repo_root / "pyrightconfig.json"
+        pyproject = ctx.repo_root / "pyproject.toml"
+
+        if not type_checker:
+            if pyright_config.is_file():
+                content = read_file_safe(pyright_config)
+                if content:
+                    type_checker = "pyright"
+                    config_file = "pyrightconfig.json"
+
+                    if '"strict"' in content:
+                        strictness = "strict"
+                        strict_options.append("strict mode")
+                    elif '"basic"' in content:
+                        strictness = "basic"
+                    elif '"standard"' in content:
+                        strictness = "moderate"
+            elif pyproject.is_file():
+                content = read_file_safe(pyproject)
+                if content and "[tool.pyright]" in content:
+                    type_checker = "pyright"
+                    config_file = "pyproject.toml"
+
+                    if 'typeCheckingMode = "strict"' in content:
+                        strictness = "strict"
+                        strict_options.append("strict mode")
+                    elif 'typeCheckingMode = "basic"' in content:
+                        strictness = "basic"
+
+        if not type_checker:
+            return
+
+        # Build title and description
+        strictness_labels = {
+            "strict": "strict mode",
+            "mostly_strict": "mostly strict",
+            "moderate": "moderate",
+            "basic": "basic",
+            "minimal": "minimal checks",
+            "unknown": "configured",
+        }
+
+        title = f"Type checker: {type_checker} ({strictness_labels.get(strictness, strictness)})"
+
+        if strictness == "strict":
+            description = f"Uses {type_checker} in strict mode - catches the most type errors."
+        elif strictness == "mostly_strict":
+            description = f"Uses {type_checker} with {len(strict_options)} strict options enabled."
+        elif strict_options:
+            description = f"Uses {type_checker} with some strict options: {', '.join(strict_options[:3])}."
+        else:
+            description = f"Uses {type_checker} with {strictness} configuration."
+
+        confidence = 0.9 if strictness == "strict" else 0.8
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.type_checker_strictness",
+            category="tooling",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "type_checker": type_checker,
+                "strictness": strictness,
+                "strict_options": strict_options,
+                "config_file": config_file,
             },
         ))

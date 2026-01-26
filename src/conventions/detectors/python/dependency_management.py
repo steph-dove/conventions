@@ -139,4 +139,127 @@ class PythonDependencyManagementDetector(PythonDetector):
             },
         ))
 
+        # Detect lock file separately
+        self._detect_lock_file(ctx, tools, result)
+
         return result
+
+    def _detect_lock_file(
+        self,
+        ctx: DetectorContext,
+        tools: dict[str, dict],
+        result: DetectorResult,
+    ) -> None:
+        """Detect lock file presence and type."""
+        lock_files: dict[str, dict] = {}
+
+        # uv.lock (modern, fast)
+        uv_lock = ctx.repo_root / "uv.lock"
+        if uv_lock.is_file():
+            lock_files["uv"] = {
+                "name": "uv.lock",
+                "tool": "uv",
+            }
+
+        # poetry.lock
+        poetry_lock = ctx.repo_root / "poetry.lock"
+        if poetry_lock.is_file():
+            lock_files["poetry"] = {
+                "name": "poetry.lock",
+                "tool": "poetry",
+            }
+
+        # pdm.lock
+        pdm_lock = ctx.repo_root / "pdm.lock"
+        if pdm_lock.is_file():
+            lock_files["pdm"] = {
+                "name": "pdm.lock",
+                "tool": "pdm",
+            }
+
+        # Pipfile.lock
+        pipfile_lock = ctx.repo_root / "Pipfile.lock"
+        if pipfile_lock.is_file():
+            lock_files["pipenv"] = {
+                "name": "Pipfile.lock",
+                "tool": "pipenv",
+            }
+
+        # requirements.txt with hashes (pip-compile style)
+        requirements_txt = ctx.repo_root / "requirements.txt"
+        if requirements_txt.is_file() and not lock_files:
+            content = read_file_safe(requirements_txt)
+            if content:
+                # Check if it has hashes (pip-compile output)
+                has_hashes = "--hash=sha256:" in content
+                # Check if versions are pinned
+                lines = [l for l in content.splitlines() if l.strip() and not l.startswith("#") and not l.startswith("-")]
+                pinned = sum(1 for l in lines if "==" in l)
+                total = len(lines)
+
+                if has_hashes:
+                    lock_files["pip_hashes"] = {
+                        "name": "requirements.txt (hashed)",
+                        "tool": "pip-tools",
+                        "pinned_ratio": pinned / total if total else 0,
+                    }
+                elif total > 0 and pinned == total:
+                    lock_files["pip_pinned"] = {
+                        "name": "requirements.txt (pinned)",
+                        "tool": "pip",
+                        "pinned_ratio": 1.0,
+                    }
+                elif total > 0 and pinned / total >= 0.8:
+                    lock_files["pip_mostly_pinned"] = {
+                        "name": "requirements.txt (mostly pinned)",
+                        "tool": "pip",
+                        "pinned_ratio": pinned / total,
+                    }
+
+        # If no lock file found, check if there's dependency usage
+        has_deps = bool(tools) or (ctx.repo_root / "requirements.txt").is_file()
+        if not lock_files and not has_deps:
+            return  # No dependencies to lock
+
+        if lock_files:
+            primary = list(lock_files.keys())[0]
+            lock_info = lock_files[primary]
+
+            title = f"Lock file: {lock_info['name']}"
+            description = f"Dependencies locked with {lock_info['name']}."
+
+            if primary in ("uv", "poetry"):
+                quality = "modern"
+                confidence = 0.95
+            elif primary in ("pdm", "pipenv", "pip_hashes"):
+                quality = "good"
+                confidence = 0.9
+            elif primary == "pip_pinned":
+                quality = "basic"
+                confidence = 0.8
+            else:
+                quality = "partial"
+                confidence = 0.7
+        else:
+            # No lock file but has dependencies
+            title = "No lock file"
+            description = "Dependencies found but no lock file for reproducibility."
+            quality = "none"
+            confidence = 0.85
+            primary = "none"
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.lock_file",
+            category="dependencies",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "lock_files": {k: v["name"] for k, v in lock_files.items()},
+                "primary_lock": primary,
+                "quality": quality if lock_files else "none",
+                "has_lock": bool(lock_files),
+            },
+        ))

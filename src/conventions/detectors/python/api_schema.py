@@ -33,6 +33,12 @@ class PythonAPISchemaConventionsDetector(PythonDetector):
         # Detect response patterns
         self._detect_response_shape(ctx, index, result)
 
+        # Detect API versioning (only for web APIs)
+        self._detect_api_versioning(ctx, index, result)
+
+        # Detect OpenAPI documentation
+        self._detect_openapi_docs(ctx, index, result)
+
         return result
 
     def _detect_api_framework(
@@ -334,3 +340,219 @@ class PythonAPISchemaConventionsDetector(PythonDetector):
                     "envelope_indicators": envelope_indicators,
                 },
             ))
+
+    def _detect_api_versioning(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect API versioning patterns (only for web APIs)."""
+        import re
+
+        # First check if this is a web API project
+        api_frameworks = ["fastapi", "flask", "django", "starlette"]
+        api_import_count = 0
+        for framework in api_frameworks:
+            api_import_count += index.count_imports_matching(framework)
+
+        if api_import_count < 2:
+            return  # Not a web API project
+
+        versioning_patterns: Counter[str] = Counter()
+        versioning_examples: list[tuple[str, int, str]] = []
+
+        # URL versioning patterns
+        url_version_pattern = re.compile(r'''['"](/v\d+/|/api/v\d+)''', re.IGNORECASE)
+        header_version_pattern = re.compile(r'''(api[-_]version|x[-_]api[-_]version|accept[-_]version)''', re.IGNORECASE)
+
+        for rel_path, file_idx in index.files.items():
+            if file_idx.role in ("test", "docs"):
+                continue
+
+            for i, line in enumerate(file_idx.lines, 1):
+                # URL versioning (/v1/, /api/v2/)
+                if url_version_pattern.search(line):
+                    versioning_patterns["url_versioning"] += 1
+                    if len(versioning_examples) < 10:
+                        versioning_examples.append((rel_path, i, "url"))
+
+                # Header versioning
+                if header_version_pattern.search(line.lower()):
+                    versioning_patterns["header_versioning"] += 1
+                    if len(versioning_examples) < 10:
+                        versioning_examples.append((rel_path, i, "header"))
+
+        # Check for APIRouter with prefix containing version
+        for rel_path, call in index.get_all_calls():
+            if "APIRouter" in call.name or "Blueprint" in call.name:
+                if "prefix" in call.kwargs:
+                    versioning_patterns["router_prefix"] = versioning_patterns.get("router_prefix", 0) + 1
+
+        if not versioning_patterns:
+            return  # No versioning detected - that's okay for simple APIs
+
+        total = sum(versioning_patterns.values())
+
+        if "url_versioning" in versioning_patterns:
+            title = "URL-based API versioning"
+            description = (
+                f"Uses URL path versioning (e.g., /v1/, /api/v2/). "
+                f"Found {versioning_patterns['url_versioning']} versioned routes."
+            )
+            primary = "url_versioning"
+        elif "header_versioning" in versioning_patterns:
+            title = "Header-based API versioning"
+            description = (
+                f"Uses HTTP headers for API versioning. "
+                f"Found {versioning_patterns['header_versioning']} header version references."
+            )
+            primary = "header_versioning"
+        else:
+            title = "API versioning pattern detected"
+            description = f"API versioning detected. Found {total} version indicators."
+            primary = list(versioning_patterns.keys())[0]
+
+        confidence = min(0.85, 0.5 + total * 0.03)
+
+        # Build evidence
+        evidence = []
+        for rel_path, line, _ in versioning_examples[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.api_versioning",
+            category="api",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "versioning_patterns": dict(versioning_patterns),
+                "primary_pattern": primary,
+            },
+        ))
+
+    def _detect_openapi_docs(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect OpenAPI/Swagger documentation (only for web APIs)."""
+        # First check if this is a web API project
+        api_frameworks = ["fastapi", "flask", "django", "starlette"]
+        api_import_count = 0
+        has_fastapi = False
+        for framework in api_frameworks:
+            count = index.count_imports_matching(framework)
+            api_import_count += count
+            if framework == "fastapi" and count > 0:
+                has_fastapi = True
+
+        if api_import_count < 2:
+            return  # Not a web API project
+
+        openapi_indicators: Counter[str] = Counter()
+        openapi_examples: dict[str, list[tuple[str, int]]] = {}
+
+        # FastAPI has built-in OpenAPI - check if it's customized
+        if has_fastapi:
+            openapi_indicators["fastapi_builtin"] = 1
+
+        for rel_path, imp in index.get_all_imports():
+            # flasgger (Flask OpenAPI)
+            if "flasgger" in imp.module:
+                openapi_indicators["flasgger"] += 1
+                if "flasgger" not in openapi_examples:
+                    openapi_examples["flasgger"] = []
+                openapi_examples["flasgger"].append((rel_path, imp.line))
+
+            # flask-openapi3
+            if "flask_openapi3" in imp.module:
+                openapi_indicators["flask_openapi3"] += 1
+                if "flask_openapi3" not in openapi_examples:
+                    openapi_examples["flask_openapi3"] = []
+                openapi_examples["flask_openapi3"].append((rel_path, imp.line))
+
+            # apispec
+            if "apispec" in imp.module:
+                openapi_indicators["apispec"] += 1
+                if "apispec" not in openapi_examples:
+                    openapi_examples["apispec"] = []
+                openapi_examples["apispec"].append((rel_path, imp.line))
+
+            # drf-spectacular (Django REST Framework)
+            if "drf_spectacular" in imp.module:
+                openapi_indicators["drf_spectacular"] += 1
+                if "drf_spectacular" not in openapi_examples:
+                    openapi_examples["drf_spectacular"] = []
+                openapi_examples["drf_spectacular"].append((rel_path, imp.line))
+
+            # spectree
+            if "spectree" in imp.module:
+                openapi_indicators["spectree"] += 1
+                if "spectree" not in openapi_examples:
+                    openapi_examples["spectree"] = []
+                openapi_examples["spectree"].append((rel_path, imp.line))
+
+        # Check for OpenAPI customization in FastAPI
+        for rel_path, call in index.get_all_calls():
+            if call.name == "FastAPI":
+                openapi_args = ["openapi_url", "docs_url", "redoc_url", "openapi_tags"]
+                if any(arg in call.kwargs for arg in openapi_args):
+                    openapi_indicators["fastapi_customized"] = openapi_indicators.get("fastapi_customized", 0) + 1
+                    if "fastapi_customized" not in openapi_examples:
+                        openapi_examples["fastapi_customized"] = []
+                    openapi_examples["fastapi_customized"].append((rel_path, call.line))
+
+        if not openapi_indicators:
+            return  # No OpenAPI detected
+
+        # Determine primary
+        if "fastapi_customized" in openapi_indicators:
+            primary = "fastapi_customized"
+            title = "OpenAPI with FastAPI (customized)"
+            description = "Uses FastAPI's built-in OpenAPI with custom configuration."
+        elif "fastapi_builtin" in openapi_indicators and len(openapi_indicators) == 1:
+            primary = "fastapi_builtin"
+            title = "OpenAPI with FastAPI (default)"
+            description = "Uses FastAPI's built-in OpenAPI documentation at /docs and /redoc."
+        elif "drf_spectacular" in openapi_indicators:
+            primary = "drf_spectacular"
+            title = "OpenAPI with drf-spectacular"
+            description = "Uses drf-spectacular for Django REST Framework OpenAPI documentation."
+        elif "flasgger" in openapi_indicators:
+            primary = "flasgger"
+            title = "OpenAPI with Flasgger"
+            description = "Uses Flasgger for Flask OpenAPI/Swagger documentation."
+        else:
+            primary = list(openapi_indicators.keys())[0]
+            title = f"OpenAPI documentation"
+            description = f"Uses OpenAPI/Swagger documentation."
+
+        confidence = 0.85 if primary != "fastapi_builtin" else 0.7
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in openapi_examples.get(primary, [])[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.openapi_docs",
+            category="api",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "openapi_indicators": dict(openapi_indicators),
+                "primary_tool": primary,
+            },
+        ))

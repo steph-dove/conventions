@@ -1,0 +1,1301 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "path": "/private/tmp/httpx",
+    "detected_languages": [
+      "python"
+    ],
+    "total_files_scanned": 60
+  },
+  "rules": [
+    {
+      "id": "generic.conventions.ci_platform",
+      "category": "ci_cd",
+      "title": "CI/CD: GitHub Actions",
+      "description": "Uses GitHub Actions for CI/CD. 2 workflow(s) configured.",
+      "confidence": 0.7999999999999999,
+      "language": "generic",
+      "evidence": [],
+      "stats": {
+        "platforms": [
+          "github_actions"
+        ],
+        "platform_details": {
+          "github_actions": {
+            "name": "GitHub Actions",
+            "workflow_count": 2,
+            "files": [
+              "publish.yml",
+              "test-suite.yml"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "generic.conventions.ci_quality",
+      "category": "ci_cd",
+      "title": "CI/CD best practices",
+      "description": "CI configuration includes: testing, matrix builds.",
+      "confidence": 0.7,
+      "language": "generic",
+      "evidence": [],
+      "stats": {
+        "has_test_workflow": true,
+        "has_lint_workflow": false,
+        "has_deploy_workflow": false,
+        "has_caching": false,
+        "has_matrix": true,
+        "features": [
+          "testing",
+          "matrix builds"
+        ]
+      }
+    },
+    {
+      "id": "generic.conventions.dependency_updates",
+      "category": "dependencies",
+      "title": "Dependency updates: Dependabot",
+      "description": "Automated dependency updates via Dependabot for pip, github-actions.",
+      "confidence": 0.7999999999999999,
+      "language": "generic",
+      "evidence": [],
+      "stats": {
+        "tools": [
+          "dependabot"
+        ],
+        "tool_details": {
+          "dependabot": {
+            "name": "Dependabot",
+            "ecosystems": [
+              "pip",
+              "github-actions"
+            ]
+          }
+        },
+        "primary_tool": "dependabot"
+      }
+    },
+    {
+      "id": "generic.conventions.repo_layout",
+      "category": "structure",
+      "title": "Standard repository layout",
+      "description": "Repository has standard directories: tests (tests), docs (documentation), scripts (scripts), .github (GitHub configuration)",
+      "confidence": 0.7,
+      "language": "generic",
+      "evidence": [],
+      "stats": {
+        "found_directories": [
+          "tests",
+          "docs",
+          "scripts",
+          ".github"
+        ]
+      }
+    },
+    {
+      "id": "generic.conventions.standard_files",
+      "category": "structure",
+      "title": "Standard repository files",
+      "description": "Repository has standard files: README.md, LICENSE.md, CHANGELOG.md, .gitignore",
+      "confidence": 0.6000000000000001,
+      "language": "generic",
+      "evidence": [],
+      "stats": {
+        "found_files": [
+          "README.md",
+          "LICENSE.md",
+          "CHANGELOG.md",
+          ".gitignore"
+        ]
+      }
+    },
+    {
+      "id": "python.conventions.class_style",
+      "category": "code_style",
+      "title": "Data classes: NamedTuple",
+      "description": "Uses NamedTuple for structured data. 2/2 structured classes use this pattern.",
+      "confidence": 0.8999999999999999,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_urlparse.py",
+          "line_start": 153,
+          "line_end": 163,
+          "excerpt": "# the stdlib 'ipaddress' module for IP address validation.\nIPv4_STYLE_HOSTNAME = re.compile(r\"^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$\")\nIPv6_STYLE_HOSTNAME = re.compile(r\"^\\[.*\\]$\")\n\n\nclass ParseResult(typing.NamedTuple):\n    scheme: str\n    userinfo: str\n    host: str\n    port: int | None\n    path: str"
+        },
+        {
+          "file_path": "httpx/_auth.py",
+          "line_start": 338,
+          "line_end": 348,
+          "excerpt": "\n        message = f'Unexpected qop value \"{qop!r}\" in digest auth'\n        raise ProtocolError(message, request=request)\n\n\nclass _DigestAuthChallenge(typing.NamedTuple):\n    realm: bytes\n    nonce: bytes\n    algorithm: str\n    opaque: bytes | None\n    qop: bytes | None"
+        }
+      ],
+      "stats": {
+        "dataclass_count": 0,
+        "pydantic_count": 0,
+        "attrs_count": 0,
+        "namedtuple_count": 2,
+        "plain_count": 55,
+        "dominant_style": "namedtuple"
+      }
+    },
+    {
+      "id": "python.conventions.cli_framework",
+      "category": "cli",
+      "title": "CLI framework: Click",
+      "description": "Uses Click for CLI.",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_main.py",
+          "line_start": 1,
+          "line_end": 7,
+          "excerpt": "import os\nimport typing\n\nfrom click.testing import CliRunner\n\nimport httpx\n"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 5,
+          "line_end": 11,
+          "excerpt": "import sys\nimport typing\n\nimport click\nimport pygments.lexers\nimport pygments.util\nimport rich.console"
+        }
+      ],
+      "stats": {
+        "frameworks": [
+          "click"
+        ],
+        "primary_framework": "click",
+        "framework_details": {
+          "click": {
+            "name": "Click",
+            "import_count": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "python.conventions.string_formatting",
+      "category": "code_style",
+      "title": "Modern f-string formatting",
+      "description": "Uses f-strings consistently for string formatting. 92/95 (97%) use f-strings.",
+      "confidence": 0.9389473684210525,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 120,
+          "line_end": 126,
+          "excerpt": "    ]\n    method = request.method.decode(\"ascii\")\n    target = request.url.target.decode(\"ascii\")\n    lines = [f\"{method} {target} {version}\"] + [\n        f\"{name.decode('ascii')}: {value.decode('ascii')}\" for name, value in headers\n    ]\n    return \"\\n\".join(lines)"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 121,
+          "line_end": 127,
+          "excerpt": "    method = request.method.decode(\"ascii\")\n    target = request.url.target.decode(\"ascii\")\n    lines = [f\"{method} {target} {version}\"] + [\n        f\"{name.decode('ascii')}: {value.decode('ascii')}\" for name, value in headers\n    ]\n    return \"\\n\".join(lines)\n"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 138,
+          "line_end": 144,
+          "excerpt": "        if reason_phrase is None\n        else reason_phrase.decode(\"ascii\")\n    )\n    lines = [f\"{version} {status} {reason}\"] + [\n        f\"{name.decode('ascii')}: {value.decode('ascii')}\" for name, value in headers\n    ]\n    return \"\\n\".join(lines)"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 139,
+          "line_end": 145,
+          "excerpt": "        else reason_phrase.decode(\"ascii\")\n    )\n    lines = [f\"{version} {status} {reason}\"] + [\n        f\"{name.decode('ascii')}: {value.decode('ascii')}\" for name, value in headers\n    ]\n    return \"\\n\".join(lines)\n"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 183,
+          "line_end": 189,
+          "excerpt": "        syntax = rich.syntax.Syntax(text, lexer_name, theme=\"ansi_dark\", word_wrap=True)\n        console.print(syntax)\n    else:\n        console.print(f\"<{len(response.content)} bytes of binary data>\")\n\n\n_PCTRTT = typing.Tuple[typing.Tuple[str, str], ...]"
+        }
+      ],
+      "stats": {
+        "total_formats": 95,
+        "fstring_count": 92,
+        "format_method_count": 2,
+        "percent_count": 1,
+        "fstring_ratio": 0.968,
+        "dominant_style": "fstring"
+      }
+    },
+    {
+      "id": "python.conventions.path_handling",
+      "category": "code_style",
+      "title": "Mixed path handling (pathlib and os.path)",
+      "description": "Uses both pathlib (2) and os.path (1). Consider standardizing on pathlib.",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_multipart.py",
+          "line_start": 5,
+          "line_end": 11,
+          "excerpt": "import os\nimport re\nimport typing\nfrom pathlib import Path\n\nfrom ._types import (\n    AsyncByteStream,"
+        },
+        {
+          "file_path": "httpx/_multipart.py",
+          "line_start": 142,
+          "line_end": 148,
+          "excerpt": "                # all 4 parameters included\n                filename, fileobj, content_type, headers = value  # type: ignore\n        else:\n            filename = Path(str(getattr(value, \"name\", \"upload\"))).name\n            fileobj = value\n\n        if content_type is None:"
+        }
+      ],
+      "stats": {
+        "pathlib_count": 2,
+        "ospath_count": 1,
+        "pathlib_ratio": 0.667,
+        "style": "mixed"
+      }
+    },
+    {
+      "id": "python.conventions.import_style",
+      "category": "code_style",
+      "title": "Absolute imports preferred",
+      "description": "Prefers absolute imports. 87 relative vs 136 absolute imports.",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 11,
+          "line_end": 17,
+          "excerpt": "import typing\nimport zlib\n\nfrom ._exceptions import DecodingError\n\n# Brotli support is optional\ntry:"
+        },
+        {
+          "file_path": "httpx/_types.py",
+          "line_start": 22,
+          "line_end": 28,
+          "excerpt": ")\n\nif TYPE_CHECKING:  # pragma: no cover\n    from ._auth import Auth  # noqa: F401\n    from ._config import Proxy, Timeout  # noqa: F401\n    from ._models import Cookies, Headers, Request  # noqa: F401\n    from ._urls import URL, QueryParams  # noqa: F401"
+        },
+        {
+          "file_path": "httpx/_types.py",
+          "line_start": 23,
+          "line_end": 29,
+          "excerpt": "\nif TYPE_CHECKING:  # pragma: no cover\n    from ._auth import Auth  # noqa: F401\n    from ._config import Proxy, Timeout  # noqa: F401\n    from ._models import Cookies, Headers, Request  # noqa: F401\n    from ._urls import URL, QueryParams  # noqa: F401\n"
+        },
+        {
+          "file_path": "httpx/_types.py",
+          "line_start": 24,
+          "line_end": 30,
+          "excerpt": "if TYPE_CHECKING:  # pragma: no cover\n    from ._auth import Auth  # noqa: F401\n    from ._config import Proxy, Timeout  # noqa: F401\n    from ._models import Cookies, Headers, Request  # noqa: F401\n    from ._urls import URL, QueryParams  # noqa: F401\n\n"
+        },
+        {
+          "file_path": "httpx/_types.py",
+          "line_start": 25,
+          "line_end": 31,
+          "excerpt": "    from ._auth import Auth  # noqa: F401\n    from ._config import Proxy, Timeout  # noqa: F401\n    from ._models import Cookies, Headers, Request  # noqa: F401\n    from ._urls import URL, QueryParams  # noqa: F401\n\n\nPrimitiveData = Optional[Union[str, int, float, bool]]"
+        }
+      ],
+      "stats": {
+        "relative_count": 87,
+        "absolute_count": 136,
+        "relative_ratio": 0.39,
+        "style": "absolute"
+      }
+    },
+    {
+      "id": "python.conventions.constant_naming",
+      "category": "naming",
+      "title": "lowercase constant naming",
+      "description": "Uses lowercase naming for module-level values. 31/44 use lowercase.",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_multipart.py",
+          "line_start": 269,
+          "line_end": 273,
+          "excerpt": "        \"\"\"\n        boundary_length = len(self.boundary)\n        length = 0\n\n        for field in self.fields:"
+        },
+        {
+          "file_path": "httpx/_content.py",
+          "line_start": 145,
+          "line_end": 149,
+          "excerpt": "    body = urlencode(plain_data, doseq=True).encode(\"utf-8\")\n    content_length = str(len(body))\n    content_type = \"application/x-www-form-urlencoded\"\n    headers = {\"Content-Length\": content_length, \"Content-Type\": content_type}\n    return headers, ByteStream(body)"
+        },
+        {
+          "file_path": "httpx/_content.py",
+          "line_start": 161,
+          "line_end": 165,
+          "excerpt": "    body = text.encode(\"utf-8\")\n    content_length = str(len(body))\n    content_type = \"text/plain; charset=utf-8\"\n    headers = {\"Content-Length\": content_length, \"Content-Type\": content_type}\n    return headers, ByteStream(body)"
+        },
+        {
+          "file_path": "httpx/_content.py",
+          "line_start": 169,
+          "line_end": 173,
+          "excerpt": "    body = html.encode(\"utf-8\")\n    content_length = str(len(body))\n    content_type = \"text/html; charset=utf-8\"\n    headers = {\"Content-Length\": content_length, \"Content-Type\": content_type}\n    return headers, ByteStream(body)"
+        },
+        {
+          "file_path": "httpx/_content.py",
+          "line_start": 179,
+          "line_end": 183,
+          "excerpt": "    ).encode(\"utf-8\")\n    content_length = str(len(body))\n    content_type = \"application/json\"\n    headers = {\"Content-Length\": content_length, \"Content-Type\": content_type}\n    return headers, ByteStream(body)"
+        }
+      ],
+      "stats": {
+        "all_caps_count": 13,
+        "lowercase_count": 31,
+        "all_caps_ratio": 0.295,
+        "style": "lowercase"
+      }
+    },
+    {
+      "id": "python.conventions.enum_usage",
+      "category": "code_style",
+      "title": "Enum usage: Enum",
+      "description": "Uses Python enums for categorical values. Found 2 enum class(es). Types: Enum (1), IntEnum (1).",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_client.py",
+          "line_start": 120,
+          "line_end": 130,
+          "excerpt": "ACCEPT_ENCODING = \", \".join(\n    [key for key in SUPPORTED_DECODERS.keys() if key != \"identity\"]\n)\n\n\nclass ClientState(enum.Enum):\n    # UNOPENED:\n    #   The client has been instantiated, but has not been used to send a request,\n    #   or been opened by entering the context of a `with` block.\n    UNOPENED = 1\n    # OPENED:"
+        },
+        {
+          "file_path": "httpx/_status_codes.py",
+          "line_start": 3,
+          "line_end": 13,
+          "excerpt": "from enum import IntEnum\n\n__all__ = [\"codes\"]\n\n\nclass codes(IntEnum):\n    \"\"\"HTTP status codes and reason phrases\n\n    Status codes from the following RFCs are all observed:\n\n        * RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616"
+        }
+      ],
+      "stats": {
+        "enum_count": 2,
+        "enum_types": {
+          "Enum": 1,
+          "IntEnum": 1
+        },
+        "enum_names": [
+          "ClientState",
+          "codes"
+        ]
+      }
+    },
+    {
+      "id": "python.conventions.custom_decorators",
+      "category": "decorators",
+      "title": "Custom decorator pattern: @click.option",
+      "description": "Uses custom decorator @click.option (17 usages).",
+      "confidence": 0.85,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 310,
+          "line_end": 320,
+          "excerpt": "    ctx.exit()\n\n\n@click.command(add_help_option=False)\n@click.argument(\"url\", type=str)\n@click.option(\n    \"--method\",\n    \"-m\",\n    \"method\",\n    type=str,\n    help=("
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 320,
+          "line_end": 330,
+          "excerpt": "    help=(\n        \"Request method, such as GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD. \"\n        \"[Default: GET, or POST if a request body is included]\"\n    ),\n)\n@click.option(\n    \"--params\",\n    \"-p\",\n    \"params\",\n    type=(str, str),\n    multiple=True,"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 328,
+          "line_end": 338,
+          "excerpt": "    \"params\",\n    type=(str, str),\n    multiple=True,\n    help=\"Query parameters to include in the request URL.\",\n)\n@click.option(\n    \"--content\",\n    \"-c\",\n    \"content\",\n    type=str,\n    help=\"Byte content to include in the request body.\","
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 335,
+          "line_end": 345,
+          "excerpt": "    \"-c\",\n    \"content\",\n    type=str,\n    help=\"Byte content to include in the request body.\",\n)\n@click.option(\n    \"--data\",\n    \"-d\",\n    \"data\",\n    type=(str, str),\n    multiple=True,"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 343,
+          "line_end": 353,
+          "excerpt": "    \"data\",\n    type=(str, str),\n    multiple=True,\n    help=\"Form data to include in the request body.\",\n)\n@click.option(\n    \"--files\",\n    \"-f\",\n    \"files\",\n    type=(str, click.File(mode=\"rb\")),\n    multiple=True,"
+        }
+      ],
+      "stats": {
+        "top_decorator": "click.option",
+        "usage_count": 17,
+        "other_custom_decorators": []
+      }
+    },
+    {
+      "id": "python.conventions.dependency_management",
+      "category": "dependencies",
+      "title": "Dependency management: pip (requirements.txt)",
+      "description": "Uses pip (requirements.txt) for dependencies.",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "tools": [
+          "pip"
+        ],
+        "primary_tool": "pip",
+        "tool_details": {
+          "pip": {
+            "name": "pip (requirements.txt)",
+            "pinned_deps": 15,
+            "unpinned_deps": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "python.conventions.docstrings",
+      "category": "documentation",
+      "title": "Partial docstring coverage",
+      "description": "Some functions have docstrings. Functions: 133/396 (34%).",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 203,
+          "line_end": 213,
+          "excerpt": "class MultiDecoder(ContentDecoder):\n    \"\"\"\n    Handle the case where multiple encodings have been applied.\n    \"\"\"\n\n    def __init__(self, children: typing.Sequence[ContentDecoder]) -> None:\n        \"\"\"\n        'children' should be a sequence of decoders in the order in which\n        each was applied.\n        \"\"\"\n        # Note that we reverse the order for decoding."
+        },
+        {
+          "file_path": "httpx/_types.py",
+          "line_start": 94,
+          "line_end": 104,
+          "excerpt": "        raise NotImplementedError(\n            \"The '__iter__' method must be implemented.\"\n        )  # pragma: no cover\n        yield b\"\"  # pragma: no cover\n\n    def close(self) -> None:\n        \"\"\"\n        Subclasses can override this method to release any network resources\n        after a request/response cycle is complete.\n        \"\"\"\n"
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 34,
+          "line_end": 40,
+          "excerpt": "\n\nclass ContentDecoder:\n    def decode(self, data: bytes) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n\n    def flush(self) -> bytes:"
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 37,
+          "line_end": 43,
+          "excerpt": "    def decode(self, data: bytes) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n\n    def flush(self) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n\n"
+        }
+      ],
+      "stats": {
+        "total_public_functions": 396,
+        "documented_functions": 133,
+        "function_doc_ratio": 0.336,
+        "total_classes": 84,
+        "documented_classes": 61,
+        "class_doc_ratio": 0.726
+      }
+    },
+    {
+      "id": "python.conventions.docstring_style",
+      "category": "documentation",
+      "title": "Mixed docstring styles",
+      "description": "Docstrings use mixed styles: Google style, Sphinx/reST style.",
+      "confidence": 0.6,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_urls.py",
+          "line_start": 161,
+          "line_end": 177,
+          "excerpt": "        \"\"\"\n        The URL password as a string, with URL decoding applied.\n        For example: \"a secret\"\n        \"\"\"\n        userinfo = self._uri_reference.userinfo\n        return unquote(userinfo.partition(\":\")[2])\n\n    @property\n    def host(self) -> str:\n        \"\"\"\n        The URL host as a string.\n        Always normalized to lowercase, with IDNA hosts decoded into unicode.\n\n        Examples:\n\n        url = httpx.URL(\"http://www.EXAMPLE.org\")\n        assert url.host == \"www.example.org\""
+        },
+        {
+          "file_path": "httpx/_urls.py",
+          "line_start": 188,
+          "line_end": 204,
+          "excerpt": "        host: str = self._uri_reference.host\n\n        if host.startswith(\"xn--\"):\n            host = idna.decode(host)\n\n        return host\n\n    @property\n    def raw_host(self) -> bytes:\n        \"\"\"\n        The raw bytes representation of the URL host.\n        Always normalized to lowercase, and IDNA encoded.\n\n        Examples:\n\n        url = httpx.URL(\"http://www.EXAMPLE.org\")\n        assert url.raw_host == b\"www.example.org\""
+        }
+      ],
+      "stats": {
+        "style_counts": {
+          "google": 2,
+          "sphinx": 1
+        },
+        "primary_style": "google",
+        "primary_ratio": 0.667
+      }
+    },
+    {
+      "id": "python.conventions.naming",
+      "category": "style",
+      "title": "PEP 8 snake_case naming",
+      "description": "Function names follow PEP 8 snake_case convention. 267/267 functions use snake_case. Found 23 module-level constants.",
+      "confidence": 0.95,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "snake_case_functions": 267,
+        "camel_case_functions": 0,
+        "snake_case_ratio": 1.0,
+        "module_constants": 23
+      }
+    },
+    {
+      "id": "python.conventions.error_taxonomy",
+      "category": "error_handling",
+      "title": "Mixed exception naming conventions",
+      "description": "Exception naming is mixed: 15 *Error, 1 *Exception out of 28 total.",
+      "confidence": 0.6,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_exceptions.py",
+          "line_start": 71,
+          "line_end": 77,
+          "excerpt": "]\n\n\nclass HTTPError(Exception):\n    \"\"\"\n    Base class for `RequestError` and `HTTPStatusError`.\n"
+        },
+        {
+          "file_path": "httpx/_exceptions.py",
+          "line_start": 104,
+          "line_end": 110,
+          "excerpt": "        self._request = request\n\n\nclass RequestError(HTTPError):\n    \"\"\"\n    Base class for all exceptions that may occur when issuing a `.request()`.\n    \"\"\""
+        },
+        {
+          "file_path": "httpx/_exceptions.py",
+          "line_start": 120,
+          "line_end": 126,
+          "excerpt": "        self._request = request\n\n\nclass TransportError(RequestError):\n    \"\"\"\n    Base class for all exceptions that occur at the level of the Transport API.\n    \"\"\""
+        },
+        {
+          "file_path": "httpx/_exceptions.py",
+          "line_start": 129,
+          "line_end": 135,
+          "excerpt": "# Timeout exceptions...\n\n\nclass TimeoutException(TransportError):\n    \"\"\"\n    The base class for timeout errors.\n"
+        },
+        {
+          "file_path": "httpx/_exceptions.py",
+          "line_start": 137,
+          "line_end": 143,
+          "excerpt": "    \"\"\"\n\n\nclass ConnectTimeout(TimeoutException):\n    \"\"\"\n    Timed out while connecting to the host.\n    \"\"\""
+        }
+      ],
+      "stats": {
+        "total_custom_exceptions": 28,
+        "error_suffix_count": 15,
+        "exception_suffix_count": 1,
+        "exception_names": [
+          "HTTPError",
+          "RequestError",
+          "TransportError",
+          "TimeoutException",
+          "ConnectTimeout",
+          "ReadTimeout",
+          "WriteTimeout",
+          "PoolTimeout",
+          "NetworkError",
+          "ReadError",
+          "WriteError",
+          "ConnectError",
+          "CloseError",
+          "ProxyError",
+          "UnsupportedProtocol",
+          "ProtocolError",
+          "LocalProtocolError",
+          "RemoteProtocolError",
+          "DecodingError",
+          "TooManyRedirects"
+        ],
+        "consistency": 0.536
+      }
+    },
+    {
+      "id": "python.conventions.error_wrapper",
+      "category": "error_handling",
+      "title": "Error wrapper pattern: str",
+      "description": "Uses 'str' as a common error handler function. Called in 8/55 (15%) except blocks.",
+      "confidence": 0.5581818181818182,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 67,
+          "line_end": 77,
+          "excerpt": "    def decode(self, data: bytes) -> bytes:\n        was_first_attempt = self.first_attempt\n        self.first_attempt = False\n        try:\n            return self.decompressor.decompress(data)\n        except zlib.error as exc:\n            if was_first_attempt:\n                self.decompressor = zlib.decompressobj(-zlib.MAX_WBITS)\n                return self.decode(data)\n            raise DecodingError(str(exc)) from exc\n"
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 76,
+          "line_end": 86,
+          "excerpt": "            raise DecodingError(str(exc)) from exc\n\n    def flush(self) -> bytes:\n        try:\n            return self.decompressor.flush()\n        except zlib.error as exc:  # pragma: no cover\n            raise DecodingError(str(exc)) from exc\n\n\nclass GZipDecoder(ContentDecoder):\n    \"\"\""
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 93,
+          "line_end": 103,
+          "excerpt": "        self.decompressor = zlib.decompressobj(zlib.MAX_WBITS | 16)\n\n    def decode(self, data: bytes) -> bytes:\n        try:\n            return self.decompressor.decompress(data)\n        except zlib.error as exc:\n            raise DecodingError(str(exc)) from exc\n\n    def flush(self) -> bytes:\n        try:\n            return self.decompressor.flush()"
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 99,
+          "line_end": 109,
+          "excerpt": "            raise DecodingError(str(exc)) from exc\n\n    def flush(self) -> bytes:\n        try:\n            return self.decompressor.flush()\n        except zlib.error as exc:  # pragma: no cover\n            raise DecodingError(str(exc)) from exc\n\n\nclass BrotliDecoder(ContentDecoder):\n    \"\"\""
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 137,
+          "line_end": 147,
+          "excerpt": "        if not data:\n            return b\"\"\n        self.seen_data = True\n        try:\n            return self._decompress(data)\n        except brotli.error as exc:\n            raise DecodingError(str(exc)) from exc\n\n    def flush(self) -> bytes:\n        if not self.seen_data:\n            return b\"\""
+        }
+      ],
+      "stats": {
+        "wrapper_function": "str",
+        "usage_count": 8,
+        "total_handlers": 55,
+        "usage_ratio": 0.145,
+        "other_wrappers": []
+      }
+    },
+    {
+      "id": "python.conventions.logging_library",
+      "category": "logging",
+      "title": "Uses Python standard logging",
+      "description": "Exclusively uses Python standard logging for logging. Found 3 usages.",
+      "confidence": 0.76,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 1,
+          "line_end": 5,
+          "excerpt": "import json\nimport logging\nimport os\nimport random\n"
+        },
+        {
+          "file_path": "httpx/_client.py",
+          "line_start": 2,
+          "line_end": 8,
+          "excerpt": "\nimport datetime\nimport enum\nimport logging\nimport time\nimport typing\nimport warnings"
+        }
+      ],
+      "stats": {
+        "library_counts": {
+          "stdlib_logging": 3
+        },
+        "primary_library": "stdlib_logging",
+        "primary_ratio": 1.0
+      }
+    },
+    {
+      "id": "python.conventions.async_http_client",
+      "category": "async",
+      "title": "Async HTTP client: httpx (recommended)",
+      "description": "Uses httpx for HTTP requests.",
+      "confidence": 0.85,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_transports/default.py",
+          "line_start": 33,
+          "line_end": 39,
+          "excerpt": "if typing.TYPE_CHECKING:\n    import ssl  # pragma: no cover\n\n    import httpx  # pragma: no cover\n\nfrom .._config import DEFAULT_LIMITS, Limits, Proxy, create_ssl_context\nfrom .._exceptions import ("
+        }
+      ],
+      "stats": {
+        "http_client_counts": {
+          "httpx": 74
+        },
+        "primary_client": "httpx",
+        "quality": "excellent"
+      }
+    },
+    {
+      "id": "python.conventions.timeouts",
+      "category": "resilience",
+      "title": "Infrequent timeout specification",
+      "description": "Timeouts are rarely specified on external calls. Only 52 calls with explicit timeouts.",
+      "confidence": 0.6,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 259,
+          "line_end": 265,
+          "excerpt": "                return\n\n            try:\n                await asyncio.wait_for(self.restart_requested.wait(), timeout=0.1)\n            except asyncio.TimeoutError:\n                continue\n"
+        },
+        {
+          "file_path": "tests/test_timeouts.py",
+          "line_start": 7,
+          "line_end": 13,
+          "excerpt": "async def test_read_timeout(server):\n    timeout = httpx.Timeout(None, read=1e-6)\n\n    async with httpx.AsyncClient(timeout=timeout) as client:\n        with pytest.raises(httpx.ReadTimeout):\n            await client.get(server.url.copy_with(path=\"/slow_response\"))\n"
+        },
+        {
+          "file_path": "tests/test_timeouts.py",
+          "line_start": 16,
+          "line_end": 22,
+          "excerpt": "async def test_write_timeout(server):\n    timeout = httpx.Timeout(None, write=1e-6)\n\n    async with httpx.AsyncClient(timeout=timeout) as client:\n        with pytest.raises(httpx.WriteTimeout):\n            data = b\"*\" * 1024 * 1024 * 100\n            await client.put(server.url.copy_with(path=\"/slow_response\"), content=data)"
+        },
+        {
+          "file_path": "tests/test_timeouts.py",
+          "line_start": 27,
+          "line_end": 33,
+          "excerpt": "async def test_connect_timeout(server):\n    timeout = httpx.Timeout(None, connect=1e-6)\n\n    async with httpx.AsyncClient(timeout=timeout) as client:\n        with pytest.raises(httpx.ConnectTimeout):\n            # See https://stackoverflow.com/questions/100841/\n            await client.get(\"http://10.255.255.1/\")"
+        },
+        {
+          "file_path": "tests/test_timeouts.py",
+          "line_start": 38,
+          "line_end": 44,
+          "excerpt": "    limits = httpx.Limits(max_connections=1)\n    timeout = httpx.Timeout(None, pool=1e-4)\n\n    async with httpx.AsyncClient(limits=limits, timeout=timeout) as client:\n        with pytest.raises(httpx.PoolTimeout):\n            async with client.stream(\"GET\", server.url):\n                await client.get(server.url)"
+        }
+      ],
+      "stats": {
+        "timeout_indicators": 52,
+        "no_timeout_indicators": 445,
+        "timeout_ratio": 0.105
+      }
+    },
+    {
+      "id": "python.conventions.context_managers",
+      "category": "resource_management",
+      "title": "Context manager usage",
+      "description": "Uses context managers for resource management. 24 with statements. Types: http_client (5).",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 476,
+          "line_end": 482,
+          "excerpt": "        method = \"POST\" if content or data or files or json else \"GET\"\n\n    try:\n        with Client(proxy=proxy, timeout=timeout, http2=http2, verify=verify) as client:\n            with client.stream(\n                method,\n                url,"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 477,
+          "line_end": 483,
+          "excerpt": "\n    try:\n        with Client(proxy=proxy, timeout=timeout, http2=http2, verify=verify) as client:\n            with client.stream(\n                method,\n                url,\n                params=list(params),"
+        },
+        {
+          "file_path": "httpx/_api.py",
+          "line_start": 99,
+          "line_end": 105,
+          "excerpt": "    <Response [200 OK]>\n    ```\n    \"\"\"\n    with Client(\n        cookies=cookies,\n        proxy=proxy,\n        verify=verify,"
+        },
+        {
+          "file_path": "httpx/_api.py",
+          "line_start": 149,
+          "line_end": 155,
+          "excerpt": "\n    [0]: /quickstart#streaming-responses\n    \"\"\"\n    with Client(\n        cookies=cookies,\n        proxy=proxy,\n        verify=verify,"
+        },
+        {
+          "file_path": "httpx/_api.py",
+          "line_start": 156,
+          "line_end": 162,
+          "excerpt": "        timeout=timeout,\n        trust_env=trust_env,\n    ) as client:\n        with client.stream(\n            method=method,\n            url=url,\n            content=content,"
+        }
+      ],
+      "stats": {
+        "total_with_statements": 24,
+        "sync_count": 24,
+        "async_count": 0,
+        "context_types": {
+          "http_client": 5
+        }
+      }
+    },
+    {
+      "id": "python.conventions.context_http_client",
+      "category": "resource_management",
+      "title": "HTTP clients with context managers",
+      "description": "Uses context managers for HTTP client lifecycle. 5 usages.",
+      "confidence": 0.75,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 476,
+          "line_end": 482,
+          "excerpt": "        method = \"POST\" if content or data or files or json else \"GET\"\n\n    try:\n        with Client(proxy=proxy, timeout=timeout, http2=http2, verify=verify) as client:\n            with client.stream(\n                method,\n                url,"
+        },
+        {
+          "file_path": "httpx/_main.py",
+          "line_start": 477,
+          "line_end": 483,
+          "excerpt": "\n    try:\n        with Client(proxy=proxy, timeout=timeout, http2=http2, verify=verify) as client:\n            with client.stream(\n                method,\n                url,\n                params=list(params),"
+        },
+        {
+          "file_path": "httpx/_api.py",
+          "line_start": 99,
+          "line_end": 105,
+          "excerpt": "    <Response [200 OK]>\n    ```\n    \"\"\"\n    with Client(\n        cookies=cookies,\n        proxy=proxy,\n        verify=verify,"
+        },
+        {
+          "file_path": "httpx/_api.py",
+          "line_start": 149,
+          "line_end": 155,
+          "excerpt": "\n    [0]: /quickstart#streaming-responses\n    \"\"\"\n    with Client(\n        cookies=cookies,\n        proxy=proxy,\n        verify=verify,"
+        },
+        {
+          "file_path": "httpx/_api.py",
+          "line_start": 156,
+          "line_end": 162,
+          "excerpt": "        timeout=timeout,\n        trust_env=trust_env,\n    ) as client:\n        with client.stream(\n            method=method,\n            url=url,\n            content=content,"
+        }
+      ],
+      "stats": {
+        "usage_count": 5,
+        "category": "http_client"
+      }
+    },
+    {
+      "id": "python.conventions.secrets_access_style",
+      "category": "security",
+      "title": "Configuration via os.environ direct access",
+      "description": "Uses os.environ direct access. Found 2 usages.",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_config.py",
+          "line_start": 31,
+          "line_end": 37,
+          "excerpt": "    import certifi\n\n    if verify is True:\n        if trust_env and os.environ.get(\"SSL_CERT_FILE\"):  # pragma: nocover\n            ctx = ssl.create_default_context(cafile=os.environ[\"SSL_CERT_FILE\"])\n        elif trust_env and os.environ.get(\"SSL_CERT_DIR\"):  # pragma: nocover\n            ctx = ssl.create_default_context(capath=os.environ[\"SSL_CERT_DIR\"])"
+        },
+        {
+          "file_path": "httpx/_config.py",
+          "line_start": 33,
+          "line_end": 39,
+          "excerpt": "    if verify is True:\n        if trust_env and os.environ.get(\"SSL_CERT_FILE\"):  # pragma: nocover\n            ctx = ssl.create_default_context(cafile=os.environ[\"SSL_CERT_FILE\"])\n        elif trust_env and os.environ.get(\"SSL_CERT_DIR\"):  # pragma: nocover\n            ctx = ssl.create_default_context(capath=os.environ[\"SSL_CERT_DIR\"])\n        else:\n            # Default case..."
+        }
+      ],
+      "stats": {
+        "os_environ": 2
+      }
+    },
+    {
+      "id": "python.conventions.password_hashing",
+      "category": "security",
+      "title": "Password hashing: hashlib (not recommended)",
+      "description": "Uses hashlib for password hashing. Consider using argon2 or bcrypt for better security.",
+      "confidence": 0.75,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/client/test_auth.py",
+          "line_start": 4,
+          "line_end": 10,
+          "excerpt": "Unit tests for auth classes also exist in tests/test_auth.py\n\"\"\"\n\nimport hashlib\nimport netrc\nimport os\nimport sys"
+        },
+        {
+          "file_path": "httpx/_auth.py",
+          "line_start": 1,
+          "line_end": 6,
+          "excerpt": "from __future__ import annotations\n\nimport hashlib\nimport os\nimport re\nimport time"
+        },
+        {
+          "file_path": "httpx/_auth.py",
+          "line_start": 13,
+          "line_end": 19,
+          "excerpt": "from ._utils import to_bytes, to_str, unquote\n\nif typing.TYPE_CHECKING:  # pragma: no cover\n    from hashlib import _Hash\n\n\n__all__ = [\"Auth\", \"BasicAuth\", \"DigestAuth\", \"FunctionAuth\", \"NetRCAuth\"]"
+        }
+      ],
+      "stats": {
+        "hash_library_counts": {
+          "hashlib": 3
+        },
+        "primary_library": "hashlib",
+        "quality": "weak"
+      }
+    },
+    {
+      "id": "python.conventions.testing_framework",
+      "category": "testing",
+      "title": "pytest-based testing",
+      "description": "Uses pytest as primary testing framework. Found 196 pytest usages across 32 test files.",
+      "confidence": 0.95,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 3,
+          "line_end": 9,
+          "excerpt": "import os\nimport random\n\nimport pytest\n\nimport httpx\nfrom httpx._utils import URLPattern, get_environment_proxies"
+        },
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 5,
+          "line_end": 11,
+          "excerpt": "import time\nimport typing\n\nimport pytest\nimport trustme\nfrom cryptography.hazmat.backends import default_backend\nfrom cryptography.hazmat.primitives.serialization import ("
+        },
+        {
+          "file_path": "tests/test_auth.py",
+          "line_start": 6,
+          "line_end": 12,
+          "excerpt": "\nfrom urllib.request import parse_keqv_list\n\nimport pytest\n\nimport httpx\n"
+        },
+        {
+          "file_path": "tests/test_timeouts.py",
+          "line_start": 1,
+          "line_end": 4,
+          "excerpt": "import pytest\n\nimport httpx\n"
+        },
+        {
+          "file_path": "tests/test_asgi.py",
+          "line_start": 1,
+          "line_end": 6,
+          "excerpt": "import json\n\nimport pytest\n\nimport httpx\n"
+        }
+      ],
+      "stats": {
+        "framework_counts": {
+          "pytest": 196
+        },
+        "primary_framework": "pytest",
+        "test_file_count": 32
+      }
+    },
+    {
+      "id": "python.test_conventions.fixtures",
+      "category": "testing",
+      "title": "pytest fixtures for test setup",
+      "description": "Uses pytest @fixture decorator for test setup. Found 7 fixtures. Uses 1 conftest.py file(s) for shared fixtures.",
+      "confidence": 0.8500000000000001,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 29,
+          "line_end": 39,
+          "excerpt": "    \"NO_PROXY\",\n    \"SSLKEYLOGFILE\",\n}\n\n\n@pytest.fixture(scope=\"function\", autouse=True)\ndef clean_environ():\n    \"\"\"Keeps os.environ clean for every test without having to mock os.environ\"\"\"\n    original_environ = os.environ.copy()\n    os.environ.clear()\n    os.environ.update("
+        },
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 180,
+          "line_end": 190,
+          "excerpt": "        {\"type\": \"http.response.start\", \"status\": 301, \"headers\": [[b\"location\", b\"/\"]]}\n    )\n    await send({\"type\": \"http.response.body\"})\n\n\n@pytest.fixture(scope=\"session\")\ndef cert_authority():\n    return trustme.CA()\n\n\n@pytest.fixture(scope=\"session\")"
+        },
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 185,
+          "line_end": 195,
+          "excerpt": "@pytest.fixture(scope=\"session\")\ndef cert_authority():\n    return trustme.CA()\n\n\n@pytest.fixture(scope=\"session\")\ndef localhost_cert(cert_authority):\n    return cert_authority.issue_cert(\"localhost\")\n\n\n@pytest.fixture(scope=\"session\")"
+        },
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 190,
+          "line_end": 200,
+          "excerpt": "@pytest.fixture(scope=\"session\")\ndef localhost_cert(cert_authority):\n    return cert_authority.issue_cert(\"localhost\")\n\n\n@pytest.fixture(scope=\"session\")\ndef cert_pem_file(localhost_cert):\n    with localhost_cert.cert_chain_pems[0].tempfile() as tmp:\n        yield tmp\n\n"
+        },
+        {
+          "file_path": "tests/conftest.py",
+          "line_start": 196,
+          "line_end": 206,
+          "excerpt": "def cert_pem_file(localhost_cert):\n    with localhost_cert.cert_chain_pems[0].tempfile() as tmp:\n        yield tmp\n\n\n@pytest.fixture(scope=\"session\")\ndef cert_private_key_file(localhost_cert):\n    with localhost_cert.private_key_pem.tempfile() as tmp:\n        yield tmp\n\n"
+        }
+      ],
+      "stats": {
+        "fixture_counts": {
+          "pytest_fixture": 7
+        },
+        "conftest_files": 1,
+        "pattern": "pytest_fixture"
+      }
+    },
+    {
+      "id": "python.test_conventions.assertions",
+      "category": "testing",
+      "title": "Plain assert statements",
+      "description": "Uses plain Python assert statements for test assertions. 1268 assert statements. Uses pytest.raises for exception testing (128 usages).",
+      "confidence": 0.8622857142857143,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 31,
+          "line_end": 37,
+          "excerpt": "def test_bad_utf_like_encoding():\n    content = b\"\\x00\\x00\\x00\\x00\"\n    response = httpx.Response(200, content=content)\n    with pytest.raises(json.decoder.JSONDecodeError):\n        response.json()\n\n"
+        },
+        {
+          "file_path": "tests/test_auth.py",
+          "line_start": 22,
+          "line_end": 28,
+          "excerpt": "\n    # No other requests are made.\n    response = httpx.Response(content=b\"Hello, world!\", status_code=200)\n    with pytest.raises(StopIteration):\n        flow.send(response)\n\n"
+        },
+        {
+          "file_path": "tests/test_auth.py",
+          "line_start": 37,
+          "line_end": 43,
+          "excerpt": "\n    # If a 200 response is returned, then no other requests are made.\n    response = httpx.Response(content=b\"Hello, world!\", status_code=200)\n    with pytest.raises(StopIteration):\n        flow.send(response)\n\n"
+        },
+        {
+          "file_path": "tests/test_auth.py",
+          "line_start": 62,
+          "line_end": 68,
+          "excerpt": "\n    # No other requests are made.\n    response = httpx.Response(content=b\"Hello, world!\", status_code=200)\n    with pytest.raises(StopIteration):\n        flow.send(response)\n\n"
+        },
+        {
+          "file_path": "tests/test_auth.py",
+          "line_start": 100,
+          "line_end": 106,
+          "excerpt": "\n    # No other requests are made.\n    response = httpx.Response(content=b\"Hello, world!\", status_code=200)\n    with pytest.raises(StopIteration):\n        flow.send(response)\n\n"
+        }
+      ],
+      "stats": {
+        "assertion_counts": {
+          "plain_assert": 1268,
+          "pytest_raises": 128,
+          "pytest_warns": 4
+        },
+        "style": "plain_assert"
+      }
+    },
+    {
+      "id": "python.test_conventions.mocking",
+      "category": "testing",
+      "title": "Mocking with pytest monkeypatch fixture",
+      "description": "Uses pytest monkeypatch fixture for test mocking. Found 3 usages.",
+      "confidence": 0.65,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_auth.py",
+          "line_start": 9,
+          "line_end": 19,
+          "excerpt": "import pytest\n\nimport httpx\n\n\ndef test_basic_auth():\n    auth = httpx.BasicAuth(username=\"user\", password=\"pass\")\n    request = httpx.Request(\"GET\", \"https://www.example.com\")\n\n    # The initial request should include a basic auth header.\n    flow = auth.sync_auth_flow(request)"
+        },
+        {
+          "file_path": "tests/test_config.py",
+          "line_start": 6,
+          "line_end": 16,
+          "excerpt": "import pytest\n\nimport httpx\n\n\ndef test_load_ssl_config():\n    context = httpx.create_ssl_context()\n    assert context.verify_mode == ssl.VerifyMode.CERT_REQUIRED\n    assert context.check_hostname is True\n\n"
+        },
+        {
+          "file_path": "tests/client/test_proxies.py",
+          "line_start": 11,
+          "line_end": 21,
+          "excerpt": "    \"\"\"\n    u = httpx.URL(url)\n    return httpcore.URL(scheme=u.raw_scheme, host=u.raw_host, port=u.port, target=\"/\")\n\n\ndef test_socks_proxy():\n    url = httpx.URL(\"http://www.example.com\")\n\n    for proxy in (\"socks5://localhost/\", \"socks5h://localhost/\"):\n        client = httpx.Client(proxy=proxy)\n        transport = client._transport_for_url(url)"
+        }
+      ],
+      "stats": {
+        "mock_counts": {
+          "monkeypatch": 3
+        },
+        "primary_pattern": "monkeypatch"
+      }
+    },
+    {
+      "id": "python.test_conventions.parametrized",
+      "category": "testing",
+      "title": "Parametrized tests",
+      "description": "Uses @pytest.mark.parametrize for data-driven tests. Found 44 parametrized test functions.",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 7,
+          "line_end": 17,
+          "excerpt": "\nimport httpx\nfrom httpx._utils import URLPattern, get_environment_proxies\n\n\n@pytest.mark.parametrize(\n    \"encoding\",\n    (\n        \"utf-32\",\n        \"utf-8-sig\",\n        \"utf-16\","
+        },
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 33,
+          "line_end": 43,
+          "excerpt": "    response = httpx.Response(200, content=content)\n    with pytest.raises(json.decoder.JSONDecodeError):\n        response.json()\n\n\n@pytest.mark.parametrize(\n    (\"encoding\", \"expected\"),\n    (\n        (\"utf-16-be\", \"utf-16\"),\n        (\"utf-16-le\", \"utf-16\"),\n        (\"utf-32-be\", \"utf-32\"),"
+        },
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 84,
+          "line_end": 94,
+          "excerpt": "            'HTTP Request: GET http://127.0.0.1:8000/ \"HTTP/1.1 200 OK\"',\n        ),\n    ]\n\n\n@pytest.mark.parametrize(\n    [\"environment\", \"proxies\"],\n    [\n        ({}, {}),\n        ({\"HTTP_PROXY\": \"http://127.0.0.1\"}, {\"http://\": \"http://127.0.0.1\"}),\n        ("
+        },
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 110,
+          "line_end": 120,
+          "excerpt": "    os.environ.update(environment)\n\n    assert get_environment_proxies() == proxies\n\n\n@pytest.mark.parametrize(\n    [\"pattern\", \"url\", \"expected\"],\n    [\n        (\"http://example.com\", \"http://example.com\", True),\n        (\"http://example.com\", \"https://example.com\", False),\n        (\"http://example.com\", \"http://other.com\", False),"
+        },
+        {
+          "file_path": "tests/test_decoders.py",
+          "line_start": 199,
+          "line_end": 209,
+          "excerpt": "    )\n    assert not hasattr(response, \"body\")\n    assert await response.aread() == body\n\n\n@pytest.mark.parametrize(\"header_value\", (b\"deflate\", b\"gzip\", b\"br\", b\"identity\"))\ndef test_empty_content(header_value):\n    headers = [(b\"Content-Encoding\", header_value)]\n    response = httpx.Response(\n        200,\n        headers=headers,"
+        }
+      ],
+      "stats": {
+        "parametrize_count": 44
+      }
+    },
+    {
+      "id": "python.conventions.test_structure",
+      "category": "testing",
+      "title": "Single test directory: tests/",
+      "description": "All tests in 'tests/' directory. 32 test files.",
+      "confidence": 0.8,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "test_file_count": 32,
+        "test_directories": {
+          "tests": 32
+        },
+        "has_unit": false,
+        "has_integration": false,
+        "has_e2e": false,
+        "structure": "flat",
+        "categories": []
+      }
+    },
+    {
+      "id": "python.conventions.test_naming",
+      "category": "testing",
+      "title": "Test naming: Simple style (test_feature)",
+      "description": "Uses Simple style (test_feature) naming. 523/539 (97%) test functions. Uses 2 test classes for grouping.",
+      "confidence": 0.8396103896103896,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 22,
+          "line_end": 28,
+          "excerpt": "        \"utf-32-le\",\n    ),\n)\ndef test_encoded(encoding):\n    content = '{\"abc\": 123}'.encode(encoding)\n    response = httpx.Response(200, content=content)\n    assert response.json() == {\"abc\": 123}"
+        },
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 28,
+          "line_end": 34,
+          "excerpt": "    assert response.json() == {\"abc\": 123}\n\n\ndef test_bad_utf_like_encoding():\n    content = b\"\\x00\\x00\\x00\\x00\"\n    response = httpx.Response(200, content=content)\n    with pytest.raises(json.decoder.JSONDecodeError):"
+        },
+        {
+          "file_path": "tests/test_utils.py",
+          "line_start": 44,
+          "line_end": 50,
+          "excerpt": "        (\"utf-32-le\", \"utf-32\"),\n    ),\n)\ndef test_guess_by_bom(encoding, expected):\n    content = '\\ufeff{\"abc\": 123}'.encode(encoding)\n    response = httpx.Response(200, content=content)\n    assert response.json() == {\"abc\": 123}"
+        }
+      ],
+      "stats": {
+        "total_test_functions": 539,
+        "pattern_counts": {
+          "simple": 523,
+          "action_result": 16
+        },
+        "test_class_count": 2,
+        "dominant_pattern": "simple"
+      }
+    },
+    {
+      "id": "python.conventions.linter",
+      "category": "tooling",
+      "title": "Linters: Ruff, mypy",
+      "description": "Uses Ruff, mypy for code quality.",
+      "confidence": 0.8999999999999999,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "linters": [
+          "ruff",
+          "mypy"
+        ],
+        "primary_linter": "ruff",
+        "linter_details": {
+          "ruff": {
+            "name": "Ruff",
+            "config_file": "pyproject.toml",
+            "features": [
+              "custom rules",
+              "ignores configured"
+            ]
+          },
+          "mypy": {
+            "name": "mypy",
+            "config_file": "pyproject.toml"
+          }
+        }
+      }
+    },
+    {
+      "id": "python.conventions.import_sorting",
+      "category": "tooling",
+      "title": "Import sorting: Ruff (isort rules)",
+      "description": "Uses Ruff (isort rules) for import organization.",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "sorters": [
+          "ruff"
+        ],
+        "primary_sorter": "ruff",
+        "sorter_details": {
+          "ruff": {
+            "name": "Ruff (isort rules)",
+            "config_file": "pyproject.toml"
+          }
+        }
+      }
+    },
+    {
+      "id": "python.conventions.typing_coverage",
+      "category": "typing",
+      "title": "High type annotation coverage",
+      "description": "Type annotations are commonly used in this codebase. 396/396 functions (100%) have at least one type annotation.",
+      "confidence": 0.95,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 32,
+          "line_end": 42,
+          "excerpt": "except ImportError:  # pragma: no cover\n    zstandard = None  # type: ignore\n\n\nclass ContentDecoder:\n    def decode(self, data: bytes) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n\n    def flush(self) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n"
+        },
+        {
+          "file_path": "httpx/_decoders.py",
+          "line_start": 35,
+          "line_end": 45,
+          "excerpt": "\nclass ContentDecoder:\n    def decode(self, data: bytes) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n\n    def flush(self) -> bytes:\n        raise NotImplementedError()  # pragma: no cover\n\n\nclass IdentityDecoder(ContentDecoder):\n    \"\"\""
+        }
+      ],
+      "stats": {
+        "total_functions": 396,
+        "annotated_functions": 396,
+        "fully_annotated_functions": 66,
+        "any_annotation_coverage": 1.0,
+        "full_annotation_coverage": 0.167
+      }
+    },
+    {
+      "id": "python.conventions.validation_style",
+      "category": "validation",
+      "title": "Manual validation (ValueError/TypeError)",
+      "description": "Uses Manual validation (ValueError/TypeError) for input validation. 17/17 (100%) validation patterns use this approach.",
+      "confidence": 0.8999999999999999,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "httpx/_urls.py",
+          "line_start": 95,
+          "line_end": 101,
+          "excerpt": "            for key, value in kwargs.items():\n                if key not in allowed:\n                    message = f\"{key!r} is an invalid keyword argument for URL()\"\n                    raise TypeError(message)\n                if value is not None and not isinstance(value, allowed[key]):\n                    expected = allowed[key].__name__\n                    seen = type(value).__name__"
+        },
+        {
+          "file_path": "httpx/_urls.py",
+          "line_start": 100,
+          "line_end": 106,
+          "excerpt": "                    expected = allowed[key].__name__\n                    seen = type(value).__name__\n                    message = f\"Argument {key!r} must be {expected} but got {seen}\"\n                    raise TypeError(message)\n                if isinstance(value, bytes):\n                    kwargs[key] = value.decode(\"ascii\")\n"
+        },
+        {
+          "file_path": "httpx/_urls.py",
+          "line_start": 118,
+          "line_end": 124,
+          "excerpt": "        elif isinstance(url, URL):\n            self._uri_reference = url._uri_reference.copy_with(**kwargs)\n        else:\n            raise TypeError(\n                \"Invalid type for url.  Expected str or httpx.URL,\"\n                f\" got {type(url)}: {url!r}\"\n            )"
+        },
+        {
+          "file_path": "httpx/_multipart.py",
+          "line_start": 74,
+          "line_end": 80,
+          "excerpt": "\n    def __init__(self, name: str, value: str | bytes | int | float | None) -> None:\n        if not isinstance(name, str):\n            raise TypeError(\n                f\"Invalid type for name. Expected str, got {type(name)}: {name!r}\"\n            )\n        if value is not None and not isinstance(value, (str, bytes, int, float)):"
+        },
+        {
+          "file_path": "httpx/_multipart.py",
+          "line_start": 78,
+          "line_end": 84,
+          "excerpt": "                f\"Invalid type for name. Expected str, got {type(name)}: {name!r}\"\n            )\n        if value is not None and not isinstance(value, (str, bytes, int, float)):\n            raise TypeError(\n                \"Invalid type for value. Expected primitive type,\"\n                f\" got {type(value)}: {value!r}\"\n            )"
+        }
+      ],
+      "stats": {
+        "validation_counts": {
+          "manual": 17
+        },
+        "dominant_style": "manual",
+        "dominant_ratio": 1.0
+      }
+    }
+  ],
+  "warnings": []
+}

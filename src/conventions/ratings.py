@@ -859,6 +859,1134 @@ def _generic_suggestion(r: ConventionRule, score: int) -> str | None:
     return "Review this convention and consider industry best practices for improvement."
 
 
+# ============================================
+# Python Resilience Ratings
+# ============================================
+
+
+# Retries rating (best-practice based)
+def _retries_score(r: ConventionRule) -> int:
+    """Score retry library usage - tenacity is the gold standard."""
+    libs = r.stats.get("retry_library_counts", {})
+    primary = r.stats.get("primary_library", "")
+
+    # tenacity is the only library used
+    if primary == "tenacity" and len(libs) == 1:
+        return 5
+    # tenacity or backoff (both good)
+    if primary in ("tenacity", "backoff"):
+        return 4
+    # retrying (older library)
+    if primary == "retrying":
+        return 3
+    # urllib3 Retry only (limited scope)
+    if primary == "urllib3_retry":
+        return 2
+    # No retry library
+    return 1
+
+
+def _retries_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "none")
+    libs = r.stats.get("retry_library_counts", {})
+    lib_names = {
+        "tenacity": "tenacity",
+        "backoff": "backoff",
+        "retrying": "retrying",
+        "urllib3_retry": "urllib3 Retry",
+    }
+    if not libs:
+        return "No retry library detected"
+    return f"Uses {lib_names.get(primary, primary)} for retry logic"
+
+
+def _retries_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    if score == 1:
+        return "Add retry logic using tenacity for exponential backoff, jitter, and async support."
+    if primary == "urllib3_retry":
+        return "Consider using tenacity for application-level retries with more control over backoff strategies."
+    if primary == "retrying":
+        return "Consider migrating to tenacity - it's more actively maintained with better async support."
+    return "Standardize on tenacity for retry logic across the codebase."
+
+
+# Timeouts rating (coverage based)
+def _timeouts_score(r: ConventionRule) -> int:
+    """Score timeout usage - all external calls should have explicit timeouts."""
+    ratio = _get_stat(r, "timeout_ratio", 0)
+
+    if ratio >= 0.8:
+        return 5
+    if ratio >= 0.6:
+        return 4
+    if ratio >= 0.4:
+        return 3
+    if ratio >= 0.2:
+        return 2
+    return 1
+
+
+def _timeouts_reason(r: ConventionRule, _score: int) -> str:
+    ratio = _get_stat(r, "timeout_ratio", 0)
+    with_timeout = r.stats.get("timeout_indicators", 0)
+    without_timeout = r.stats.get("no_timeout_indicators", 0)
+    return f"Timeout coverage is {ratio * 100:.0f}% ({with_timeout} with, {without_timeout} without)"
+
+
+def _timeouts_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    without_timeout = r.stats.get("no_timeout_indicators", 0)
+    if score <= 2:
+        return f"Add explicit timeouts to HTTP client calls. Found {without_timeout} calls without timeouts."
+    return "Continue adding explicit timeouts to remaining HTTP client calls to prevent hanging requests."
+
+
+# Circuit breakers rating (best-practice based)
+def _circuit_breaker_score(r: ConventionRule) -> int:
+    """Score circuit breaker usage."""
+    libs = r.stats.get("circuit_breaker_library_counts", {})
+    primary = r.stats.get("primary_library", "")
+    breaker_count = r.stats.get("circuit_breaker_count", 0)
+
+    # pybreaker or aiobreaker with multiple breakers
+    if primary in ("pybreaker", "aiobreaker") and breaker_count >= 3:
+        return 5
+    # Any circuit breaker library with usage
+    if libs and breaker_count >= 1:
+        return 4
+    # Single circuit breaker
+    if breaker_count == 1:
+        return 3
+    # Library imported but no usage
+    if libs:
+        return 2
+    # No circuit breaker
+    return 1
+
+
+def _circuit_breaker_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "none")
+    breaker_count = r.stats.get("circuit_breaker_count", 0)
+    lib_names = {
+        "pybreaker": "pybreaker",
+        "circuitbreaker": "circuitbreaker",
+        "aiobreaker": "aiobreaker",
+    }
+    if breaker_count == 0:
+        if primary and primary != "none":
+            return f"Imports {lib_names.get(primary, primary)} but no circuit breakers defined"
+        return "No circuit breaker pattern detected"
+    return f"Uses {lib_names.get(primary, primary)} with {breaker_count} circuit breaker(s)"
+
+
+def _circuit_breaker_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    breaker_count = r.stats.get("circuit_breaker_count", 0)
+    if score == 1:
+        return "Add circuit breakers using pybreaker to protect against cascading failures from unreliable dependencies."
+    if score == 2:
+        return "Define circuit breakers for external service calls to prevent cascading failures."
+    if breaker_count < 3:
+        return "Consider adding circuit breakers to more external service integrations."
+    return None
+
+
+# Health checks rating
+def _health_check_score(r: ConventionRule) -> int:
+    """Score health check endpoint coverage."""
+    has_readiness = r.stats.get("has_readiness", False)
+    has_liveness = r.stats.get("has_liveness", False)
+    health_count = r.stats.get("health_endpoint_count", 0)
+
+    # Both readiness AND liveness endpoints
+    if has_readiness and has_liveness:
+        return 5
+    # Health endpoint + either readiness or liveness
+    if health_count > 0 and (has_readiness or has_liveness):
+        return 4
+    # Single health endpoint
+    if health_count > 0:
+        return 3
+    # Health-related function but no endpoint
+    if r.stats.get("health_function_count", 0) > 0:
+        return 2
+    # No health checks
+    return 1
+
+
+def _health_check_reason(r: ConventionRule, _score: int) -> str:
+    has_readiness = r.stats.get("has_readiness", False)
+    has_liveness = r.stats.get("has_liveness", False)
+    health_count = r.stats.get("health_endpoint_count", 0)
+
+    parts = []
+    if health_count > 0:
+        parts.append(f"{health_count} health endpoint(s)")
+    if has_readiness:
+        parts.append("readiness")
+    if has_liveness:
+        parts.append("liveness")
+
+    if not parts:
+        return "No health check endpoints detected"
+    return f"Health checks: {', '.join(parts)}"
+
+
+def _health_check_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    has_readiness = r.stats.get("has_readiness", False)
+    has_liveness = r.stats.get("has_liveness", False)
+
+    if score == 1:
+        return "Add health check endpoints (/health, /ready, /live) for container orchestration and load balancer integration."
+    if not has_readiness and not has_liveness:
+        return "Add separate /ready (readiness) and /live (liveness) endpoints for Kubernetes deployments."
+    if not has_readiness:
+        return "Add a /ready endpoint to signal when the service is ready to accept traffic."
+    if not has_liveness:
+        return "Add a /live endpoint to signal when the service is running (for restart detection)."
+    return None
+
+
+# ============================================
+# Python Observability Ratings
+# ============================================
+
+
+# Tracing rating (best-practice based)
+def _tracing_score(r: ConventionRule) -> int:
+    """Score tracing implementation - OpenTelemetry is the industry standard."""
+    libs = r.stats.get("tracing_library_counts", {})
+    primary = r.stats.get("primary_library", "")
+    spans = r.stats.get("spans_created", 0)
+
+    # OpenTelemetry with active span creation
+    if primary == "opentelemetry" and spans > 0:
+        return 5
+    # OpenTelemetry (imports only) or OpenTracing with spans
+    if primary == "opentelemetry" or (primary == "opentracing" and spans > 0):
+        return 4
+    # Vendor SDK (Sentry, Datadog, Jaeger) with spans
+    if primary in ("sentry", "datadog", "jaeger") and spans > 0:
+        return 3
+    # Vendor SDK (imports only)
+    if primary in ("sentry", "datadog", "jaeger"):
+        return 2
+    # No tracing
+    return 1
+
+
+def _tracing_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "none")
+    spans = r.stats.get("spans_created", 0)
+    lib_names = {
+        "opentelemetry": "OpenTelemetry",
+        "opentracing": "OpenTracing",
+        "jaeger": "Jaeger",
+        "sentry": "Sentry",
+        "datadog": "Datadog",
+    }
+    if primary == "none" or not primary:
+        return "No distributed tracing detected"
+    name = lib_names.get(primary, primary)
+    if spans > 0:
+        return f"Uses {name} with {spans} span creation(s)"
+    return f"Imports {name} tracing library"
+
+
+def _tracing_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    spans = r.stats.get("spans_created", 0)
+
+    if score == 1:
+        return "Add distributed tracing using OpenTelemetry for end-to-end request visibility."
+    if primary in ("sentry", "datadog", "jaeger"):
+        return "Consider migrating to OpenTelemetry for vendor-neutral distributed tracing."
+    if spans == 0:
+        return "Add span creation to instrument key operations and service boundaries."
+    return "Continue instrumenting critical paths with custom spans for better observability."
+
+
+# Metrics rating (best-practice based)
+def _metrics_score(r: ConventionRule) -> int:
+    """Score metrics implementation - Prometheus is widely supported."""
+    libs = r.stats.get("metrics_library_counts", {})
+    primary = r.stats.get("primary_library", "")
+    metric_defs = r.stats.get("metric_definitions", 0)
+
+    # Prometheus with multiple metric definitions
+    if primary == "prometheus" and metric_defs >= 5:
+        return 5
+    # Prometheus or OpenTelemetry Metrics
+    if primary in ("prometheus", "opentelemetry_metrics", "aioprometheus"):
+        return 4
+    # StatsD/Datadog with definitions
+    if primary == "statsd" and metric_defs > 0:
+        return 3
+    # Any metrics library (imports only)
+    if libs:
+        return 2
+    # No metrics
+    return 1
+
+
+def _metrics_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "none")
+    metric_defs = r.stats.get("metric_definitions", 0)
+    lib_names = {
+        "prometheus": "Prometheus",
+        "statsd": "StatsD/Datadog",
+        "opentelemetry_metrics": "OpenTelemetry Metrics",
+        "aioprometheus": "aioprometheus",
+    }
+    if primary == "none" or not primary:
+        return "No application metrics detected"
+    name = lib_names.get(primary, primary)
+    if metric_defs > 0:
+        return f"Uses {name} with {metric_defs} metric definition(s)"
+    return f"Imports {name} metrics library"
+
+
+def _metrics_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    metric_defs = r.stats.get("metric_definitions", 0)
+
+    if score == 1:
+        return "Add application metrics using Prometheus for standardized monitoring and alerting."
+    if primary == "statsd":
+        return "Consider migrating to Prometheus for pull-based metrics with better querying capabilities."
+    if metric_defs == 0:
+        return "Define metrics (Counter, Gauge, Histogram) for key business and operational indicators."
+    if metric_defs < 5:
+        return "Add more metric definitions to track request latency, error rates, and business KPIs."
+    return None
+
+
+# Correlation IDs rating (usage based)
+def _correlation_ids_score(r: ConventionRule) -> int:
+    """Score correlation ID usage - more consistent usage is better."""
+    refs = r.stats.get("correlation_id_references", 0)
+
+    if refs >= 10:
+        return 5
+    if refs >= 5:
+        return 4
+    if refs >= 3:
+        return 3
+    if refs >= 2:
+        return 2
+    return 1
+
+
+def _correlation_ids_reason(r: ConventionRule, _score: int) -> str:
+    refs = r.stats.get("correlation_id_references", 0)
+    uuid_count = r.stats.get("uuid_generation_count", 0)
+    if refs == 0:
+        return "No correlation ID pattern detected"
+    msg = f"Found {refs} correlation ID reference(s)"
+    if uuid_count > 0:
+        msg += f" with {uuid_count} UUID generation(s)"
+    return msg
+
+
+def _correlation_ids_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    refs = r.stats.get("correlation_id_references", 0)
+
+    if score == 1:
+        return "Add request/correlation IDs to track requests across service boundaries for debugging."
+    if refs < 5:
+        return "Propagate correlation IDs more consistently through logging and downstream service calls."
+    return "Continue propagating correlation IDs through all service calls and log entries."
+
+
+# ============================================
+# Python Background Tasks & Caching Ratings
+# ============================================
+
+
+# Background tasks / task queue rating
+def _task_queue_score(r: ConventionRule) -> int:
+    """Score task queue library - modern async-first libraries preferred."""
+    primary = r.stats.get("primary_library", "")
+    libraries = r.stats.get("libraries", [])
+
+    # Modern async-first task queues
+    if primary in ("dramatiq", "arq"):
+        return 5
+    # Celery with good setup
+    if primary == "celery" and len(libraries) == 1:
+        return 4
+    # Multiple task queue libraries or older ones
+    if primary in ("celery", "huey", "rq"):
+        return 4
+    # APScheduler (scheduling, not task queue)
+    if primary == "apscheduler":
+        return 3
+    return 3
+
+
+def _task_queue_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "unknown")
+    lib_names = {
+        "celery": "Celery",
+        "dramatiq": "Dramatiq",
+        "arq": "arq",
+        "rq": "RQ",
+        "huey": "Huey",
+        "apscheduler": "APScheduler",
+    }
+    return f"Uses {lib_names.get(primary, primary)} for background tasks"
+
+
+def _task_queue_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    if primary == "celery":
+        return "Celery is solid. For async-native code, consider Dramatiq or arq for better asyncio integration."
+    if primary == "apscheduler":
+        return "APScheduler is good for scheduling. For distributed task queues, consider Celery or Dramatiq."
+    return None
+
+
+# Caching rating
+def _caching_score(r: ConventionRule) -> int:
+    """Score caching implementation - distributed caching preferred for production."""
+    methods = r.stats.get("caching_methods", [])
+    primary = r.stats.get("primary_method", "")
+
+    # Redis or aiocache (distributed, production-ready)
+    if "redis" in methods or "aiocache" in methods or primary == "redis" or primary == "aiocache":
+        return 5
+    # cachetools (more sophisticated than lru_cache)
+    if "cachetools" in methods or primary == "cachetools":
+        return 4
+    # functools.cache/lru_cache (simple, in-memory)
+    if primary in ("lru_cache", "cache") or "lru_cache" in methods or "cache" in methods:
+        return 4
+    # diskcache
+    if "diskcache" in methods or primary == "diskcache":
+        return 3
+    return 3
+
+
+def _caching_reason(r: ConventionRule, _score: int) -> str:
+    methods = r.stats.get("caching_methods", [])
+    if not methods:
+        return "No caching detected"
+    method_names = {
+        "lru_cache": "functools.lru_cache",
+        "cache": "functools.cache",
+        "redis": "Redis",
+        "cachetools": "cachetools",
+        "aiocache": "aiocache",
+        "diskcache": "diskcache",
+    }
+    names = [method_names.get(m, m) for m in methods]
+    return f"Caching with {', '.join(names)}"
+
+
+def _caching_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    methods = r.stats.get("caching_methods", [])
+    if "redis" not in methods and "aiocache" not in methods:
+        return "Consider Redis for distributed caching in production environments."
+    return None
+
+
+# ============================================
+# Python Database Extended Ratings
+# ============================================
+
+
+# Database migrations rating
+def _db_migrations_score(r: ConventionRule) -> int:
+    """Score database migration tools."""
+    primary = r.stats.get("primary_tool", "")
+
+    # Alembic is the standard for SQLAlchemy
+    if primary == "alembic":
+        return 5
+    # Django migrations (good for Django)
+    if primary == "django_migrations":
+        return 5
+    # Aerich for Tortoise ORM
+    if primary == "aerich":
+        return 4
+    # yoyo (simpler, less featured)
+    if primary == "yoyo":
+        return 3
+    return 3
+
+
+def _db_migrations_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_tool", "unknown")
+    tool_names = {
+        "alembic": "Alembic",
+        "django_migrations": "Django Migrations",
+        "yoyo": "yoyo-migrations",
+        "aerich": "Aerich",
+    }
+    return f"Uses {tool_names.get(primary, primary)} for database migrations"
+
+
+def _db_migrations_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_tool", "")
+    if primary == "yoyo":
+        return "Consider Alembic for more powerful migration features like autogenerate."
+    return None
+
+
+# Connection pooling rating
+def _db_connection_pooling_score(r: ConventionRule) -> int:
+    """Score database connection pooling configuration."""
+    stats = r.stats
+
+    # Explicitly configured pool with limits
+    if stats.get("configured_pool", 0) > 0:
+        return 5
+    # asyncpg pool (good for async)
+    if stats.get("asyncpg_pool", 0) > 0:
+        return 5
+    # QueuePool explicitly (good awareness)
+    if stats.get("queue_pool", 0) > 0:
+        return 4
+    # NullPool for serverless (appropriate choice)
+    if stats.get("null_pool", 0) > 0:
+        return 4
+    # Default pooling
+    if stats.get("default_pool", 0) > 0:
+        return 3
+    return 3
+
+
+def _db_connection_pooling_reason(r: ConventionRule, _score: int) -> str:
+    stats = r.stats
+    if stats.get("configured_pool", 0) > 0:
+        return "Connection pooling is explicitly configured"
+    if stats.get("null_pool", 0) > 0:
+        return "Uses NullPool for serverless environments"
+    if stats.get("asyncpg_pool", 0) > 0:
+        return "Uses asyncpg connection pooling"
+    return "Uses default connection pooling"
+
+
+def _db_connection_pooling_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    if score <= 3:
+        return "Configure pool_size, max_overflow, and pool_pre_ping for production reliability."
+    return None
+
+
+# ============================================
+# Python Security Extended Ratings
+# ============================================
+
+
+# Rate limiting rating
+def _rate_limiting_score(r: ConventionRule) -> int:
+    """Score rate limiting implementation."""
+    primary = r.stats.get("primary_library", "")
+    decorator_count = r.stats.get("decorator_usage_count", 0)
+
+    # Active rate limiting with decorators
+    if decorator_count >= 5:
+        return 5
+    if decorator_count >= 2:
+        return 4
+    # Library imported
+    if primary:
+        return 3
+    return 2
+
+
+def _rate_limiting_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "unknown")
+    decorator_count = r.stats.get("decorator_usage_count", 0)
+    lib_names = {
+        "slowapi": "SlowAPI",
+        "flask_limiter": "Flask-Limiter",
+        "django_ratelimit": "django-ratelimit",
+        "limits": "limits",
+    }
+    msg = f"Uses {lib_names.get(primary, primary)} for rate limiting"
+    if decorator_count > 0:
+        msg += f" ({decorator_count} endpoints)"
+    return msg
+
+
+def _rate_limiting_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    decorator_count = r.stats.get("decorator_usage_count", 0)
+    if decorator_count == 0:
+        return "Apply rate limiting decorators to API endpoints to prevent abuse."
+    return "Consider adding rate limits to more endpoints, especially authentication routes."
+
+
+# Password hashing rating
+def _password_hashing_score(r: ConventionRule) -> int:
+    """Score password hashing - argon2 is the gold standard."""
+    quality = r.stats.get("quality", "unknown")
+    primary = r.stats.get("primary_library", "")
+
+    if quality == "excellent" or primary == "argon2":
+        return 5
+    if quality == "good" or primary in ("bcrypt", "passlib_cryptcontext", "passlib"):
+        return 4
+    if quality == "weak" or primary == "hashlib":
+        return 1
+    return 3
+
+
+def _password_hashing_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "unknown")
+    lib_names = {
+        "argon2": "argon2-cffi",
+        "bcrypt": "bcrypt",
+        "passlib": "passlib",
+        "passlib_cryptcontext": "passlib CryptContext",
+        "hashlib": "hashlib",
+    }
+    return f"Uses {lib_names.get(primary, primary)} for password hashing"
+
+
+def _password_hashing_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    if primary == "hashlib":
+        return "CRITICAL: hashlib is not suitable for passwords. Use argon2-cffi or bcrypt immediately."
+    if primary == "passlib":
+        return "Consider using passlib's CryptContext with argon2 or bcrypt schemes."
+    if score <= 3:
+        return "Consider upgrading to argon2-cffi for the most secure password hashing."
+    return None
+
+
+# ============================================
+# Python API Extended Ratings
+# ============================================
+
+
+# API versioning rating
+def _api_versioning_score(r: ConventionRule) -> int:
+    """Score API versioning implementation."""
+    patterns = r.stats.get("versioning_patterns", {})
+    primary = r.stats.get("primary_pattern", "")
+
+    # URL versioning (clear and RESTful)
+    if primary == "url_versioning":
+        count = patterns.get("url_versioning", 0)
+        if count >= 10:
+            return 5
+        if count >= 5:
+            return 4
+        return 3
+    # Header versioning (valid but less discoverable)
+    if primary == "header_versioning":
+        return 3
+    return 3
+
+
+def _api_versioning_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_pattern", "unknown")
+    patterns = r.stats.get("versioning_patterns", {})
+
+    if primary == "url_versioning":
+        count = patterns.get("url_versioning", 0)
+        return f"URL-based API versioning ({count} versioned routes)"
+    if primary == "header_versioning":
+        return "Header-based API versioning"
+    return "API versioning detected"
+
+
+def _api_versioning_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_pattern", "")
+    if primary == "header_versioning":
+        return "URL versioning (/v1/, /v2/) is more discoverable than header versioning."
+    return "Apply consistent versioning across all API routes."
+
+
+# OpenAPI documentation rating
+def _openapi_docs_score(r: ConventionRule) -> int:
+    """Score OpenAPI documentation."""
+    primary = r.stats.get("primary_tool", "")
+
+    # Customized FastAPI or dedicated OpenAPI tools
+    if primary in ("fastapi_customized", "drf_spectacular"):
+        return 5
+    # Default FastAPI (good but could be customized)
+    if primary == "fastapi_builtin":
+        return 4
+    # Other OpenAPI tools
+    if primary in ("flasgger", "flask_openapi3", "apispec", "spectree"):
+        return 4
+    return 3
+
+
+def _openapi_docs_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_tool", "unknown")
+    tool_names = {
+        "fastapi_builtin": "FastAPI (default)",
+        "fastapi_customized": "FastAPI (customized)",
+        "drf_spectacular": "drf-spectacular",
+        "flasgger": "Flasgger",
+        "flask_openapi3": "flask-openapi3",
+        "apispec": "apispec",
+        "spectree": "SpecTree",
+    }
+    return f"OpenAPI docs via {tool_names.get(primary, primary)}"
+
+
+def _openapi_docs_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_tool", "")
+    if primary == "fastapi_builtin":
+        return "Customize OpenAPI metadata with tags, descriptions, and examples for better docs."
+    return None
+
+
+# ============================================
+# Python Messaging & Async Ratings
+# ============================================
+
+
+# Message broker rating
+def _message_broker_score(r: ConventionRule) -> int:
+    """Score message broker choice."""
+    primary = r.stats.get("primary_broker", "")
+
+    # Kafka, NATS (highly scalable)
+    if primary in ("kafka", "nats"):
+        return 5
+    # RabbitMQ (reliable, feature-rich)
+    if primary == "rabbitmq":
+        return 5
+    # Redis pub/sub (simpler, less durable)
+    if primary == "redis_pubsub":
+        return 4
+    # AWS SQS
+    if primary == "aws_sqs":
+        return 4
+    # ZeroMQ (lower level)
+    if primary == "zeromq":
+        return 3
+    return 3
+
+
+def _message_broker_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_broker", "unknown")
+    broker_names = {
+        "kafka": "Apache Kafka",
+        "rabbitmq": "RabbitMQ",
+        "redis_pubsub": "Redis Pub/Sub",
+        "nats": "NATS",
+        "zeromq": "ZeroMQ",
+        "aws_sqs": "AWS SQS",
+    }
+    return f"Uses {broker_names.get(primary, primary)} for messaging"
+
+
+def _message_broker_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_broker", "")
+    if primary == "redis_pubsub":
+        return "Redis Pub/Sub is good for simple cases. For durability, consider RabbitMQ or Kafka."
+    if primary == "zeromq":
+        return "ZeroMQ is powerful but low-level. Consider RabbitMQ for easier message patterns."
+    return None
+
+
+# Async HTTP client rating
+def _async_http_client_score(r: ConventionRule) -> int:
+    """Score async HTTP client choice - httpx is the modern standard."""
+    primary = r.stats.get("primary_client", "")
+    quality = r.stats.get("quality", "")
+
+    if quality == "excellent" or primary == "httpx":
+        return 5
+    if quality == "good" or primary == "aiohttp":
+        return 4
+    if quality == "poor" or primary == "requests":
+        return 2
+    return 3
+
+
+def _async_http_client_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_client", "unknown")
+    client_names = {
+        "httpx": "httpx",
+        "aiohttp": "aiohttp",
+        "requests": "requests (sync)",
+        "asks": "asks",
+    }
+    return f"Uses {client_names.get(primary, primary)} for HTTP requests"
+
+
+def _async_http_client_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_client", "")
+    if primary == "requests":
+        return "requests is sync-only. Use httpx for async/await support and connection pooling."
+    if primary == "aiohttp":
+        return "aiohttp is good. httpx offers a cleaner API with both sync and async support."
+    return None
+
+
+# Feature flags rating
+def _feature_flags_score(r: ConventionRule) -> int:
+    """Score feature flag implementation."""
+    primary = r.stats.get("primary_library", "")
+    quality = r.stats.get("quality", "")
+
+    # Managed services (most mature)
+    if quality == "managed" or primary in ("launchdarkly", "split", "flagsmith"):
+        return 5
+    # Self-hosted solutions
+    if quality == "self_hosted" or primary in ("unleash", "growthbook", "flipper"):
+        return 4
+    # Simple libraries
+    if quality == "library":
+        return 3
+    # Environment variables
+    if quality == "basic" or primary == "env_flags":
+        return 2
+    return 3
+
+
+def _feature_flags_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "unknown")
+    lib_names = {
+        "launchdarkly": "LaunchDarkly",
+        "flagsmith": "Flagsmith",
+        "unleash": "Unleash",
+        "split": "Split.io",
+        "flipper": "Flipper",
+        "growthbook": "GrowthBook",
+        "env_flags": "environment variables",
+    }
+    return f"Feature flags via {lib_names.get(primary, primary)}"
+
+
+def _feature_flags_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    if primary == "env_flags":
+        return "Environment variable flags are basic. Consider Unleash or Flagsmith for targeting and analytics."
+    if score <= 3:
+        return "Consider a feature flag service for gradual rollouts, A/B testing, and kill switches."
+    return None
+
+
+# ============================================
+# Python Serialization & Tooling Ratings
+# ============================================
+
+
+# JSON library rating
+def _json_library_score(r: ConventionRule) -> int:
+    """Score JSON library choice - orjson is fastest."""
+    primary = r.stats.get("primary_library", "")
+
+    if primary == "orjson":
+        return 5
+    if primary == "ujson":
+        return 4
+    if primary == "rapidjson":
+        return 4
+    if primary == "simplejson":
+        return 3
+    if primary == "json":
+        return 3
+    return 3
+
+
+def _json_library_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_library", "unknown")
+    total = r.stats.get("total_usages", 0)
+    lib_names = {
+        "orjson": "orjson (fastest)",
+        "ujson": "ujson (fast)",
+        "rapidjson": "python-rapidjson",
+        "simplejson": "simplejson",
+        "json": "stdlib json",
+    }
+    return f"Uses {lib_names.get(primary, primary)} ({total} usages)"
+
+
+def _json_library_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_library", "")
+    if primary == "json":
+        return "Consider orjson for 10x faster JSON serialization with minimal API changes."
+    if primary in ("ujson", "simplejson"):
+        return "Consider orjson - it's faster and handles more edge cases correctly."
+    return None
+
+
+# Type checker strictness rating
+def _type_checker_strictness_score(r: ConventionRule) -> int:
+    """Score type checker strictness - strict mode catches more bugs."""
+    strictness = r.stats.get("strictness", "unknown")
+    strict_options = r.stats.get("strict_options", [])
+
+    if strictness == "strict":
+        return 5
+    if strictness == "mostly_strict" or len(strict_options) >= 5:
+        return 4
+    if strictness == "moderate" or len(strict_options) >= 2:
+        return 3
+    if strictness == "basic" or strict_options:
+        return 2
+    return 2
+
+
+def _type_checker_strictness_reason(r: ConventionRule, _score: int) -> str:
+    type_checker = r.stats.get("type_checker", "unknown")
+    strictness = r.stats.get("strictness", "unknown")
+    strict_options = r.stats.get("strict_options", [])
+
+    if strictness == "strict":
+        return f"{type_checker} in strict mode"
+    if strict_options:
+        return f"{type_checker} with {len(strict_options)} strict options"
+    return f"{type_checker} ({strictness} mode)"
+
+
+def _type_checker_strictness_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    type_checker = r.stats.get("type_checker", "mypy")
+    strictness = r.stats.get("strictness", "")
+
+    if score <= 2:
+        return f"Enable strict mode in {type_checker} to catch more type errors at development time."
+    if score == 3:
+        return f"Consider enabling more strict options in {type_checker} (disallow_untyped_defs, warn_return_any)."
+    return f"Enable remaining strict options in {type_checker} for maximum type safety."
+
+
+# Lock file rating
+def _lock_file_score(r: ConventionRule) -> int:
+    """Score lock file presence and quality."""
+    quality = r.stats.get("quality", "none")
+    primary = r.stats.get("primary_lock", "")
+
+    if quality == "modern" or primary in ("uv", "poetry"):
+        return 5
+    if quality == "good" or primary in ("pdm", "pipenv", "pip_hashes"):
+        return 4
+    if quality == "basic" or primary == "pip_pinned":
+        return 3
+    if quality == "partial":
+        return 2
+    # No lock file
+    return 1
+
+
+def _lock_file_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_lock", "none")
+    lock_files = r.stats.get("lock_files", {})
+
+    if not lock_files:
+        return "No lock file for reproducible builds"
+
+    lock_names = {
+        "uv": "uv.lock",
+        "poetry": "poetry.lock",
+        "pdm": "pdm.lock",
+        "pipenv": "Pipfile.lock",
+        "pip_hashes": "requirements.txt with hashes",
+        "pip_pinned": "requirements.txt (pinned)",
+        "pip_mostly_pinned": "requirements.txt (mostly pinned)",
+    }
+    return f"Lock file: {lock_names.get(primary, primary)}"
+
+
+def _lock_file_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_lock", "")
+
+    if score == 1:
+        return "Add a lock file (uv.lock or poetry.lock) for reproducible dependency installation."
+    if primary in ("pip_pinned", "pip_mostly_pinned"):
+        return "Consider uv or poetry for better dependency resolution and lock file management."
+    if primary == "pipenv":
+        return "Pipenv works, but uv or poetry offer faster, more modern dependency management."
+    return None
+
+
+# Linter choice rating
+def _linter_score(r: ConventionRule) -> int:
+    """Score linter choice - ruff is the modern standard."""
+    linters = r.stats.get("linters", [])
+
+    # Ruff is fastest and most comprehensive
+    if "ruff" in linters:
+        if "mypy" in linters or "pyright" in linters:
+            return 5  # Ruff + type checker
+        return 4
+    # Type checker alone
+    if "mypy" in linters or "pyright" in linters:
+        if "flake8" in linters:
+            return 4
+        return 3
+    # Legacy linters
+    if "flake8" in linters:
+        return 3
+    if "pylint" in linters:
+        return 3
+    return 2
+
+
+def _linter_reason(r: ConventionRule, _score: int) -> str:
+    linters = r.stats.get("linters", [])
+    if not linters:
+        return "No linter configured"
+    linter_details = r.stats.get("linter_details", {})
+    names = [linter_details.get(l, {}).get("name", l) for l in linters]
+    return f"Linters: {', '.join(names)}"
+
+
+def _linter_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    linters = r.stats.get("linters", [])
+
+    if "ruff" not in linters:
+        return "Consider Ruff - it's 10-100x faster than flake8/pylint and includes isort, pyupgrade, and more."
+    if "mypy" not in linters and "pyright" not in linters:
+        return "Add mypy or pyright for static type checking alongside Ruff."
+    return None
+
+
+# Formatter choice rating
+def _formatter_score(r: ConventionRule) -> int:
+    """Score formatter choice - ruff format or black are the standards."""
+    formatters = r.stats.get("formatters", [])
+    primary = r.stats.get("primary_formatter", "")
+
+    if primary in ("ruff", "black"):
+        return 5
+    if primary == "yapf":
+        return 3
+    if primary == "autopep8":
+        return 2
+    return 2
+
+
+def _formatter_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_formatter", "none")
+    formatter_names = {
+        "ruff": "Ruff format",
+        "black": "Black",
+        "yapf": "YAPF",
+        "autopep8": "autopep8",
+    }
+    return f"Formatter: {formatter_names.get(primary, primary)}"
+
+
+def _formatter_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    primary = r.stats.get("primary_formatter", "")
+
+    if primary in ("autopep8", "yapf"):
+        return "Consider Black or Ruff format for consistent, opinionated formatting."
+    if not primary:
+        return "Add a code formatter (Black or Ruff) for consistent code style."
+    return None
+
+
+# Dockerfile practices rating
+def _dockerfile_score(r: ConventionRule) -> int:
+    """Score Dockerfile best practices."""
+    practices = r.stats.get("practices", {})
+    count = r.stats.get("good_practice_count", 0)
+
+    # Key practices
+    has_multistage = practices.get("multi_stage", False)
+    has_nonroot = practices.get("non_root_user", False)
+    has_pinned = practices.get("pinned_version", False)
+
+    if count >= 5:
+        return 5
+    if has_multistage and has_nonroot and has_pinned:
+        return 5
+    if count >= 3 or (has_multistage and has_nonroot):
+        return 4
+    if count >= 2:
+        return 3
+    if count >= 1:
+        return 2
+    return 2
+
+
+def _dockerfile_reason(r: ConventionRule, _score: int) -> str:
+    practices = r.stats.get("practices", {})
+    good = [k for k, v in practices.items() if v]
+    count = len(good)
+
+    practice_names = {
+        "multi_stage": "multi-stage",
+        "non_root_user": "non-root",
+        "healthcheck": "healthcheck",
+        "dockerignore": ".dockerignore",
+        "pinned_version": "pinned base",
+        "layer_optimization": "layer caching",
+    }
+
+    if count >= 3:
+        names = [practice_names.get(p, p) for p in good[:3]]
+        return f"Dockerfile: {', '.join(names)}"
+    return f"Dockerfile with {count}/6 best practices"
+
+
+def _dockerfile_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    practices = r.stats.get("practices", {})
+
+    missing = []
+    if not practices.get("multi_stage"):
+        missing.append("multi-stage builds to reduce image size")
+    if not practices.get("non_root_user"):
+        missing.append("non-root USER for security")
+    if not practices.get("pinned_version"):
+        missing.append("pinned base image version (avoid :latest)")
+    if not practices.get("dockerignore"):
+        missing.append(".dockerignore file")
+
+    if missing:
+        return f"Add {missing[0]}."
+    return None
+
+
 # Rating rules registry
 RATING_RULES: dict[str, RatingRule] = {
     # Python typing and documentation
@@ -990,6 +2118,146 @@ RATING_RULES: dict[str, RatingRule] = {
         score_func=_schema_library_score,
         reason_func=_schema_library_reason,
         suggestion_func=_schema_library_suggestion,
+    ),
+
+    # Python resilience
+    "python.conventions.retries": RatingRule(
+        score_func=_retries_score,
+        reason_func=_retries_reason,
+        suggestion_func=_retries_suggestion,
+    ),
+    "python.conventions.timeouts": RatingRule(
+        score_func=_timeouts_score,
+        reason_func=_timeouts_reason,
+        suggestion_func=_timeouts_suggestion,
+    ),
+    "python.conventions.circuit_breakers": RatingRule(
+        score_func=_circuit_breaker_score,
+        reason_func=_circuit_breaker_reason,
+        suggestion_func=_circuit_breaker_suggestion,
+    ),
+    "python.conventions.health_checks": RatingRule(
+        score_func=_health_check_score,
+        reason_func=_health_check_reason,
+        suggestion_func=_health_check_suggestion,
+    ),
+
+    # Python observability
+    "python.conventions.tracing": RatingRule(
+        score_func=_tracing_score,
+        reason_func=_tracing_reason,
+        suggestion_func=_tracing_suggestion,
+    ),
+    "python.conventions.metrics": RatingRule(
+        score_func=_metrics_score,
+        reason_func=_metrics_reason,
+        suggestion_func=_metrics_suggestion,
+    ),
+    "python.conventions.correlation_ids": RatingRule(
+        score_func=_correlation_ids_score,
+        reason_func=_correlation_ids_reason,
+        suggestion_func=_correlation_ids_suggestion,
+    ),
+
+    # Python background tasks & caching
+    "python.conventions.background_tasks": RatingRule(
+        score_func=_task_queue_score,
+        reason_func=_task_queue_reason,
+        suggestion_func=_task_queue_suggestion,
+    ),
+    "python.conventions.caching": RatingRule(
+        score_func=_caching_score,
+        reason_func=_caching_reason,
+        suggestion_func=_caching_suggestion,
+    ),
+
+    # Python database extended
+    "python.conventions.db_migrations": RatingRule(
+        score_func=_db_migrations_score,
+        reason_func=_db_migrations_reason,
+        suggestion_func=_db_migrations_suggestion,
+    ),
+    "python.conventions.db_connection_pooling": RatingRule(
+        score_func=_db_connection_pooling_score,
+        reason_func=_db_connection_pooling_reason,
+        suggestion_func=_db_connection_pooling_suggestion,
+    ),
+
+    # Python security extended
+    "python.conventions.rate_limiting": RatingRule(
+        score_func=_rate_limiting_score,
+        reason_func=_rate_limiting_reason,
+        suggestion_func=_rate_limiting_suggestion,
+    ),
+    "python.conventions.password_hashing": RatingRule(
+        score_func=_password_hashing_score,
+        reason_func=_password_hashing_reason,
+        suggestion_func=_password_hashing_suggestion,
+    ),
+
+    # Python API extended
+    "python.conventions.api_versioning": RatingRule(
+        score_func=_api_versioning_score,
+        reason_func=_api_versioning_reason,
+        suggestion_func=_api_versioning_suggestion,
+    ),
+    "python.conventions.openapi_docs": RatingRule(
+        score_func=_openapi_docs_score,
+        reason_func=_openapi_docs_reason,
+        suggestion_func=_openapi_docs_suggestion,
+    ),
+
+    # Python messaging & async
+    "python.conventions.message_broker": RatingRule(
+        score_func=_message_broker_score,
+        reason_func=_message_broker_reason,
+        suggestion_func=_message_broker_suggestion,
+    ),
+    "python.conventions.async_http_client": RatingRule(
+        score_func=_async_http_client_score,
+        reason_func=_async_http_client_reason,
+        suggestion_func=_async_http_client_suggestion,
+    ),
+
+    # Python feature flags
+    "python.conventions.feature_flags": RatingRule(
+        score_func=_feature_flags_score,
+        reason_func=_feature_flags_reason,
+        suggestion_func=_feature_flags_suggestion,
+    ),
+
+    # Python serialization & tooling
+    "python.conventions.json_library": RatingRule(
+        score_func=_json_library_score,
+        reason_func=_json_library_reason,
+        suggestion_func=_json_library_suggestion,
+    ),
+    "python.conventions.type_checker_strictness": RatingRule(
+        score_func=_type_checker_strictness_score,
+        reason_func=_type_checker_strictness_reason,
+        suggestion_func=_type_checker_strictness_suggestion,
+    ),
+    "python.conventions.lock_file": RatingRule(
+        score_func=_lock_file_score,
+        reason_func=_lock_file_reason,
+        suggestion_func=_lock_file_suggestion,
+    ),
+    "python.conventions.linter": RatingRule(
+        score_func=_linter_score,
+        reason_func=_linter_reason,
+        suggestion_func=_linter_suggestion,
+    ),
+    "python.conventions.formatter": RatingRule(
+        score_func=_formatter_score,
+        reason_func=_formatter_reason,
+        suggestion_func=_formatter_suggestion,
+    ),
+
+    # Generic containerization
+    "generic.conventions.dockerfile": RatingRule(
+        score_func=_dockerfile_score,
+        reason_func=_dockerfile_reason,
+        suggestion_func=_dockerfile_suggestion,
     ),
 
     # ============================================
@@ -1422,23 +2690,6 @@ RATING_RULES: dict[str, RatingRule] = {
     # New Python conventions
     # ============================================
 
-    # Python tooling
-    "python.conventions.formatter": RatingRule(
-        score_func=lambda r: 5 if r.stats.get("primary_formatter") in ("black", "ruff") else 4 if r.stats.get("primary_formatter") else 3,
-        reason_func=lambda r, _: f"Code formatter: {r.stats.get('primary_formatter', 'none')}",
-        suggestion_func=lambda r, s: None if s >= 5 else "Use Black or Ruff for consistent code formatting.",
-    ),
-    "python.conventions.linter": RatingRule(
-        score_func=lambda r: 5 if r.stats.get("primary_linter") in ("ruff", "flake8_mypy") else 4 if r.stats.get("primary_linter") else 3,
-        reason_func=lambda r, _: f"Linter: {r.stats.get('primary_linter', 'none')}",
-        suggestion_func=lambda r, s: None if s >= 5 else "Use Ruff for fast, comprehensive linting.",
-    ),
-    "python.conventions.import_sorting": RatingRule(
-        score_func=lambda r: 5 if r.stats.get("import_sorter") in ("isort", "ruff") else 3,
-        reason_func=lambda r, _: f"Import sorting: {r.stats.get('import_sorter', 'none')}",
-        suggestion_func=lambda r, s: None if s >= 5 else "Use isort or Ruff for consistent import ordering.",
-    ),
-
     # Python dependency management
     "python.conventions.dependency_management": RatingRule(
         score_func=lambda r: 5 if r.stats.get("primary_tool") in ("poetry", "uv", "pdm") else 4 if r.stats.get("primary_tool") else 3,
@@ -1451,20 +2702,6 @@ RATING_RULES: dict[str, RatingRule] = {
         score_func=lambda r: 5 if r.stats.get("primary_framework") in ("typer", "click") else 4 if r.stats.get("primary_framework") else 3,
         reason_func=lambda r, _: f"CLI framework: {r.stats.get('primary_framework', 'none')}",
         suggestion_func=lambda r, s: None if s >= 5 else "Use Typer or Click for building CLI applications.",
-    ),
-
-    # Python background tasks
-    "python.conventions.background_tasks": RatingRule(
-        score_func=lambda r: 5 if r.stats.get("primary_library") in ("celery", "dramatiq", "rq") else 4 if r.stats.get("primary_library") else 3,
-        reason_func=lambda r, _: f"Background tasks: {r.stats.get('primary_library', 'none')}",
-        suggestion_func=lambda r, s: None if s >= 4 else "Use Celery or Dramatiq for background task processing.",
-    ),
-
-    # Python caching
-    "python.conventions.caching": RatingRule(
-        score_func=lambda r: 5 if r.stats.get("primary_library") in ("redis", "aiocache") else 4 if r.stats.get("primary_library") else 3,
-        reason_func=lambda r, _: f"Caching: {r.stats.get('primary_library', 'none')}",
-        suggestion_func=lambda r, s: None if s >= 4 else "Use Redis or functools caching for performance.",
     ),
 
     # Python GraphQL

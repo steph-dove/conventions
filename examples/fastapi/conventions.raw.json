@@ -361,6 +361,101 @@
       }
     },
     {
+      "id": "python.conventions.api_versioning",
+      "category": "api",
+      "title": "URL-based API versioning",
+      "description": "Uses URL path versioning (e.g., /v1/, /api/v2/). Found 2 versioned routes.",
+      "confidence": 0.85,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "fastapi/applications.py",
+          "line_start": 220,
+          "line_end": 226,
+          "excerpt": "                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(openapi_url=\"/api/v1/openapi.json\")\n                ```\n                \"\"\"\n            ),"
+        },
+        {
+          "file_path": "fastapi/applications.py",
+          "line_start": 659,
+          "line_end": 665,
+          "excerpt": "                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path=\"/api/v1\")\n                ```\n                \"\"\"\n            ),"
+        },
+        {
+          "file_path": "fastapi/applications.py",
+          "line_start": 871,
+          "line_end": 877,
+          "excerpt": "        self.separate_input_output_schemas = separate_input_output_schemas\n        self.openapi_external_docs = openapi_external_docs\n        self.extra = extra\n        self.openapi_version: Annotated[\n            str,\n            Doc(\n                \"\"\""
+        },
+        {
+          "file_path": "fastapi/applications.py",
+          "line_start": 897,
+          "line_end": 903,
+          "excerpt": "\n                app = FastAPI()\n\n                app.openapi_version = \"3.0.2\"\n                ```\n                \"\"\"\n            ),"
+        },
+        {
+          "file_path": "fastapi/applications.py",
+          "line_start": 1061,
+          "line_end": 1067,
+          "excerpt": "            self.openapi_schema = get_openapi(\n                title=self.title,\n                version=self.version,\n                openapi_version=self.openapi_version,\n                summary=self.summary,\n                description=self.description,\n                terms_of_service=self.terms_of_service,"
+        }
+      ],
+      "stats": {
+        "versioning_patterns": {
+          "url_versioning": 2,
+          "header_versioning": 5,
+          "router_prefix": 6
+        },
+        "primary_pattern": "url_versioning"
+      }
+    },
+    {
+      "id": "python.conventions.openapi_docs",
+      "category": "api",
+      "title": "OpenAPI with FastAPI (customized)",
+      "description": "Uses FastAPI's built-in OpenAPI with custom configuration.",
+      "confidence": 0.85,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "docs_src/conditional_openapi/tutorial001_py39.py",
+          "line_start": 8,
+          "line_end": 14,
+          "excerpt": "\nsettings = Settings()\n\napp = FastAPI(openapi_url=settings.openapi_url)\n\n\n@app.get(\"/\")"
+        },
+        {
+          "file_path": "docs_src/custom_docs_ui/tutorial002_py39.py",
+          "line_start": 6,
+          "line_end": 12,
+          "excerpt": ")\nfrom fastapi.staticfiles import StaticFiles\n\napp = FastAPI(docs_url=None, redoc_url=None)\n\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\n"
+        },
+        {
+          "file_path": "docs_src/custom_docs_ui/tutorial001_py39.py",
+          "line_start": 5,
+          "line_end": 11,
+          "excerpt": "    get_swagger_ui_oauth2_redirect_html,\n)\n\napp = FastAPI(docs_url=None, redoc_url=None)\n\n\n@app.get(\"/docs\", include_in_schema=False)"
+        },
+        {
+          "file_path": "docs_src/metadata/tutorial004_py39.py",
+          "line_start": 15,
+          "line_end": 21,
+          "excerpt": "    },\n]\n\napp = FastAPI(openapi_tags=tags_metadata)\n\n\n@app.get(\"/users/\", tags=[\"users\"])"
+        },
+        {
+          "file_path": "docs_src/metadata/tutorial002_py39.py",
+          "line_start": 1,
+          "line_end": 6,
+          "excerpt": "from fastapi import FastAPI\n\napp = FastAPI(openapi_url=\"/api/v1/openapi.json\")\n\n\n@app.get(\"/items/\")"
+        }
+      ],
+      "stats": {
+        "openapi_indicators": {
+          "fastapi_builtin": 1,
+          "fastapi_customized": 6
+        },
+        "primary_tool": "fastapi_customized"
+      }
+    },
+    {
       "id": "python.conventions.background_jobs",
       "category": "concurrency",
       "title": "Background jobs with FastAPI BackgroundTasks",
@@ -872,6 +967,18 @@
       }
     },
     {
+      "id": "python.conventions.db_connection_pooling",
+      "category": "database",
+      "title": "Default connection pooling",
+      "description": "Uses default SQLAlchemy connection pooling without explicit configuration.",
+      "confidence": 0.6,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "default_pool": 12
+      }
+    },
+    {
       "id": "python.conventions.decorator_caching",
       "category": "decorators",
       "title": "Caching decorator pattern",
@@ -1212,10 +1319,10 @@
         "handler_files": [
           "docs_src/handling_errors/tutorial005_py39.py",
           "tests/test_validation_error_context.py",
-          "docs_src/handling_errors/tutorial004_py39.py",
           "docs_src/handling_errors/tutorial006_py39.py",
-          "docs_src/handling_errors/tutorial003_py39.py",
-          "fastapi/applications.py"
+          "fastapi/applications.py",
+          "docs_src/handling_errors/tutorial004_py39.py",
+          "docs_src/handling_errors/tutorial003_py39.py"
         ]
       }
     },
@@ -1352,6 +1459,54 @@
       }
     },
     {
+      "id": "python.conventions.async_http_client",
+      "category": "async",
+      "title": "Async HTTP client: httpx (recommended)",
+      "description": "Uses httpx for HTTP requests.",
+      "confidence": 0.85,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "scripts/contributors.py",
+          "line_start": 6,
+          "line_end": 12,
+          "excerpt": "from pathlib import Path\nfrom typing import Any\n\nimport httpx\nimport yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr"
+        },
+        {
+          "file_path": "scripts/notify_translations.py",
+          "line_start": 5,
+          "line_end": 11,
+          "excerpt": "from pathlib import Path\nfrom typing import Any, Union, cast\n\nimport httpx\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings"
+        },
+        {
+          "file_path": "scripts/sponsors.py",
+          "line_start": 5,
+          "line_end": 11,
+          "excerpt": "from pathlib import Path\nfrom typing import Any\n\nimport httpx\nimport yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr"
+        },
+        {
+          "file_path": "scripts/people.py",
+          "line_start": 8,
+          "line_end": 14,
+          "excerpt": "from pathlib import Path\nfrom typing import Any, Union\n\nimport httpx\nimport yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr"
+        },
+        {
+          "file_path": "scripts/playwright/cookie_param_models/image01.py",
+          "line_start": 1,
+          "line_end": 7,
+          "excerpt": "import subprocess\nimport time\n\nimport httpx\nfrom playwright.sync_api import Playwright, sync_playwright\n\n"
+        }
+      ],
+      "stats": {
+        "http_client_counts": {
+          "requests": 1,
+          "httpx": 11
+        },
+        "primary_client": "httpx",
+        "quality": "excellent"
+      }
+    },
+    {
       "id": "python.conventions.timeouts",
       "category": "resilience",
       "title": "Infrequent timeout specification",
@@ -1388,6 +1543,28 @@
         "timeout_indicators": 4,
         "no_timeout_indicators": 207,
         "timeout_ratio": 0.019
+      }
+    },
+    {
+      "id": "python.conventions.health_checks",
+      "category": "resilience",
+      "title": "Health check functions",
+      "description": "Has 1 health-related function(s) but no clear endpoints.",
+      "confidence": 0.5,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "scripts/docs.py",
+          "line_start": 307,
+          "line_end": 313,
+          "excerpt": "\n\n@app.command()\ndef live(\n    lang: str = typer.Argument(\n        None, callback=lang_callback, autocompletion=complete_existing_lang\n    ),"
+        }
+      ],
+      "stats": {
+        "health_endpoint_count": 0,
+        "health_function_count": 1,
+        "has_readiness": false,
+        "has_liveness": true
       }
     },
     {
@@ -1896,6 +2073,47 @@
       }
     },
     {
+      "id": "python.conventions.typing_coverage",
+      "category": "typing",
+      "title": "High type annotation coverage",
+      "description": "Type annotations are commonly used in this codebase. 362/366 functions (99%) have at least one type annotation.",
+      "confidence": 0.95,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "pdm_build.py",
+          "line_start": 4,
+          "line_end": 14,
+          "excerpt": "from pdm.backend.hooks import Context\n\nTIANGOLO_BUILD_PACKAGE = os.getenv(\"TIANGOLO_BUILD_PACKAGE\", \"fastapi\")\n\n\ndef pdm_build_initialize(context: Context) -> None:\n    metadata = context.config.metadata\n    # Get custom config for the current package, from the env var\n    config: dict[str, Any] = context.config.data[\"tool\"][\"tiangolo\"][\n        \"_internal-slim-build\"\n    ][\"packages\"].get(TIANGOLO_BUILD_PACKAGE)"
+        },
+        {
+          "file_path": "fastapi/params.py",
+          "line_start": 25,
+          "line_end": 35,
+          "excerpt": "\n\nclass Param(FieldInfo):  # type: ignore[misc]\n    in_: ParamTypes\n\n    def __init__(\n        self,\n        default: Any = Undefined,\n        *,\n        default_factory: Union[Callable[[], Any], None] = _Unset,\n        annotation: Optional[Any] = None,"
+        },
+        {
+          "file_path": "scripts/translation_fixer.py",
+          "line_start": 21,
+          "line_end": 31,
+          "excerpt": "\ncli = typer.Typer()\n\n\n@cli.callback()\ndef callback():\n    pass\n\n\ndef iter_all_lang_paths(lang_path_root: Path) -> Iterable[Path]:\n    \"\"\""
+        },
+        {
+          "file_path": "scripts/docs.py",
+          "line_start": 62,
+          "line_end": 72,
+          "excerpt": "\n\nclass VisibleTextExtractor(HTMLParser):\n    \"\"\"Extract visible text from a string with HTML tags.\"\"\"\n\n    def __init__(self):\n        super().__init__()\n        self.text_parts = []\n\n    def handle_data(self, data):\n        self.text_parts.append(data)"
+        }
+      ],
+      "stats": {
+        "total_functions": 366,
+        "annotated_functions": 362,
+        "fully_annotated_functions": 225,
+        "any_annotation_coverage": 0.989,
+        "full_annotation_coverage": 0.615
+      }
+    },
+    {
       "id": "python.conventions.validation_style",
       "category": "validation",
       "title": "Pydantic validation",
@@ -1941,47 +2159,6 @@
         },
         "dominant_style": "pydantic",
         "dominant_ratio": 0.607
-      }
-    },
-    {
-      "id": "python.conventions.typing_coverage",
-      "category": "typing",
-      "title": "High type annotation coverage",
-      "description": "Type annotations are commonly used in this codebase. 362/366 functions (99%) have at least one type annotation.",
-      "confidence": 0.95,
-      "language": "python",
-      "evidence": [
-        {
-          "file_path": "pdm_build.py",
-          "line_start": 4,
-          "line_end": 14,
-          "excerpt": "from pdm.backend.hooks import Context\n\nTIANGOLO_BUILD_PACKAGE = os.getenv(\"TIANGOLO_BUILD_PACKAGE\", \"fastapi\")\n\n\ndef pdm_build_initialize(context: Context) -> None:\n    metadata = context.config.metadata\n    # Get custom config for the current package, from the env var\n    config: dict[str, Any] = context.config.data[\"tool\"][\"tiangolo\"][\n        \"_internal-slim-build\"\n    ][\"packages\"].get(TIANGOLO_BUILD_PACKAGE)"
-        },
-        {
-          "file_path": "fastapi/params.py",
-          "line_start": 25,
-          "line_end": 35,
-          "excerpt": "\n\nclass Param(FieldInfo):  # type: ignore[misc]\n    in_: ParamTypes\n\n    def __init__(\n        self,\n        default: Any = Undefined,\n        *,\n        default_factory: Union[Callable[[], Any], None] = _Unset,\n        annotation: Optional[Any] = None,"
-        },
-        {
-          "file_path": "scripts/translation_fixer.py",
-          "line_start": 21,
-          "line_end": 31,
-          "excerpt": "\ncli = typer.Typer()\n\n\n@cli.callback()\ndef callback():\n    pass\n\n\ndef iter_all_lang_paths(lang_path_root: Path) -> Iterable[Path]:\n    \"\"\""
-        },
-        {
-          "file_path": "scripts/docs.py",
-          "line_start": 62,
-          "line_end": 72,
-          "excerpt": "\n\nclass VisibleTextExtractor(HTMLParser):\n    \"\"\"Extract visible text from a string with HTML tags.\"\"\"\n\n    def __init__(self):\n        super().__init__()\n        self.text_parts = []\n\n    def handle_data(self, data):\n        self.text_parts.append(data)"
-        }
-      ],
-      "stats": {
-        "total_functions": 366,
-        "annotated_functions": 362,
-        "fully_annotated_functions": 225,
-        "any_annotation_coverage": 0.989,
-        "full_annotation_coverage": 0.615
       }
     }
   ],

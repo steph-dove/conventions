@@ -1336,32 +1336,6 @@
               }
             },
             {
-              "id": "python.conventions.validation_style",
-              "name": "Pydantic validation",
-              "shortDescription": {
-                "text": "Pydantic validation"
-              },
-              "fullDescription": {
-                "text": "Uses Pydantic validation for input validation. 17/28 (61%) validation patterns use this approach."
-              },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
-              "properties": {
-                "category": "validation",
-                "language": "python",
-                "score": 3,
-                "scoreLabel": "Average",
-                "precision": "medium"
-              },
-              "help": {
-                "text": "Assessment: Convention detected with 78% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
-                "markdown": "**Assessment:** Convention detected with 78% confidence\n\n**Suggestion:** Review this convention and consider industry best practices for improvement."
-              },
-              "defaultConfiguration": {
-                "level": "warning",
-                "enabled": true
-              }
-            },
-            {
               "id": "python.conventions.typing_coverage",
               "name": "High type annotation coverage",
               "shortDescription": {
@@ -1384,6 +1358,32 @@
               },
               "defaultConfiguration": {
                 "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.validation_style",
+              "name": "Pydantic validation",
+              "shortDescription": {
+                "text": "Pydantic validation"
+              },
+              "fullDescription": {
+                "text": "Uses Pydantic validation for input validation. 17/28 (61%) validation patterns use this approach."
+              },
+              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "properties": {
+                "category": "validation",
+                "language": "python",
+                "score": 3,
+                "scoreLabel": "Average",
+                "precision": "medium"
+              },
+              "help": {
+                "text": "Assessment: Convention detected with 78% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
+                "markdown": "**Assessment:** Convention detected with 78% confidence\n\n**Suggestion:** Review this convention and consider industry best practices for improvement."
+              },
+              "defaultConfiguration": {
+                "level": "warning",
                 "enabled": true
               }
             }
@@ -3883,11 +3883,11 @@
               "decorator_handlers": 12,
               "call_handlers": 19,
               "handler_files": [
-                "docs_src/handling_errors/tutorial005_py39.py",
                 "tests/test_validation_error_context.py",
+                "docs_src/handling_errors/tutorial005_py39.py",
+                "docs_src/handling_errors/tutorial003_py39.py",
                 "docs_src/handling_errors/tutorial004_py39.py",
                 "docs_src/handling_errors/tutorial006_py39.py",
-                "docs_src/handling_errors/tutorial003_py39.py",
                 "fastapi/applications.py"
               ]
             }
@@ -5413,8 +5413,91 @@
           ]
         },
         {
-          "ruleId": "python.conventions.validation_style",
+          "ruleId": "python.conventions.typing_coverage",
           "ruleIndex": 51,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "High type annotation coverage: Type annotation coverage is 99%"
+          },
+          "properties": {
+            "confidence": 0.95,
+            "score": 5,
+            "scoreLabel": "Excellent",
+            "stats": {
+              "total_functions": 366,
+              "annotated_functions": 362,
+              "fully_annotated_functions": 225,
+              "any_annotation_coverage": 0.989,
+              "full_annotation_coverage": 0.615
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "pdm_build.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 14,
+                  "snippet": {
+                    "text": "from pdm.backend.hooks import Context\n\nTIANGOLO_BUILD_PACKAGE = os.getenv(\"TIANGOLO_BUILD_PACKAGE\", \"fastapi\")\n\n\ndef pdm_build_initialize(context: Context) -> None:\n    metadata = context.config.metadata\n    # Get custom config for the current package, from the env var\n    config: dict[str, Any] = context.config.data[\"tool\"][\"tiangolo\"][\n        \"_internal-slim-build\"\n    ][\"packages\"].get(TIANGOLO_BUILD_PACKAGE)"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/params.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 25,
+                  "endLine": 35,
+                  "snippet": {
+                    "text": "\n\nclass Param(FieldInfo):  # type: ignore[misc]\n    in_: ParamTypes\n\n    def __init__(\n        self,\n        default: Any = Undefined,\n        *,\n        default_factory: Union[Callable[[], Any], None] = _Unset,\n        annotation: Optional[Any] = None,"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/translation_fixer.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 21,
+                  "endLine": 31,
+                  "snippet": {
+                    "text": "\ncli = typer.Typer()\n\n\n@cli.callback()\ndef callback():\n    pass\n\n\ndef iter_all_lang_paths(lang_path_root: Path) -> Iterable[Path]:\n    \"\"\""
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/docs.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 62,
+                  "endLine": 72,
+                  "snippet": {
+                    "text": "\n\nclass VisibleTextExtractor(HTMLParser):\n    \"\"\"Extract visible text from a string with HTML tags.\"\"\"\n\n    def __init__(self):\n        super().__init__()\n        self.text_parts = []\n\n    def handle_data(self, data):\n        self.text_parts.append(data)"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.validation_style",
+          "ruleIndex": 52,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -5518,95 +5601,12 @@
               }
             }
           ]
-        },
-        {
-          "ruleId": "python.conventions.typing_coverage",
-          "ruleIndex": 52,
-          "level": "note",
-          "kind": "pass",
-          "message": {
-            "text": "High type annotation coverage: Type annotation coverage is 99%"
-          },
-          "properties": {
-            "confidence": 0.95,
-            "score": 5,
-            "scoreLabel": "Excellent",
-            "stats": {
-              "total_functions": 366,
-              "annotated_functions": 362,
-              "fully_annotated_functions": 225,
-              "any_annotation_coverage": 0.989,
-              "full_annotation_coverage": 0.615
-            }
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "pdm_build.py",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 4,
-                  "endLine": 14,
-                  "snippet": {
-                    "text": "from pdm.backend.hooks import Context\n\nTIANGOLO_BUILD_PACKAGE = os.getenv(\"TIANGOLO_BUILD_PACKAGE\", \"fastapi\")\n\n\ndef pdm_build_initialize(context: Context) -> None:\n    metadata = context.config.metadata\n    # Get custom config for the current package, from the env var\n    config: dict[str, Any] = context.config.data[\"tool\"][\"tiangolo\"][\n        \"_internal-slim-build\"\n    ][\"packages\"].get(TIANGOLO_BUILD_PACKAGE)"
-                  }
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "fastapi/params.py",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 25,
-                  "endLine": 35,
-                  "snippet": {
-                    "text": "\n\nclass Param(FieldInfo):  # type: ignore[misc]\n    in_: ParamTypes\n\n    def __init__(\n        self,\n        default: Any = Undefined,\n        *,\n        default_factory: Union[Callable[[], Any], None] = _Unset,\n        annotation: Optional[Any] = None,"
-                  }
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "scripts/translation_fixer.py",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 21,
-                  "endLine": 31,
-                  "snippet": {
-                    "text": "\ncli = typer.Typer()\n\n\n@cli.callback()\ndef callback():\n    pass\n\n\ndef iter_all_lang_paths(lang_path_root: Path) -> Iterable[Path]:\n    \"\"\""
-                  }
-                }
-              }
-            },
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "scripts/docs.py",
-                  "uriBaseId": "%SRCROOT%"
-                },
-                "region": {
-                  "startLine": 62,
-                  "endLine": 72,
-                  "snippet": {
-                    "text": "\n\nclass VisibleTextExtractor(HTMLParser):\n    \"\"\"Extract visible text from a string with HTML tags.\"\"\"\n\n    def __init__(self):\n        super().__init__()\n        self.text_parts = []\n\n    def handle_data(self, data):\n        self.text_parts.append(data)"
-                  }
-                }
-              }
-            }
-          ]
         }
       ],
       "invocations": [
         {
           "executionSuccessful": true,
-          "startTimeUtc": "2026-01-25T05:05:01.040344+00:00",
+          "startTimeUtc": "2026-01-25T06:05:46.022804+00:00",
           "workingDirectory": {
             "uri": "/private/tmp/fastapi"
           }
