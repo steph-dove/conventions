@@ -44,6 +44,13 @@ class PythonAsyncConventionsDetector(PythonDetector):
         async_examples: list[tuple[str, int, str]] = []
         sync_examples: list[tuple[str, int, str]] = []
 
+        # Detect if this is an async-first framework (FastAPI, Starlette, Quart)
+        is_async_framework = False
+        for rel_path, imp in index.get_all_imports():
+            if any(f in imp.module for f in ("fastapi", "starlette", "quart", "sanic")):
+                is_async_framework = True
+                break
+
         # Focus on API modules for style detection
         api_files = index.get_files_by_role("api")
 
@@ -130,6 +137,7 @@ class PythonAsyncConventionsDetector(PythonDetector):
                 "sync_count": sync_count,
                 "async_ratio": round(async_ratio, 3),
                 "asyncio_patterns": asyncio_patterns,
+                "is_async_framework": is_async_framework,
             },
         ))
 

@@ -90,6 +90,9 @@ class PythonDBConventionsDetector(PythonDetector):
         # Detect connection pooling
         self._detect_connection_pooling(ctx, index, result)
 
+        # Detect async ORM usage
+        self._detect_async_orm(ctx, index, result)
+
         return result
 
     def _detect_db_library(
@@ -616,4 +619,110 @@ class PythonDBConventionsDetector(PythonDetector):
             language="python",
             evidence=evidence,
             stats=pool_config,
+        ))
+
+    def _detect_async_orm(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect async ORM usage patterns."""
+        async_orm: str | None = None
+        async_session_count = 0
+        async_engine_count = 0
+        async_examples: list[tuple[str, int]] = []
+        is_async_framework = False
+
+        # Check for async frameworks (FastAPI, Starlette, Quart)
+        for rel_path, imp in index.get_all_imports():
+            if any(f in imp.module for f in ("fastapi", "starlette", "quart", "aiohttp", "sanic")):
+                is_async_framework = True
+                break
+
+        # Check for SQLAlchemy asyncio
+        for rel_path, imp in index.get_all_imports():
+            if "sqlalchemy.ext.asyncio" in imp.module:
+                async_orm = "sqlalchemy_async"
+                if "AsyncSession" in imp.names:
+                    async_session_count += 1
+                if "AsyncEngine" in imp.names or "create_async_engine" in imp.names:
+                    async_engine_count += 1
+                if len(async_examples) < 5:
+                    async_examples.append((rel_path, imp.line))
+
+            # Tortoise ORM (always async)
+            if "tortoise" in imp.module and "tortoise" not in (async_orm or ""):
+                async_orm = "tortoise"
+                if len(async_examples) < 5:
+                    async_examples.append((rel_path, imp.line))
+
+            # databases library (async)
+            if imp.module == "databases" or "databases" in imp.names:
+                if async_orm != "sqlalchemy_async":
+                    async_orm = "databases"
+                if len(async_examples) < 5:
+                    async_examples.append((rel_path, imp.line))
+
+            # Check for AsyncSession usage in any import
+            if "AsyncSession" in imp.names:
+                async_session_count += 1
+
+        # Count additional AsyncSession/AsyncEngine from calls
+        for rel_path, call in index.get_all_calls():
+            if "create_async_engine" in call.name:
+                async_engine_count += 1
+                if len(async_examples) < 5:
+                    async_examples.append((rel_path, call.line))
+            if "AsyncSession" in call.name:
+                async_session_count += 1
+
+        if not async_orm:
+            return
+
+        # Build title and description
+        if async_orm == "sqlalchemy_async":
+            title = "Async ORM: SQLAlchemy AsyncIO"
+            description = (
+                f"Uses SQLAlchemy's async extension for database access. "
+                f"Found {async_session_count} AsyncSession and {async_engine_count} AsyncEngine usages."
+            )
+        elif async_orm == "tortoise":
+            title = "Async ORM: Tortoise ORM"
+            description = "Uses Tortoise ORM for async database access (native async ORM)."
+        elif async_orm == "databases":
+            title = "Async database: databases library"
+            description = "Uses encode/databases for async database access."
+        else:
+            title = f"Async ORM: {async_orm}"
+            description = f"Uses {async_orm} for async database access."
+
+        # Adjust confidence based on framework match
+        if is_async_framework and async_orm:
+            confidence = 0.95
+            description += " Async ORM matches async framework."
+        else:
+            confidence = 0.8
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in async_examples[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.async_orm",
+            category="database",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "async_orm": async_orm,
+                "async_session_count": async_session_count,
+                "async_engine_count": async_engine_count,
+                "is_async_framework": is_async_framework,
+            },
         ))

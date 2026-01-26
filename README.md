@@ -17,7 +17,7 @@ A command-line tool that automatically discovers and documents coding convention
 
 | Language | Conventions | Categories |
 |----------|-------------|------------|
-| **Python** | 60+ | typing, docs, testing, logging, errors, security, async, architecture, API, DI, database, CLI, caching, GraphQL, code style, validation |
+| **Python** | 70+ | typing, docs, testing, logging, errors, security, async, architecture, API, DI, database, CLI, caching, GraphQL, code style, validation, tooling, resilience |
 | **Node.js/TypeScript** | 37 | TypeScript, testing, logging, errors, security, async, architecture, API, frontend, state management, tooling |
 | **Go** | 37 | modules, testing, logging, errors, security, concurrency, architecture, API, patterns, CLI, gRPC, DI |
 | **Rust** | 12 | Cargo, testing, errors, async, web, CLI, serialization, docs, unsafe, macros, logging, database |
@@ -182,6 +182,7 @@ SARIF (Static Analysis Results Interchange Format) for integration with GitHub C
 | **Testing** | `python.test_conventions.mocking` | Mocking library usage |
 | **Testing** | `python.test_conventions.assertions` | Assertion patterns |
 | **Testing** | `python.test_conventions.parametrized` | Parametrized test usage |
+| **Testing** | `python.conventions.test_coverage_threshold` | Test coverage threshold configuration |
 | **Logging** | `python.conventions.logging_library` | Logging library (structlog, loguru, stdlib) |
 | **Logging** | `python.conventions.logging_fields` | Structured logging fields |
 | **Error Handling** | `python.conventions.error_handling_boundary` | HTTP exception placement |
@@ -189,14 +190,19 @@ SARIF (Static Analysis Results Interchange Format) for integration with GitHub C
 | **Error Handling** | `python.conventions.exception_handlers` | Exception handler organization |
 | **Error Handling** | `python.conventions.error_wrapper` | Error wrapping patterns |
 | **Error Handling** | `python.conventions.error_transformation` | Error transformation patterns |
+| **Error Handling** | `python.conventions.exception_chaining` | Exception chaining (raise X from Y) |
 | **Security** | `python.conventions.raw_sql_usage` | Raw SQL detection |
 | **Security** | `python.conventions.auth_pattern` | Authentication patterns |
 | **Security** | `python.conventions.secrets_access_style` | Configuration/secrets access |
+| **Security** | `python.conventions.env_separation` | Environment separation (dynaconf, Pydantic Settings) |
+| **Security** | `python.conventions.secret_management` | Secret management (Vault, AWS/GCP Secrets) |
 | **Async** | `python.conventions.async_style` | Async/sync API style |
 | **Architecture** | `python.conventions.layering_direction` | Import layer dependencies |
 | **Architecture** | `python.conventions.forbidden_imports` | Layer boundary violations |
+| **Architecture** | `python.conventions.container_local_dev` | Containerized local development (devcontainer, docker-compose) |
 | **API** | `python.conventions.api_framework` | Web framework (FastAPI, Flask, Django) |
 | **API** | `python.conventions.schema_library` | Schema/validation library (Pydantic, etc.) |
+| **API** | `python.conventions.data_class_style` | Data class style (dataclass, Pydantic, attrs, msgspec) |
 | **API** | `python.conventions.response_shape` | API response structure |
 | **API** | `python.conventions.response_envelope` | Response envelope patterns |
 | **API** | `python.conventions.error_response_pattern` | Error response format |
@@ -207,14 +213,20 @@ SARIF (Static Analysis Results Interchange Format) for integration with GitHub C
 | **Database** | `python.conventions.db_query_style` | Query style (ORM vs raw) |
 | **Database** | `python.conventions.db_session_lifecycle` | Session management |
 | **Database** | `python.conventions.db_transactions` | Transaction patterns |
+| **Database** | `python.conventions.async_orm` | Async ORM (SQLAlchemy AsyncIO, Tortoise) |
 | **Observability** | `python.conventions.metrics` | Metrics collection |
 | **Observability** | `python.conventions.tracing` | Distributed tracing |
 | **Observability** | `python.conventions.correlation_ids` | Correlation ID patterns |
 | **Resilience** | `python.conventions.retries` | Retry patterns |
 | **Resilience** | `python.conventions.timeouts` | Timeout configuration |
+| **Resilience** | `python.conventions.circuit_breakers` | Circuit breaker patterns (pybreaker) |
+| **Resilience** | `python.conventions.health_checks` | Health check endpoints |
 | **Tooling** | `python.conventions.formatter` | Code formatter (Black, Ruff, YAPF) |
 | **Tooling** | `python.conventions.linter` | Linter (Ruff, Flake8, Pylint, mypy) |
-| **Tooling** | `python.conventions.import_sorting` | Import sorting (isort, Ruff) |
+| **Tooling** | `python.conventions.import_sorting` | Import sorting with grouping (isort, Ruff) |
+| **Tooling** | `python.conventions.line_length` | Line length configuration (88/100/120) |
+| **Tooling** | `python.conventions.string_quotes` | String quote style (double/single) |
+| **Tooling** | `python.conventions.pre_commit_hooks` | Pre-commit hooks (ruff, mypy, black) |
 | **Dependencies** | `python.conventions.dependency_management` | Dependency management (Poetry, uv, PDM) |
 | **CLI** | `python.conventions.cli_framework` | CLI framework (Typer, Click, argparse) |
 | **Background** | `python.conventions.background_tasks` | Background tasks (Celery, RQ, Dramatiq) |

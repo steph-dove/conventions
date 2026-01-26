@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import re
+
+import yaml
+
 from ...fs import read_file_safe
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
@@ -29,6 +33,15 @@ class PythonToolingDetector(PythonDetector):
 
         # Detect type checker strictness
         self._detect_type_checker_strictness(ctx, result)
+
+        # Detect line length configuration
+        self._detect_line_length(ctx, result)
+
+        # Detect string quote style
+        self._detect_string_quotes(ctx, result)
+
+        # Detect pre-commit hooks
+        self._detect_pre_commit_hooks(ctx, result)
 
         return result
 
@@ -252,8 +265,13 @@ class PythonToolingDetector(PythonDetector):
         ctx: DetectorContext,
         result: DetectorResult,
     ) -> None:
-        """Detect import sorting configuration."""
+        """Detect import sorting configuration with grouping analysis."""
         sorters: dict[str, dict] = {}
+        has_grouping = False
+        has_known_first_party = False
+        profile = None
+        has_sections = False
+        has_force_sort_within_sections = False
 
         # isort
         isort_configs = [
@@ -265,30 +283,70 @@ class PythonToolingDetector(PythonDetector):
             if config_file.is_file():
                 content = read_file_safe(config_file)
                 if content and ("[isort]" in content or "[tool.isort]" in content):
-                    profile = None
+                    # Extract profile
                     if "profile" in content:
-                        import re
                         match = re.search(r'profile\s*=\s*["\']?(\w+)', content)
                         if match:
                             profile = match.group(1)
+
+                    # Check for known_first_party/known_third_party
+                    if "known_first_party" in content or "known_third_party" in content:
+                        has_known_first_party = True
+                        has_grouping = True
+
+                    # Check for sections configuration
+                    if "sections" in content:
+                        has_sections = True
+                        has_grouping = True
+
+                    # Check for force_sort_within_sections
+                    if "force_sort_within_sections" in content:
+                        has_force_sort_within_sections = True
+
                     sorters["isort"] = {
                         "name": "isort",
                         "config_file": config_file.name,
                         "profile": profile,
+                        "has_grouping": has_grouping,
                     }
                     break
 
         # Ruff import sorting
         pyproject = ctx.repo_root / "pyproject.toml"
-        if pyproject.is_file():
-            content = read_file_safe(pyproject)
-            if content and "[tool.ruff" in content:
+        ruff_toml = ctx.repo_root / "ruff.toml"
+
+        for config_path in [pyproject, ruff_toml]:
+            if config_path.is_file():
+                content = read_file_safe(config_path)
+                if not content:
+                    continue
+
                 # Check for I rules (import sorting)
-                if '"I"' in content or "'I'" in content or "I001" in content:
+                has_ruff_import = (
+                    "[tool.ruff" in content
+                    and ('"I"' in content or "'I'" in content or "I001" in content)
+                )
+                if config_path == ruff_toml:
+                    has_ruff_import = '"I"' in content or "'I'" in content or "I001" in content
+
+                if has_ruff_import:
+                    # Check for isort configuration in ruff
+                    if "[tool.ruff.lint.isort]" in content or "[lint.isort]" in content:
+                        if "known-first-party" in content or "known-third-party" in content:
+                            has_known_first_party = True
+                            has_grouping = True
+                        if "section" in content:
+                            has_sections = True
+                            has_grouping = True
+                        if "force-sort-within-sections" in content:
+                            has_force_sort_within_sections = True
+
                     sorters["ruff"] = {
                         "name": "Ruff (isort rules)",
-                        "config_file": "pyproject.toml",
+                        "config_file": config_path.name,
+                        "has_grouping": has_grouping,
                     }
+                    break
 
         if not sorters:
             return
@@ -296,18 +354,32 @@ class PythonToolingDetector(PythonDetector):
         sorter_names = [s["name"] for s in sorters.values()]
         primary = list(sorters.keys())[0]
 
-        title = f"Import sorting: {', '.join(sorter_names)}"
-        description = f"Uses {', '.join(sorter_names)} for import organization."
-        if sorters.get("isort", {}).get("profile"):
-            description += f" Profile: {sorters['isort']['profile']}."
+        # Build title and description based on configuration quality
+        if primary == "ruff" and has_grouping:
+            title = "Import organization: Ruff with grouping"
+            description = "Uses Ruff isort rules with proper import grouping. "
+        elif primary == "isort" and profile == "black" and has_grouping:
+            title = "Import organization: isort (black profile with grouping)"
+            description = "Uses isort with Black profile and proper import grouping. "
+        elif primary == "isort" and profile:
+            title = f"Import organization: isort ({profile} profile)"
+            description = f"Uses isort with {profile} profile. "
+        else:
+            title = f"Import sorting: {', '.join(sorter_names)}"
+            description = f"Uses {', '.join(sorter_names)} for import organization. "
 
-        confidence = 0.9
+        if has_known_first_party:
+            description += "Has first-party package configuration. "
+        if has_sections:
+            description += "Custom sections configured. "
+
+        confidence = 0.95 if has_grouping else 0.85
 
         result.rules.append(self.make_rule(
             rule_id="python.conventions.import_sorting",
             category="tooling",
             title=title,
-            description=description,
+            description=description.strip(),
             confidence=confidence,
             language="python",
             evidence=[],
@@ -315,6 +387,11 @@ class PythonToolingDetector(PythonDetector):
                 "sorters": list(sorters.keys()),
                 "primary_sorter": primary,
                 "sorter_details": sorters,
+                "has_grouping": has_grouping,
+                "has_known_first_party": has_known_first_party,
+                "has_sections": has_sections,
+                "has_force_sort_within_sections": has_force_sort_within_sections,
+                "profile": profile,
             },
         ))
 
@@ -444,5 +521,270 @@ class PythonToolingDetector(PythonDetector):
                 "strictness": strictness,
                 "strict_options": strict_options,
                 "config_file": config_file,
+            },
+        ))
+
+    def _detect_line_length(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect configured line length from various config files."""
+        configured_length: int | None = None
+        source: str | None = None
+
+        # Check pyproject.toml for various tools
+        pyproject = ctx.repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            content = read_file_safe(pyproject)
+            if content:
+                # Check ruff line-length
+                match = re.search(r'line-length\s*=\s*(\d+)', content)
+                if match:
+                    configured_length = int(match.group(1))
+                    source = "pyproject.toml (ruff)"
+                # Check black line-length
+                if not configured_length:
+                    match = re.search(r'\[tool\.black\].*?line-length\s*=\s*(\d+)', content, re.DOTALL)
+                    if match:
+                        configured_length = int(match.group(1))
+                        source = "pyproject.toml (black)"
+
+        # Check ruff.toml
+        if not configured_length:
+            ruff_toml = ctx.repo_root / "ruff.toml"
+            if ruff_toml.is_file():
+                content = read_file_safe(ruff_toml)
+                if content:
+                    match = re.search(r'line-length\s*=\s*(\d+)', content)
+                    if match:
+                        configured_length = int(match.group(1))
+                        source = "ruff.toml"
+
+        # Check setup.cfg for flake8
+        if not configured_length:
+            setup_cfg = ctx.repo_root / "setup.cfg"
+            if setup_cfg.is_file():
+                content = read_file_safe(setup_cfg)
+                if content and "[flake8]" in content:
+                    match = re.search(r'max-line-length\s*=\s*(\d+)', content)
+                    if match:
+                        configured_length = int(match.group(1))
+                        source = "setup.cfg (flake8)"
+
+        # Check .editorconfig
+        if not configured_length:
+            editorconfig = ctx.repo_root / ".editorconfig"
+            if editorconfig.is_file():
+                content = read_file_safe(editorconfig)
+                if content:
+                    # Look for max_line_length in Python section or global
+                    match = re.search(r'max_line_length\s*=\s*(\d+)', content)
+                    if match:
+                        configured_length = int(match.group(1))
+                        source = ".editorconfig"
+
+        if configured_length is None:
+            return
+
+        is_88 = configured_length == 88
+
+        if is_88:
+            title = "Line length: 88 (Black default)"
+            description = f"Line length is set to {configured_length} (Black/Ruff default). Source: {source}."
+        elif configured_length in (100, 120):
+            title = f"Line length: {configured_length}"
+            description = f"Line length is set to {configured_length}. Source: {source}."
+        elif configured_length == 79:
+            title = "Line length: 79 (PEP 8)"
+            description = f"Line length follows strict PEP 8 recommendation of 79. Source: {source}."
+        else:
+            title = f"Line length: {configured_length}"
+            description = f"Line length is set to {configured_length}. Source: {source}."
+
+        confidence = 0.9
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.line_length",
+            category="tooling",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "configured_length": configured_length,
+                "source": source,
+                "is_88": is_88,
+            },
+        ))
+
+    def _detect_string_quotes(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect configured string quote style from ruff/black config."""
+        configured_style: str | None = None
+        source: str | None = None
+
+        # Check pyproject.toml
+        pyproject = ctx.repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            content = read_file_safe(pyproject)
+            if content:
+                # Check ruff format quote-style
+                match = re.search(r'quote-style\s*=\s*["\'](\w+)["\']', content)
+                if match:
+                    configured_style = match.group(1).lower()
+                    source = "pyproject.toml (ruff.format)"
+
+                # Check ruff lint flake8-quotes
+                if not configured_style:
+                    if "[tool.ruff.lint.flake8-quotes]" in content:
+                        match = re.search(r'inline-quotes\s*=\s*["\'](\w+)["\']', content)
+                        if match:
+                            configured_style = match.group(1).lower()
+                            source = "pyproject.toml (ruff.lint.flake8-quotes)"
+
+                # Check black skip-string-normalization (if True, no preference)
+                if not configured_style:
+                    if "skip-string-normalization" in content:
+                        match = re.search(r'skip-string-normalization\s*=\s*(true|false)', content, re.IGNORECASE)
+                        if match and match.group(1).lower() == "false":
+                            configured_style = "double"
+                            source = "pyproject.toml (black default)"
+
+        # Check ruff.toml
+        if not configured_style:
+            ruff_toml = ctx.repo_root / "ruff.toml"
+            if ruff_toml.is_file():
+                content = read_file_safe(ruff_toml)
+                if content:
+                    match = re.search(r'quote-style\s*=\s*["\'](\w+)["\']', content)
+                    if match:
+                        configured_style = match.group(1).lower()
+                        source = "ruff.toml"
+
+        if configured_style is None:
+            return
+
+        if configured_style == "double":
+            title = "String quotes: double (recommended)"
+            description = f"Double quotes configured for strings. Source: {source}."
+        elif configured_style == "single":
+            title = "String quotes: single"
+            description = f"Single quotes configured for strings. Source: {source}."
+        else:
+            title = f"String quotes: {configured_style}"
+            description = f"Quote style configured as {configured_style}. Source: {source}."
+
+        confidence = 0.85
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.string_quotes",
+            category="tooling",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "configured_style": configured_style,
+                "source": source,
+            },
+        ))
+
+    def _detect_pre_commit_hooks(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect pre-commit hooks configuration."""
+        pre_commit_config = ctx.repo_root / ".pre-commit-config.yaml"
+        if not pre_commit_config.is_file():
+            return
+
+        content = read_file_safe(pre_commit_config)
+        if not content:
+            return
+
+        try:
+            config = yaml.safe_load(content)
+        except yaml.YAMLError:
+            return
+
+        if not config or "repos" not in config:
+            return
+
+        hooks: list[str] = []
+        has_ruff = False
+        has_mypy = False
+        has_pyright = False
+        has_black = False
+        has_flake8 = False
+        has_isort = False
+
+        for repo in config.get("repos", []):
+            repo_url = repo.get("repo", "")
+            for hook in repo.get("hooks", []):
+                hook_id = hook.get("id", "")
+                hooks.append(hook_id)
+
+                if hook_id == "ruff" or "ruff" in repo_url:
+                    has_ruff = True
+                if hook_id in ("mypy", "mypy-strict"):
+                    has_mypy = True
+                if hook_id == "pyright":
+                    has_pyright = True
+                if hook_id == "black":
+                    has_black = True
+                if hook_id == "flake8":
+                    has_flake8 = True
+                if hook_id == "isort":
+                    has_isort = True
+
+        has_type_checker = has_mypy or has_pyright
+
+        # Determine quality
+        if has_ruff and has_type_checker:
+            title = "Pre-commit hooks: ruff + type checker"
+            description = f"Excellent pre-commit setup with ruff and {'mypy' if has_mypy else 'pyright'}. {len(hooks)} hooks configured."
+            confidence = 0.95
+        elif has_ruff:
+            title = "Pre-commit hooks: ruff"
+            description = f"Good pre-commit setup with ruff. {len(hooks)} hooks configured. Consider adding mypy/pyright."
+            confidence = 0.85
+        elif (has_black or has_flake8) and has_type_checker:
+            title = "Pre-commit hooks: traditional + type checker"
+            description = f"Pre-commit with {'black' if has_black else ''} {'flake8' if has_flake8 else ''} and type checker. {len(hooks)} hooks."
+            confidence = 0.8
+        elif has_black or has_flake8 or has_isort:
+            title = "Pre-commit hooks: basic linting"
+            description = f"Pre-commit with basic linting. {len(hooks)} hooks configured."
+            confidence = 0.7
+        else:
+            title = "Pre-commit hooks configured"
+            description = f"Pre-commit is configured with {len(hooks)} hooks."
+            confidence = 0.6
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.pre_commit_hooks",
+            category="tooling",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "has_pre_commit": True,
+                "hooks": hooks,
+                "has_ruff": has_ruff,
+                "has_mypy": has_mypy,
+                "has_pyright": has_pyright,
+                "has_type_checker": has_type_checker,
+                "has_black": has_black,
+                "has_flake8": has_flake8,
+                "has_isort": has_isort,
             },
         ))

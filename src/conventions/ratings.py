@@ -569,8 +569,17 @@ def _raw_sql_suggestion(_r: ConventionRule, score: int) -> str | None:
 def _async_style_score(r: ConventionRule) -> int:
     ratio = _get_stat(r, "async_ratio", 0)
     asyncio_patterns = r.stats.get("asyncio_patterns", 0)
+    is_async_framework = r.stats.get("is_async_framework", False)
 
-    # Consistent is good (either all async or all sync)
+    # For async-first frameworks (FastAPI/Starlette), prefer async endpoints
+    if is_async_framework:
+        if ratio >= 0.8:
+            return 5
+        if ratio >= 0.5:
+            return 4
+        return 3  # Sync in async framework is suboptimal
+
+    # For other frameworks, consistency is good (either all async or all sync)
     consistency = max(ratio, 1 - ratio)
 
     if consistency >= 0.9 and asyncio_patterns > 0:
@@ -588,13 +597,19 @@ def _async_style_reason(r: ConventionRule, _score: int) -> str:
     ratio = _get_stat(r, "async_ratio", 0)
     async_count = r.stats.get("async_count", 0)
     sync_count = r.stats.get("sync_count", 0)
-    return f"API style: {async_count} async, {sync_count} sync ({ratio * 100:.0f}% async)"
+    is_async_framework = r.stats.get("is_async_framework", False)
+    framework_note = " (async framework)" if is_async_framework else ""
+    return f"API style: {async_count} async, {sync_count} sync ({ratio * 100:.0f}% async){framework_note}"
 
 
 def _async_style_suggestion(r: ConventionRule, score: int) -> str | None:
     if score >= 5:
         return None
     ratio = _get_stat(r, "async_ratio", 0)
+    is_async_framework = r.stats.get("is_async_framework", False)
+
+    if is_async_framework and ratio < 0.8:
+        return "FastAPI/Starlette are async-first. Use async endpoints for better performance."
     if 0.3 <= ratio <= 0.7:
         return "Standardize API endpoints to be consistently async or sync to reduce cognitive overhead."
     return "Consider whether a consistent async-first or sync-first approach better suits your use case."
@@ -704,13 +719,19 @@ def _api_framework_score(r: ConventionRule) -> int:
     primary = r.stats.get("primary_framework", "")
     frameworks = r.stats.get("framework_counts", {})
 
-    # Modern async frameworks preferred
-    if primary in ("fastapi", "litestar") and len(frameworks) == 1:
-        return 5
+    # Async-first frameworks always score 5 (opinionated for async)
     if primary in ("fastapi", "litestar"):
-        return 4
+        return 5
+
+    # Good sync-first frameworks score 4
     if primary in ("flask", "django", "starlette"):
         return 4
+
+    # Other known frameworks
+    if primary in ("aiohttp", "falcon"):
+        return 4
+
+    # Multiple frameworks or unknown
     if len(frameworks) == 1:
         return 3
     return 2
@@ -725,9 +746,13 @@ def _api_framework_reason(r: ConventionRule, _score: int) -> str:
 def _api_framework_suggestion(r: ConventionRule, score: int) -> str | None:
     if score >= 5:
         return None
+    primary = r.stats.get("primary_framework", "")
     frameworks = r.stats.get("framework_counts", {})
+
     if len(frameworks) > 1:
         return "Consolidate API frameworks to a single choice for consistency."
+    if primary in ("flask", "django"):
+        return "For new async-first projects, consider FastAPI or Litestar."
     return None
 
 
@@ -987,11 +1012,16 @@ def _circuit_breaker_suggestion(r: ConventionRule, score: int) -> str | None:
     if score >= 5:
         return None
     breaker_count = r.stats.get("circuit_breaker_count", 0)
+    has_external_apis = r.stats.get("has_external_apis", False)
+    http_client_count = r.stats.get("http_client_count", 0)
+
+    if score == 1 and has_external_apis:
+        return f"STRONGLY RECOMMENDED: Add circuit breakers for external API calls. Found {http_client_count} HTTP client imports without protection."
     if score == 1:
         return "Add circuit breakers using pybreaker to protect against cascading failures from unreliable dependencies."
     if score == 2:
         return "Define circuit breakers for external service calls to prevent cascading failures."
-    if breaker_count < 3:
+    if breaker_count < 3 and has_external_apis:
         return "Consider adding circuit breakers to more external service integrations."
     return None
 
@@ -1923,6 +1953,430 @@ def _formatter_suggestion(r: ConventionRule, score: int) -> str | None:
     return None
 
 
+# Line length rating (opinionated for 88)
+def _line_length_score(r: ConventionRule) -> int:
+    """Score line length configuration - opinionated for 88 (Black default)."""
+    length = r.stats.get("configured_length", 0)
+    is_88 = r.stats.get("is_88", False)
+
+    if is_88:
+        return 5
+    if length in (100, 120):
+        return 4
+    if length == 79:
+        return 3  # PEP 8 strict, but less modern
+    if length > 0:
+        return 3
+    return 2
+
+
+def _line_length_reason(r: ConventionRule, _score: int) -> str:
+    length = r.stats.get("configured_length", 0)
+    source = r.stats.get("source", "unknown")
+    return f"Line length: {length} ({source})"
+
+
+def _line_length_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    length = r.stats.get("configured_length", 0)
+    if length == 79:
+        return "Consider 88 (Black default) for slightly more code per line while maintaining readability."
+    if length > 120:
+        return "Consider reducing to 88-120 for better readability."
+    return "Set line-length = 88 in pyproject.toml for Black/Ruff default."
+
+
+# String quotes rating (opinionated for double)
+def _string_quotes_score(r: ConventionRule) -> int:
+    """Score string quote style - opinionated for double quotes."""
+    style = r.stats.get("configured_style", "")
+
+    if style == "double":
+        return 5
+    if style == "single":
+        return 4
+    return 3
+
+
+def _string_quotes_reason(r: ConventionRule, _score: int) -> str:
+    style = r.stats.get("configured_style", "unset")
+    return f"Quote style: {style}"
+
+
+def _string_quotes_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    return "Use double quotes for consistency with Black/Ruff defaults and JSON."
+
+
+# Test coverage threshold rating
+def _coverage_threshold_score(r: ConventionRule) -> int:
+    """Score test coverage threshold - opinionated for >= 80%."""
+    threshold = r.stats.get("threshold", 0)
+
+    if threshold >= 80:
+        return 5
+    if threshold >= 70:
+        return 4
+    if threshold >= 50:
+        return 3
+    if threshold > 0:
+        return 2
+    return 1
+
+
+def _coverage_threshold_reason(r: ConventionRule, _score: int) -> str:
+    threshold = r.stats.get("threshold", 0)
+    return f"Coverage threshold: {threshold}%"
+
+
+def _coverage_threshold_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    threshold = r.stats.get("threshold", 0)
+    if threshold == 0:
+        return "Configure fail_under in coverage.report to enforce minimum coverage."
+    if threshold < 80:
+        return f"Increase coverage threshold from {threshold}% to 80%+."
+    return None
+
+
+# Pre-commit hooks rating (opinionated for ruff + mypy)
+def _pre_commit_hooks_score(r: ConventionRule) -> int:
+    """Score pre-commit hooks - opinionated for ruff + type checker."""
+    has_ruff = r.stats.get("has_ruff", False)
+    has_type_checker = r.stats.get("has_type_checker", False)
+    hooks = r.stats.get("hooks", [])
+
+    if has_ruff and has_type_checker:
+        return 5
+    if has_ruff:
+        return 4
+    if r.stats.get("has_black") and has_type_checker:
+        return 4
+    if len(hooks) >= 3:
+        return 3
+    if len(hooks) >= 1:
+        return 2
+    return 1
+
+
+def _pre_commit_hooks_reason(r: ConventionRule, _score: int) -> str:
+    hooks = r.stats.get("hooks", [])
+    return f"{len(hooks)} pre-commit hooks configured"
+
+
+def _pre_commit_hooks_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    has_ruff = r.stats.get("has_ruff", False)
+    has_type_checker = r.stats.get("has_type_checker", False)
+
+    if not r.stats.get("has_pre_commit"):
+        return "Add .pre-commit-config.yaml with ruff and mypy/pyright."
+    if not has_ruff:
+        return "Add ruff to pre-commit for fast linting and formatting."
+    if not has_type_checker:
+        return "Add mypy or pyright to pre-commit for type checking."
+    return None
+
+
+# Container local dev rating
+def _container_local_dev_score(r: ConventionRule) -> int:
+    """Score containerized local development setup."""
+    has_compose = r.stats.get("has_compose", False)
+    has_devcontainer = r.stats.get("has_devcontainer", False)
+
+    if has_devcontainer and has_compose:
+        return 5
+    if has_devcontainer:
+        return 4
+    if has_compose:
+        return 3
+    return 2
+
+
+def _container_local_dev_reason(r: ConventionRule, _score: int) -> str:
+    has_compose = r.stats.get("has_compose", False)
+    has_devcontainer = r.stats.get("has_devcontainer", False)
+
+    if has_devcontainer and has_compose:
+        return "Devcontainer + docker-compose"
+    if has_devcontainer:
+        return "VS Code devcontainer"
+    if has_compose:
+        return "Docker Compose"
+    return "No containerized dev"
+
+
+def _container_local_dev_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    has_compose = r.stats.get("has_compose", False)
+    has_devcontainer = r.stats.get("has_devcontainer", False)
+
+    if not has_devcontainer and not has_compose:
+        return "Add docker-compose.yml for consistent local development environments."
+    if has_compose and not has_devcontainer:
+        return "Consider adding .devcontainer for VS Code integration."
+    return None
+
+
+# Async ORM rating
+def _async_orm_score(r: ConventionRule) -> int:
+    """Score async ORM usage - opinionated for async in async frameworks."""
+    async_orm = r.stats.get("async_orm")
+    is_async_framework = r.stats.get("is_async_framework", False)
+
+    if async_orm and is_async_framework:
+        return 5
+    if async_orm:
+        return 4
+    if is_async_framework and not async_orm:
+        return 3  # Mismatch - sync ORM in async framework
+    return 2
+
+
+def _async_orm_reason(r: ConventionRule, _score: int) -> str:
+    async_orm = r.stats.get("async_orm", "none")
+    orm_names = {
+        "sqlalchemy_async": "SQLAlchemy AsyncIO",
+        "tortoise": "Tortoise ORM",
+        "databases": "encode/databases",
+    }
+    return f"Async ORM: {orm_names.get(async_orm, async_orm)}"
+
+
+def _async_orm_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    is_async_framework = r.stats.get("is_async_framework", False)
+
+    if is_async_framework and not r.stats.get("async_orm"):
+        return "Use SQLAlchemy AsyncIO or Tortoise ORM with async frameworks for better performance."
+    return None
+
+
+# Data class style rating
+def _data_class_style_score(r: ConventionRule) -> int:
+    """Score data class style - appropriate tool per use case."""
+    primary = r.stats.get("primary_style", "")
+    style_counts = r.stats.get("style_counts", {})
+    has_validation = r.stats.get("has_validation", False)
+
+    # Pydantic for API + dataclasses for internal is ideal
+    if "pydantic" in style_counts and "dataclass" in style_counts:
+        return 5
+
+    # Consistent modern choices
+    if primary in ("pydantic", "attrs", "msgspec") and len(style_counts) == 1:
+        return 5 if has_validation else 4
+
+    # Consistent dataclass usage
+    if primary == "dataclass" and len(style_counts) == 1:
+        return 4
+
+    # Mixed usage
+    if len(style_counts) > 2:
+        return 2
+
+    return 3
+
+
+def _data_class_style_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_style", "none")
+    style_names = {
+        "pydantic": "Pydantic",
+        "dataclass": "dataclasses",
+        "attrs": "attrs",
+        "msgspec": "msgspec",
+    }
+    return f"Data class style: {style_names.get(primary, primary)}"
+
+
+def _data_class_style_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    style_counts = r.stats.get("style_counts", {})
+
+    if len(style_counts) > 2:
+        return "Consolidate data class usage. Use Pydantic for API schemas, dataclasses for internal DTOs."
+    return None
+
+
+# Environment separation rating
+def _env_separation_score(r: ConventionRule) -> int:
+    """Score environment separation approach."""
+    approach = r.stats.get("approach", "")
+    has_env_files = r.stats.get("has_env_files", False)
+
+    if approach == "dynaconf":
+        return 5
+    if approach == "pydantic_settings" and has_env_files:
+        return 5
+    if approach == "pydantic_settings":
+        return 4
+    if approach == "python_decouple":
+        return 4
+    if approach == "raw_environ":
+        return 2
+    return 2
+
+
+def _env_separation_reason(r: ConventionRule, _score: int) -> str:
+    approach = r.stats.get("approach", "none")
+    approach_names = {
+        "dynaconf": "Dynaconf",
+        "pydantic_settings": "Pydantic Settings",
+        "python_decouple": "python-decouple",
+        "raw_environ": "os.environ",
+    }
+    return f"Config: {approach_names.get(approach, approach)}"
+
+
+def _env_separation_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    approach = r.stats.get("approach", "")
+
+    if approach == "raw_environ":
+        return "Use Pydantic Settings or Dynaconf for type-safe, validated configuration."
+    return None
+
+
+# Secret management rating
+def _secret_management_score(r: ConventionRule) -> int:
+    """Score secret management - opinionated for managed solutions."""
+    approach = r.stats.get("approach", "")
+    has_production_secrets = r.stats.get("has_production_secrets", False)
+
+    if approach in ("vault", "aws_secrets_manager", "gcp_secret_manager", "azure_keyvault"):
+        return 5
+    if approach == "dotenv" and has_production_secrets:
+        return 4
+    if approach in ("dotenv", "dotenv_file"):
+        return 3
+    return 2
+
+
+def _secret_management_reason(r: ConventionRule, _score: int) -> str:
+    approach = r.stats.get("approach", "none")
+    approach_names = {
+        "vault": "HashiCorp Vault",
+        "aws_secrets_manager": "AWS Secrets Manager",
+        "gcp_secret_manager": "GCP Secret Manager",
+        "azure_keyvault": "Azure Key Vault",
+        "dotenv": "python-dotenv",
+        "dotenv_file": ".env file",
+    }
+    return f"Secrets: {approach_names.get(approach, approach)}"
+
+
+def _secret_management_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    approach = r.stats.get("approach", "")
+
+    if approach in ("dotenv", "dotenv_file"):
+        return "For production, consider Vault, AWS Secrets Manager, or GCP Secret Manager."
+    return "Configure secret management with python-dotenv for dev, managed service for prod."
+
+
+# Exception chaining rating
+def _exception_chaining_score(r: ConventionRule) -> int:
+    """Score exception chaining - opinionated for chaining."""
+    ratio = r.stats.get("chaining_ratio", 0)
+
+    if ratio >= 0.8:
+        return 5
+    if ratio >= 0.6:
+        return 4
+    if ratio >= 0.4:
+        return 3
+    return 2
+
+
+def _exception_chaining_reason(r: ConventionRule, _score: int) -> str:
+    ratio = r.stats.get("chaining_ratio", 0)
+    return f"Exception chaining: {ratio * 100:.0f}%"
+
+
+def _exception_chaining_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    return "Use 'raise X from Y' for context or 'raise X from None' to suppress chain."
+
+
+# String formatting rating
+def _string_formatting_score(r: ConventionRule) -> int:
+    """Score string formatting - opinionated for f-strings."""
+    format_counts = r.stats.get("format_counts", {})
+    total = sum(format_counts.values())
+    fstring_count = format_counts.get("fstring", 0)
+
+    if total == 0:
+        return 3
+
+    ratio = fstring_count / total
+    if ratio >= 0.9:
+        return 5
+    if ratio >= 0.7:
+        return 4
+    if ratio >= 0.5:
+        return 3
+    return 2
+
+
+def _string_formatting_reason(r: ConventionRule, _score: int) -> str:
+    format_counts = r.stats.get("format_counts", {})
+    total = sum(format_counts.values())
+    fstring_count = format_counts.get("fstring", 0)
+    ratio = fstring_count / total if total else 0
+    return f"f-string usage: {ratio * 100:.0f}%"
+
+
+def _string_formatting_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    return "Prefer f-strings for readability and performance over .format() or %."
+
+
+# Import organization rating (enhanced)
+def _import_organization_score(r: ConventionRule) -> int:
+    """Score import organization - opinionated for ruff I rules with grouping."""
+    primary = r.stats.get("primary_sorter", "")
+    has_grouping = r.stats.get("has_grouping", False)
+    profile = r.stats.get("profile")
+
+    if primary == "ruff" and has_grouping:
+        return 5
+    if primary == "isort" and profile == "black" and has_grouping:
+        return 5
+    if primary in ("ruff", "isort"):
+        return 4
+    return 3
+
+
+def _import_organization_reason(r: ConventionRule, _score: int) -> str:
+    primary = r.stats.get("primary_sorter", "none")
+    has_grouping = r.stats.get("has_grouping", False)
+    result = f"Import sorting: {primary}"
+    if has_grouping:
+        result += " with grouping"
+    return result
+
+
+def _import_organization_suggestion(r: ConventionRule, score: int) -> str | None:
+    if score >= 5:
+        return None
+    has_grouping = r.stats.get("has_grouping", False)
+
+    if not has_grouping:
+        return "Configure known-first-party in ruff/isort for proper import grouping."
+    return "Use Ruff I rules for fast, consistent import sorting."
+
+
 # Dockerfile practices rating
 def _dockerfile_score(r: ConventionRule) -> int:
     """Score Dockerfile best practices."""
@@ -2251,6 +2705,82 @@ RATING_RULES: dict[str, RatingRule] = {
         score_func=_formatter_score,
         reason_func=_formatter_reason,
         suggestion_func=_formatter_suggestion,
+    ),
+
+    # Python new tooling conventions
+    "python.conventions.line_length": RatingRule(
+        score_func=_line_length_score,
+        reason_func=_line_length_reason,
+        suggestion_func=_line_length_suggestion,
+    ),
+    "python.conventions.string_quotes": RatingRule(
+        score_func=_string_quotes_score,
+        reason_func=_string_quotes_reason,
+        suggestion_func=_string_quotes_suggestion,
+    ),
+    "python.conventions.pre_commit_hooks": RatingRule(
+        score_func=_pre_commit_hooks_score,
+        reason_func=_pre_commit_hooks_reason,
+        suggestion_func=_pre_commit_hooks_suggestion,
+    ),
+    "python.conventions.import_sorting": RatingRule(
+        score_func=_import_organization_score,
+        reason_func=_import_organization_reason,
+        suggestion_func=_import_organization_suggestion,
+    ),
+
+    # Python testing new
+    "python.conventions.test_coverage_threshold": RatingRule(
+        score_func=_coverage_threshold_score,
+        reason_func=_coverage_threshold_reason,
+        suggestion_func=_coverage_threshold_suggestion,
+    ),
+
+    # Python database new
+    "python.conventions.async_orm": RatingRule(
+        score_func=_async_orm_score,
+        reason_func=_async_orm_reason,
+        suggestion_func=_async_orm_suggestion,
+    ),
+
+    # Python API new
+    "python.conventions.data_class_style": RatingRule(
+        score_func=_data_class_style_score,
+        reason_func=_data_class_style_reason,
+        suggestion_func=_data_class_style_suggestion,
+    ),
+
+    # Python security new
+    "python.conventions.env_separation": RatingRule(
+        score_func=_env_separation_score,
+        reason_func=_env_separation_reason,
+        suggestion_func=_env_separation_suggestion,
+    ),
+    "python.conventions.secret_management": RatingRule(
+        score_func=_secret_management_score,
+        reason_func=_secret_management_reason,
+        suggestion_func=_secret_management_suggestion,
+    ),
+
+    # Python architecture new
+    "python.conventions.container_local_dev": RatingRule(
+        score_func=_container_local_dev_score,
+        reason_func=_container_local_dev_reason,
+        suggestion_func=_container_local_dev_suggestion,
+    ),
+
+    # Python error handling new
+    "python.conventions.exception_chaining": RatingRule(
+        score_func=_exception_chaining_score,
+        reason_func=_exception_chaining_reason,
+        suggestion_func=_exception_chaining_suggestion,
+    ),
+
+    # Python code style
+    "python.conventions.string_formatting": RatingRule(
+        score_func=_string_formatting_score,
+        reason_func=_string_formatting_reason,
+        suggestion_func=_string_formatting_suggestion,
     ),
 
     # Generic containerization

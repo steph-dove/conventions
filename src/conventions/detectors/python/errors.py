@@ -36,6 +36,9 @@ class PythonErrorConventionsDetector(PythonDetector):
         # Detect custom error wrapper patterns
         self._detect_error_wrapper_patterns(ctx, index, result)
 
+        # Detect exception chaining patterns
+        self._detect_exception_chaining(ctx, index, result)
+
         return result
 
     def _detect_http_exception_boundary(
@@ -460,3 +463,101 @@ class PythonErrorConventionsDetector(PythonDetector):
                     "usage_ratio": round(usage_ratio, 3),
                 },
             ))
+
+    def _detect_exception_chaining(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect exception chaining patterns (raise X from Y vs bare raise X)."""
+        chained_raises = 0
+        unchained_raises = 0
+        bare_raises = 0
+        chained_examples: list[tuple[str, int]] = []
+        unchained_examples: list[tuple[str, int]] = []
+
+        for rel_path, raise_info in index.get_all_raises():
+            # Skip test files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
+            if raise_info.is_bare_raise:
+                bare_raises += 1
+                continue
+
+            if raise_info.has_from_clause:
+                chained_raises += 1
+                if len(chained_examples) < 10:
+                    chained_examples.append((rel_path, raise_info.line))
+            else:
+                unchained_raises += 1
+                if len(unchained_examples) < 10:
+                    unchained_examples.append((rel_path, raise_info.line))
+
+        total_non_bare = chained_raises + unchained_raises
+
+        if total_non_bare < 3:
+            return  # Not enough evidence
+
+        chaining_ratio = chained_raises / total_non_bare if total_non_bare else 0
+
+        # Determine pattern
+        if chaining_ratio >= 0.8:
+            title = "Excellent exception chaining"
+            description = (
+                f"Consistently uses 'raise X from Y' for exception chaining. "
+                f"{chained_raises}/{total_non_bare} ({chaining_ratio:.0%}) raises use chaining."
+            )
+            confidence = 0.9
+        elif chaining_ratio >= 0.6:
+            title = "Good exception chaining"
+            description = (
+                f"Often uses 'raise X from Y' for exception chaining. "
+                f"{chained_raises}/{total_non_bare} ({chaining_ratio:.0%}) raises use chaining."
+            )
+            confidence = 0.8
+        elif chaining_ratio >= 0.4:
+            title = "Partial exception chaining"
+            description = (
+                f"Sometimes uses 'raise X from Y'. "
+                f"{chained_raises}/{total_non_bare} ({chaining_ratio:.0%}) raises use chaining. "
+                f"Consider using 'raise X from Y' or 'raise X from None' for all transformations."
+            )
+            confidence = 0.7
+        else:
+            title = "Limited exception chaining"
+            description = (
+                f"Rarely uses 'raise X from Y'. "
+                f"{chained_raises}/{total_non_bare} ({chaining_ratio:.0%}) raises use chaining. "
+                f"Use 'raise X from Y' to preserve context or 'raise X from None' to suppress."
+            )
+            confidence = 0.7
+
+        # Build evidence - show both chained and unchained examples
+        evidence = []
+        for rel_path, line in chained_examples[:2]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+        for rel_path, line in unchained_examples[:2]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.exception_chaining",
+            category="error_handling",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence[:ctx.max_evidence_snippets],
+            stats={
+                "chained_raises": chained_raises,
+                "unchained_raises": unchained_raises,
+                "bare_raises": bare_raises,
+                "chaining_ratio": round(chaining_ratio, 3),
+            },
+        ))

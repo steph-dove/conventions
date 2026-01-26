@@ -128,6 +128,16 @@ class AssertInfo:
 
 
 @dataclass
+class RaiseInfo:
+    """Information about a raise statement."""
+
+    line: int
+    exception_type: Optional[str] = None  # The exception being raised
+    has_from_clause: bool = False  # True if `raise X from Y` is used
+    is_bare_raise: bool = False  # True if just `raise` (re-raise)
+
+
+@dataclass
 class FileIndex:
     """Index of a single Python file."""
 
@@ -152,6 +162,7 @@ class FileIndex:
     constants: list[ConstantInfo] = field(default_factory=list)
     returns: list[ReturnInfo] = field(default_factory=list)
     asserts: list[AssertInfo] = field(default_factory=list)
+    raises: list[RaiseInfo] = field(default_factory=list)
 
     # Content for evidence extraction
     lines: list[str] = field(default_factory=list)
@@ -359,6 +370,14 @@ class PythonIndex:
         for rel_path, file_idx in self.files.items():
             for ret in file_idx.returns:
                 result.append((rel_path, ret))
+        return result
+
+    def get_all_raises(self) -> list[tuple[str, RaiseInfo]]:
+        """Get all raise statements across all files."""
+        result = []
+        for rel_path, file_idx in self.files.items():
+            for raise_info in file_idx.raises:
+                result.append((rel_path, raise_info))
         return result
 
     def count_imports_matching(self, pattern: str) -> int:
@@ -714,6 +733,26 @@ class _ASTVisitor(ast.NodeVisitor):
         self.file_index.returns.append(ReturnInfo(
             line=node.lineno,
             returns_none=returns_none,
+        ))
+        self.generic_visit(node)
+
+    def visit_Raise(self, node: ast.Raise) -> None:
+        """Process raise statements, tracking exception chaining."""
+        exception_type: Optional[str] = None
+        has_from_clause = node.cause is not None
+        is_bare_raise = node.exc is None
+
+        if node.exc is not None:
+            if isinstance(node.exc, ast.Call):
+                exception_type = get_dotted_name(node.exc.func)
+            else:
+                exception_type = get_dotted_name(node.exc)
+
+        self.file_index.raises.append(RaiseInfo(
+            line=node.lineno,
+            exception_type=exception_type,
+            has_from_clause=has_from_clause,
+            is_bare_raise=is_bare_raise,
         ))
         self.generic_visit(node)
 

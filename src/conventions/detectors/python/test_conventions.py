@@ -6,12 +6,16 @@ This detector focuses on conventions within test files, such as:
 - Assertion styles (using AST-based counting)
 - Mocking patterns
 - Parametrized tests
+- Coverage threshold configuration
 """
 
 from __future__ import annotations
 
+import configparser
+import re
 from collections import Counter
 
+from ...fs import read_file_safe
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
 from .index import FileIndex, make_evidence
@@ -47,6 +51,7 @@ class PythonTestConventionsDetector(PythonDetector):
         self._detect_assertion_style(ctx, index, test_files, result)
         self._detect_mocking_patterns(ctx, index, all_test_dir_files, result)
         self._detect_parametrized_tests(ctx, index, test_files, result)
+        self._detect_coverage_threshold(ctx, result)
 
         return result
 
@@ -507,5 +512,84 @@ class PythonTestConventionsDetector(PythonDetector):
             evidence=evidence,
             stats={
                 "parametrize_count": parametrize_count,
+            },
+        ))
+
+    def _detect_coverage_threshold(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect test coverage threshold configuration."""
+        threshold: float | None = None
+        source: str | None = None
+
+        # Check pyproject.toml [tool.coverage.report]
+        pyproject = ctx.repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            content = read_file_safe(pyproject)
+            if content and "[tool.coverage" in content:
+                # Look for fail_under
+                match = re.search(r'fail_under\s*=\s*(\d+(?:\.\d+)?)', content)
+                if match:
+                    threshold = float(match.group(1))
+                    source = "pyproject.toml"
+
+        # Check setup.cfg [coverage:report]
+        if threshold is None:
+            setup_cfg = ctx.repo_root / "setup.cfg"
+            if setup_cfg.is_file():
+                content = read_file_safe(setup_cfg)
+                if content and "[coverage:report]" in content:
+                    match = re.search(r'fail_under\s*=\s*(\d+(?:\.\d+)?)', content)
+                    if match:
+                        threshold = float(match.group(1))
+                        source = "setup.cfg"
+
+        # Check .coveragerc
+        if threshold is None:
+            coveragerc = ctx.repo_root / ".coveragerc"
+            if coveragerc.is_file():
+                content = read_file_safe(coveragerc)
+                if content:
+                    try:
+                        config = configparser.ConfigParser()
+                        config.read_string(content)
+                        if config.has_option("report", "fail_under"):
+                            threshold = config.getfloat("report", "fail_under")
+                            source = ".coveragerc"
+                    except (configparser.Error, ValueError):
+                        pass
+
+        if threshold is None:
+            return
+
+        # Build title and description based on threshold
+        if threshold >= 80:
+            title = f"Coverage threshold: {threshold}% (excellent)"
+            description = f"Test coverage required to be at least {threshold}%. Source: {source}."
+        elif threshold >= 70:
+            title = f"Coverage threshold: {threshold}% (good)"
+            description = f"Test coverage required to be at least {threshold}%. Source: {source}."
+        elif threshold >= 50:
+            title = f"Coverage threshold: {threshold}% (moderate)"
+            description = f"Test coverage required to be at least {threshold}%. Source: {source}. Consider increasing."
+        else:
+            title = f"Coverage threshold: {threshold}% (low)"
+            description = f"Test coverage required to be at least {threshold}%. Source: {source}. Consider increasing to 80%+."
+
+        confidence = 0.9
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.test_coverage_threshold",
+            category="testing",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "threshold": threshold,
+                "source": source,
             },
         ))

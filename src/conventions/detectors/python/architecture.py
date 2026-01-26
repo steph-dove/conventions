@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 
+import yaml
+
+from ...fs import read_file_safe
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
 from .index import make_evidence
@@ -47,6 +50,9 @@ class PythonLayeringConventionsDetector(PythonDetector):
 
         # Detect boundary violations
         self._detect_boundary_violations(ctx, index, result)
+
+        # Detect containerized local development
+        self._detect_container_local_dev(ctx, result)
 
         return result
 
@@ -245,3 +251,95 @@ class PythonLayeringConventionsDetector(PythonDetector):
             return "schema"
 
         return None
+
+    def _detect_container_local_dev(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect containerized local development setup."""
+        has_compose = False
+        has_devcontainer = False
+        compose_services: list[str] = []
+        compose_file: str | None = None
+
+        # Check for docker-compose files
+        compose_files = [
+            ctx.repo_root / "docker-compose.yml",
+            ctx.repo_root / "docker-compose.yaml",
+            ctx.repo_root / "docker-compose.dev.yml",
+            ctx.repo_root / "docker-compose.dev.yaml",
+            ctx.repo_root / "compose.yml",
+            ctx.repo_root / "compose.yaml",
+        ]
+
+        for compose_path in compose_files:
+            if compose_path.is_file():
+                has_compose = True
+                compose_file = compose_path.name
+                content = read_file_safe(compose_path)
+                if content:
+                    try:
+                        compose_config = yaml.safe_load(content)
+                        if compose_config and "services" in compose_config:
+                            compose_services = list(compose_config["services"].keys())
+                    except yaml.YAMLError:
+                        pass
+                break
+
+        # Check for devcontainer
+        devcontainer_path = ctx.repo_root / ".devcontainer" / "devcontainer.json"
+        if devcontainer_path.is_file():
+            has_devcontainer = True
+
+        # Also check for devcontainer.json in root
+        if not has_devcontainer:
+            root_devcontainer = ctx.repo_root / ".devcontainer.json"
+            if root_devcontainer.is_file():
+                has_devcontainer = True
+
+        if not has_compose and not has_devcontainer:
+            return
+
+        # Build title and description
+        if has_devcontainer and has_compose:
+            title = "Containerized dev: devcontainer + docker-compose"
+            description = (
+                f"Full containerized development setup with VS Code devcontainer and docker-compose. "
+                f"Services: {', '.join(compose_services[:5]) if compose_services else 'configured'}."
+            )
+            confidence = 0.95
+        elif has_devcontainer:
+            title = "Containerized dev: VS Code devcontainer"
+            description = "Uses VS Code devcontainer for development environment."
+            confidence = 0.85
+        elif has_compose and "dev" in (compose_file or ""):
+            title = "Containerized dev: docker-compose (dev config)"
+            description = (
+                f"Uses docker-compose for development. "
+                f"Services: {', '.join(compose_services[:5]) if compose_services else 'configured'}."
+            )
+            confidence = 0.85
+        else:
+            title = "Docker Compose setup"
+            description = (
+                f"Has docker-compose configuration. "
+                f"Services: {', '.join(compose_services[:5]) if compose_services else 'configured'}."
+            )
+            confidence = 0.7
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.container_local_dev",
+            category="architecture",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=[],
+            stats={
+                "has_compose": has_compose,
+                "has_devcontainer": has_devcontainer,
+                "compose_services": compose_services,
+                "compose_file": compose_file,
+            },
+        ))

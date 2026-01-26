@@ -240,6 +240,14 @@ class PythonResilienceConventionsDetector(PythonDetector):
         cb_examples: dict[str, list[tuple[str, int]]] = {}
         circuit_breaker_count = 0
 
+        # Detect external API usage (HTTP clients)
+        has_external_apis = False
+        http_client_count = 0
+        for rel_path, imp in index.get_all_imports():
+            if any(client in imp.module for client in ("httpx", "requests", "aiohttp", "urllib3")):
+                has_external_apis = True
+                http_client_count += 1
+
         for rel_path, imp in index.get_all_imports():
             # pybreaker
             if "pybreaker" in imp.module or "pybreaker" in imp.names:
@@ -326,6 +334,8 @@ class PythonResilienceConventionsDetector(PythonDetector):
                 "circuit_breaker_library_counts": dict(cb_libs),
                 "primary_library": primary,
                 "circuit_breaker_count": circuit_breaker_count,
+                "has_external_apis": has_external_apis,
+                "http_client_count": http_client_count,
             },
         ))
 

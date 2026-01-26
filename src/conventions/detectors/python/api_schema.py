@@ -39,6 +39,9 @@ class PythonAPISchemaConventionsDetector(PythonDetector):
         # Detect OpenAPI documentation
         self._detect_openapi_docs(ctx, index, result)
 
+        # Detect data class style
+        self._detect_data_class_style(ctx, index, result)
+
         return result
 
     def _detect_api_framework(
@@ -531,8 +534,8 @@ class PythonAPISchemaConventionsDetector(PythonDetector):
             description = "Uses Flasgger for Flask OpenAPI/Swagger documentation."
         else:
             primary = list(openapi_indicators.keys())[0]
-            title = f"OpenAPI documentation"
-            description = f"Uses OpenAPI/Swagger documentation."
+            title = "OpenAPI documentation"
+            description = "Uses OpenAPI/Swagger documentation."
 
         confidence = 0.85 if primary != "fastapi_builtin" else 0.7
 
@@ -554,5 +557,130 @@ class PythonAPISchemaConventionsDetector(PythonDetector):
             stats={
                 "openapi_indicators": dict(openapi_indicators),
                 "primary_tool": primary,
+            },
+        ))
+
+    def _detect_data_class_style(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect data class style (dataclass, attrs, Pydantic, msgspec)."""
+        style_counts: Counter[str] = Counter()
+        style_examples: dict[str, list[tuple[str, int]]] = {}
+        has_validation = False
+
+        for rel_path, dec in index.get_all_decorators():
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
+            # Standard dataclass
+            if dec.name == "dataclass" or dec.name.endswith(".dataclass"):
+                style_counts["dataclass"] += 1
+                if "dataclass" not in style_examples:
+                    style_examples["dataclass"] = []
+                if len(style_examples["dataclass"]) < 5:
+                    style_examples["dataclass"].append((rel_path, dec.line))
+
+            # attrs
+            if dec.name in ("attr.s", "attrs", "define", "attr.define", "attrs.define"):
+                style_counts["attrs"] += 1
+                if "attrs" not in style_examples:
+                    style_examples["attrs"] = []
+                if len(style_examples["attrs"]) < 5:
+                    style_examples["attrs"].append((rel_path, dec.line))
+
+        # Check for Pydantic BaseModel inheritance
+        for rel_path, cls in index.get_all_classes():
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
+            if "BaseModel" in cls.bases:
+                style_counts["pydantic"] += 1
+                has_validation = True
+                if "pydantic" not in style_examples:
+                    style_examples["pydantic"] = []
+                if len(style_examples["pydantic"]) < 5:
+                    style_examples["pydantic"].append((rel_path, cls.line))
+
+        # Check for msgspec imports
+        for rel_path, imp in index.get_all_imports():
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
+            if "msgspec" in imp.module:
+                if "Struct" in imp.names:
+                    style_counts["msgspec"] += 1
+                    if "msgspec" not in style_examples:
+                        style_examples["msgspec"] = []
+                    if len(style_examples["msgspec"]) < 5:
+                        style_examples["msgspec"].append((rel_path, imp.line))
+
+        if not style_counts:
+            return
+
+        # Determine primary style
+        primary, primary_count = style_counts.most_common(1)[0]
+        total = sum(style_counts.values())
+
+        # Build title and description
+        style_names = {
+            "pydantic": "Pydantic BaseModel",
+            "dataclass": "dataclasses",
+            "attrs": "attrs",
+            "msgspec": "msgspec Struct",
+        }
+
+        # Check if there's appropriate usage per context
+        has_pydantic = "pydantic" in style_counts
+        has_dataclass = "dataclass" in style_counts
+        has_api = index.count_imports_matching("fastapi") > 0 or index.count_imports_matching("flask") > 0
+
+        if has_pydantic and has_dataclass and has_api:
+            title = "Data class style: Pydantic for API + dataclasses for internal"
+            description = (
+                f"Uses Pydantic for API schemas ({style_counts['pydantic']}) and "
+                f"dataclasses for internal DTOs ({style_counts['dataclass']}). Good separation."
+            )
+            confidence = 0.9
+        elif len(style_counts) == 1:
+            title = f"Data class style: {style_names.get(primary, primary)}"
+            description = (
+                f"Consistently uses {style_names.get(primary, primary)} for data structures. "
+                f"Found {primary_count} usages."
+            )
+            confidence = min(0.9, 0.6 + primary_count * 0.03)
+        else:
+            other_styles = [style_names.get(s, s) for s in style_counts if s != primary]
+            title = f"Data class style: primarily {style_names.get(primary, primary)}"
+            description = (
+                f"Primarily uses {style_names.get(primary, primary)} ({primary_count}/{total}). "
+                f"Also uses: {', '.join(other_styles)}."
+            )
+            confidence = min(0.85, 0.5 + (primary_count / total) * 0.35)
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in style_examples.get(primary, [])[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=5)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.data_class_style",
+            category="api",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "primary_style": primary,
+                "style_counts": dict(style_counts),
+                "has_validation": has_validation,
             },
         ))

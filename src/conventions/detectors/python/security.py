@@ -39,6 +39,12 @@ class PythonSecurityConventionsDetector(PythonDetector):
         # Detect password hashing
         self._detect_password_hashing(ctx, index, result)
 
+        # Detect environment separation
+        self._detect_env_separation(ctx, index, result)
+
+        # Detect secret management
+        self._detect_secret_management(ctx, index, result)
+
         return result
 
     def _detect_auth_pattern(
@@ -548,5 +554,231 @@ class PythonSecurityConventionsDetector(PythonDetector):
                 "hash_library_counts": dict(hash_libs),
                 "primary_library": primary,
                 "quality": quality,
+            },
+        ))
+
+    def _detect_env_separation(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect environment separation approach (dev/prod config)."""
+        approach: str | None = None
+        has_env_files = False
+        raw_environ_count = 0
+        examples: list[tuple[str, int]] = []
+
+        # Check for env-specific config files
+        env_patterns = [".env.dev", ".env.prod", ".env.staging", ".env.local", ".env.production"]
+        for pattern in env_patterns:
+            if (ctx.repo_root / pattern).is_file():
+                has_env_files = True
+                break
+
+        # Check imports for config libraries
+        for rel_path, imp in index.get_all_imports():
+            # dynaconf
+            if "dynaconf" in imp.module:
+                approach = "dynaconf"
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+            # python-decouple
+            if "decouple" in imp.module:
+                if not approach or approach == "raw_environ":
+                    approach = "python_decouple"
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+            # pydantic-settings
+            if "pydantic_settings" in imp.module or "BaseSettings" in imp.names:
+                if approach not in ("dynaconf",):
+                    approach = "pydantic_settings"
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+        # Check for Pydantic Settings class inheritance
+        for rel_path, cls in index.get_all_classes():
+            if "BaseSettings" in cls.bases:
+                if approach not in ("dynaconf",):
+                    approach = "pydantic_settings"
+                if len(examples) < 5:
+                    examples.append((rel_path, cls.line))
+
+        # Count raw os.environ usage
+        for rel_path, call in index.get_all_calls():
+            if call.name in ("os.environ.get", "os.getenv", "os.environ"):
+                raw_environ_count += 1
+
+        # If no structured approach found but raw environ is used
+        if not approach and raw_environ_count > 0:
+            approach = "raw_environ"
+
+        if not approach:
+            return
+
+        # Build title and description
+        if approach == "dynaconf":
+            title = "Environment separation: Dynaconf"
+            description = "Uses Dynaconf for structured environment-aware configuration."
+            if has_env_files:
+                description += " Has environment-specific config files."
+            confidence = 0.95
+        elif approach == "pydantic_settings" and has_env_files:
+            title = "Environment separation: Pydantic Settings + env files"
+            description = "Uses Pydantic Settings with environment-specific .env files."
+            confidence = 0.9
+        elif approach == "pydantic_settings":
+            title = "Environment separation: Pydantic Settings"
+            description = "Uses Pydantic Settings for structured configuration."
+            confidence = 0.85
+        elif approach == "python_decouple":
+            title = "Environment separation: python-decouple"
+            description = "Uses python-decouple for configuration management."
+            if has_env_files:
+                description += " Has environment-specific config files."
+            confidence = 0.8
+        else:
+            title = "Environment config: raw os.environ"
+            description = f"Uses os.environ/os.getenv directly. Found {raw_environ_count} usages."
+            confidence = 0.7
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in examples[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.env_separation",
+            category="security",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "approach": approach,
+                "has_env_files": has_env_files,
+                "raw_environ_count": raw_environ_count,
+            },
+        ))
+
+    def _detect_secret_management(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect secret management approach (Vault, cloud secrets, dotenv)."""
+        approach: str | None = None
+        has_local_dotenv = False
+        has_production_secrets = False
+        examples: list[tuple[str, int]] = []
+
+        # Check for .env file (local dotenv)
+        if (ctx.repo_root / ".env").is_file() or (ctx.repo_root / ".env.example").is_file():
+            has_local_dotenv = True
+
+        # Check imports for secret management libraries
+        for rel_path, imp in index.get_all_imports():
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role in ("test", "docs"):
+                continue
+
+            # HashiCorp Vault (hvac)
+            if "hvac" in imp.module:
+                approach = "vault"
+                has_production_secrets = True
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+            # AWS Secrets Manager
+            if "boto3" in imp.module or "botocore" in imp.module:
+                # Check for secretsmanager usage in file
+                if "secretsmanager" in "\n".join(index.files.get(rel_path, {}).lines if index.files.get(rel_path) else []).lower():
+                    if approach not in ("vault",):
+                        approach = "aws_secrets_manager"
+                    has_production_secrets = True
+                    if len(examples) < 5:
+                        examples.append((rel_path, imp.line))
+
+            # GCP Secret Manager
+            if "google.cloud.secretmanager" in imp.module:
+                if approach not in ("vault", "aws_secrets_manager"):
+                    approach = "gcp_secret_manager"
+                has_production_secrets = True
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+            # Azure Key Vault
+            if "azure.keyvault" in imp.module:
+                if approach not in ("vault", "aws_secrets_manager", "gcp_secret_manager"):
+                    approach = "azure_keyvault"
+                has_production_secrets = True
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+            # python-dotenv
+            if "dotenv" in imp.module:
+                if not approach:
+                    approach = "dotenv"
+                if len(examples) < 5:
+                    examples.append((rel_path, imp.line))
+
+        if not approach and not has_local_dotenv:
+            return
+
+        if not approach and has_local_dotenv:
+            approach = "dotenv_file"
+
+        # Build title and description
+        approach_names = {
+            "vault": "HashiCorp Vault",
+            "aws_secrets_manager": "AWS Secrets Manager",
+            "gcp_secret_manager": "GCP Secret Manager",
+            "azure_keyvault": "Azure Key Vault",
+            "dotenv": "python-dotenv",
+            "dotenv_file": ".env file",
+        }
+
+        if approach in ("vault", "aws_secrets_manager", "gcp_secret_manager", "azure_keyvault"):
+            title = f"Secret management: {approach_names.get(approach, approach)}"
+            description = f"Uses {approach_names.get(approach, approach)} for production secret management."
+            confidence = 0.95
+        elif approach == "dotenv" and has_local_dotenv:
+            title = "Secret management: python-dotenv"
+            description = "Uses python-dotenv for local development. Ensure .env is in .gitignore."
+            confidence = 0.8
+        elif approach == "dotenv_file":
+            title = "Secrets: .env file present"
+            description = "Has .env file for local secrets. Ensure it's not committed to version control."
+            confidence = 0.7
+        else:
+            title = "Secret management: unclear"
+            description = "Secret management approach not clearly detected."
+            confidence = 0.5
+
+        # Build evidence
+        evidence = []
+        for rel_path, line in examples[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.secret_management",
+            category="security",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="python",
+            evidence=evidence,
+            stats={
+                "approach": approach,
+                "has_local_dotenv": has_local_dotenv,
+                "has_production_secrets": has_production_secrets,
             },
         ))
