@@ -1092,7 +1092,6 @@ def _health_check_suggestion(r: ConventionRule, score: int) -> str | None:
 # Tracing rating (best-practice based)
 def _tracing_score(r: ConventionRule) -> int:
     """Score tracing implementation - OpenTelemetry is the industry standard."""
-    libs = r.stats.get("tracing_library_counts", {})
     primary = r.stats.get("primary_library", "")
     spans = r.stats.get("spans_created", 0)
 
@@ -1811,7 +1810,6 @@ def _type_checker_strictness_suggestion(r: ConventionRule, score: int) -> str | 
     if score >= 5:
         return None
     type_checker = r.stats.get("type_checker", "mypy")
-    strictness = r.stats.get("strictness", "")
 
     if score <= 2:
         return f"Enable strict mode in {type_checker} to catch more type errors at development time."
@@ -1899,7 +1897,7 @@ def _linter_reason(r: ConventionRule, _score: int) -> str:
     if not linters:
         return "No linter configured"
     linter_details = r.stats.get("linter_details", {})
-    names = [linter_details.get(l, {}).get("name", l) for l in linters]
+    names = [linter_details.get(linter, {}).get("name", linter) for linter in linters]
     return f"Linters: {', '.join(names)}"
 
 
@@ -1918,7 +1916,6 @@ def _linter_suggestion(r: ConventionRule, score: int) -> str | None:
 # Formatter choice rating
 def _formatter_score(r: ConventionRule) -> int:
     """Score formatter choice - ruff format or black are the standards."""
-    formatters = r.stats.get("formatters", [])
     primary = r.stats.get("primary_formatter", "")
 
     if primary in ("ruff", "black"):

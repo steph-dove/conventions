@@ -193,8 +193,8 @@ class PythonDependencyManagementDetector(PythonDetector):
                 # Check if it has hashes (pip-compile output)
                 has_hashes = "--hash=sha256:" in content
                 # Check if versions are pinned
-                lines = [l for l in content.splitlines() if l.strip() and not l.startswith("#") and not l.startswith("-")]
-                pinned = sum(1 for l in lines if "==" in l)
+                lines = [ln for ln in content.splitlines() if ln.strip() and not ln.startswith("#") and not ln.startswith("-")]
+                pinned = sum(1 for ln in lines if "==" in ln)
                 total = len(lines)
 
                 if has_hashes:
