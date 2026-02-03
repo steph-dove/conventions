@@ -201,4 +201,129 @@ class NodeFrontendDetector(NodeDetector):
             },
         ))
 
+        # Detect UI component library
+        self._detect_ui_library(ctx, index, result, all_deps)
+
         return result
+
+    def _detect_ui_library(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+        all_deps: dict,
+    ) -> None:
+        """Detect UI component library (Material-UI, Chakra, Ant Design, etc.)."""
+        ui_libs: dict[str, dict] = {}
+        examples: list[tuple[str, int]] = []
+
+        # Material-UI / MUI
+        if "@mui/material" in all_deps:
+            ui_libs["mui"] = {"name": "Material-UI (MUI)", "version": "v5+"}
+            mui_imports = index.find_imports_matching("@mui/", limit=20)
+            examples.extend([(r, ln) for r, _, ln in mui_imports[:3]])
+        elif "@material-ui/core" in all_deps:
+            ui_libs["mui"] = {"name": "Material-UI", "version": "v4"}
+            mui_imports = index.find_imports_matching("@material-ui/", limit=20)
+            examples.extend([(r, ln) for r, _, ln in mui_imports[:3]])
+
+        # Chakra UI
+        if "@chakra-ui/react" in all_deps:
+            ui_libs["chakra"] = {"name": "Chakra UI"}
+            chakra_imports = index.find_imports_matching("@chakra-ui/", limit=20)
+            examples.extend([(r, ln) for r, _, ln in chakra_imports[:3]])
+
+        # Ant Design
+        if "antd" in all_deps:
+            ui_libs["antd"] = {"name": "Ant Design"}
+            antd_imports = index.find_imports_matching("antd", limit=20)
+            examples.extend([(r, ln) for r, _, ln in antd_imports[:3]])
+
+        # Radix UI
+        if "@radix-ui/react-primitive" in all_deps or any(
+            k.startswith("@radix-ui/") for k in all_deps
+        ):
+            ui_libs["radix"] = {"name": "Radix UI"}
+
+        # Headless UI
+        if "@headlessui/react" in all_deps:
+            ui_libs["headless"] = {"name": "Headless UI"}
+
+        # shadcn/ui (typically uses Radix + Tailwind)
+        if "class-variance-authority" in all_deps and (
+            "@radix-ui/react-slot" in all_deps or "cmdk" in all_deps
+        ):
+            ui_libs["shadcn"] = {"name": "shadcn/ui"}
+
+        # React Bootstrap
+        if "react-bootstrap" in all_deps:
+            ui_libs["react_bootstrap"] = {"name": "React Bootstrap"}
+
+        # Semantic UI React
+        if "semantic-ui-react" in all_deps:
+            ui_libs["semantic"] = {"name": "Semantic UI React"}
+
+        # Mantine
+        if "@mantine/core" in all_deps:
+            ui_libs["mantine"] = {"name": "Mantine"}
+
+        # Blueprint
+        if "@blueprintjs/core" in all_deps:
+            ui_libs["blueprint"] = {"name": "Blueprint"}
+
+        # Vuetify (Vue)
+        if "vuetify" in all_deps:
+            ui_libs["vuetify"] = {"name": "Vuetify"}
+
+        # PrimeReact / PrimeVue
+        if "primereact" in all_deps:
+            ui_libs["primereact"] = {"name": "PrimeReact"}
+        if "primevue" in all_deps:
+            ui_libs["primevue"] = {"name": "PrimeVue"}
+
+        if not ui_libs:
+            return
+
+        # Determine primary library
+        priority = ["mui", "chakra", "antd", "shadcn", "mantine", "radix"]
+        primary = None
+        for lib in priority:
+            if lib in ui_libs:
+                primary = lib
+                break
+        if primary is None:
+            primary = list(ui_libs.keys())[0]
+
+        lib_info = ui_libs[primary]
+        title = f"UI library: {lib_info['name']}"
+        description = f"Uses {lib_info['name']} for UI components."
+
+        if lib_info.get("version"):
+            description += f" ({lib_info['version']})"
+
+        if len(ui_libs) > 1:
+            others = [ui_libs[k]["name"] for k in ui_libs if k != primary]
+            description += f" Also: {', '.join(others[:2])}."
+
+        confidence = 0.95
+
+        evidence = []
+        for rel_path, line in examples[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.ui_library",
+            category="frontend",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="javascript",
+            evidence=evidence,
+            stats={
+                "ui_libraries": list(ui_libs.keys()),
+                "primary_library": primary,
+                "library_details": ui_libs,
+            },
+        ))

@@ -37,16 +37,25 @@ def print_summary(output: ConventionsOutput, console: Optional[Console] = None) 
     if output.rules:
         console.print("\n[bold]Detected Conventions:[/bold]\n")
 
+        # Check if any rules have docs
+        has_docs = any(rule.docs_url for rule in output.rules)
+
         table = Table(show_header=True, header_style="bold")
         table.add_column("ID", style="cyan", no_wrap=True)
         table.add_column("Title", style="white")
         table.add_column("Confidence", justify="right", style="green")
         table.add_column("Evidence", justify="right")
+        if has_docs:
+            table.add_column("Docs", style="blue", no_wrap=True)
 
         for rule in sorted(output.rules, key=lambda r: (-r.confidence, r.id)):
             confidence_pct = f"{rule.confidence * 100:.0f}%"
             evidence_count = str(len(rule.evidence))
-            table.add_row(rule.id, rule.title, confidence_pct, evidence_count)
+            if has_docs:
+                docs_link = f"[link={rule.docs_url}]link[/link]" if rule.docs_url else ""
+                table.add_row(rule.id, rule.title, confidence_pct, evidence_count, docs_link)
+            else:
+                table.add_row(rule.id, rule.title, confidence_pct, evidence_count)
 
         console.print(table)
 
@@ -66,13 +75,15 @@ def print_detailed_rules(output: ConventionsOutput, console: Optional[Console] =
 
     for rule in sorted(output.rules, key=lambda r: (-r.confidence, r.id)):
         console.print()
+        docs_line = f"\n[bold]Docs:[/bold] [link={rule.docs_url}]{rule.docs_url}[/link]" if rule.docs_url else ""
         console.print(Panel(
             f"[bold]{rule.title}[/bold]\n\n"
             f"[dim]{rule.description}[/dim]\n\n"
             f"[bold]Category:[/bold] {rule.category}\n"
             f"[bold]Language:[/bold] {rule.language or 'any'}\n"
             f"[bold]Confidence:[/bold] {rule.confidence * 100:.0f}%\n"
-            f"[bold]Stats:[/bold] {rule.stats}",
+            f"[bold]Stats:[/bold] {rule.stats}"
+            f"{docs_line}",
             title=f"[cyan]{rule.id}[/cyan]",
             border_style="blue",
         ))
@@ -110,13 +121,25 @@ def generate_markdown_report(output: ConventionsOutput) -> str:
     if output.rules:
         lines.append("## Detected Conventions")
         lines.append("")
-        lines.append("| ID | Title | Confidence | Evidence |")
-        lines.append("|:---|:------|:----------:|:--------:|")
+
+        # Check if any rules have docs
+        has_docs = any(rule.docs_url for rule in output.rules)
+
+        if has_docs:
+            lines.append("| ID | Title | Confidence | Evidence | Docs |")
+            lines.append("|:---|:------|:----------:|:--------:|:-----|")
+        else:
+            lines.append("| ID | Title | Confidence | Evidence |")
+            lines.append("|:---|:------|:----------:|:--------:|")
 
         for rule in sorted(output.rules, key=lambda r: (-r.confidence, r.id)):
             confidence_pct = f"{rule.confidence * 100:.0f}%"
             evidence_count = len(rule.evidence)
-            lines.append(f"| `{rule.id}` | {rule.title} | {confidence_pct} | {evidence_count} |")
+            if has_docs:
+                docs_link = f"[docs]({rule.docs_url})" if rule.docs_url else ""
+                lines.append(f"| `{rule.id}` | {rule.title} | {confidence_pct} | {evidence_count} | {docs_link} |")
+            else:
+                lines.append(f"| `{rule.id}` | {rule.title} | {confidence_pct} | {evidence_count} |")
 
         lines.append("")
 
@@ -131,6 +154,8 @@ def generate_markdown_report(output: ConventionsOutput) -> str:
             lines.append(f"**Category:** {rule.category}  ")
             lines.append(f"**Language:** {rule.language or 'any'}  ")
             lines.append(f"**Confidence:** {rule.confidence * 100:.0f}%")
+            if rule.docs_url:
+                lines.append(f"  \n**Documentation:** [{rule.docs_url}]({rule.docs_url})")
             lines.append("")
             lines.append(rule.description)
             lines.append("")

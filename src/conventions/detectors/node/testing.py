@@ -35,6 +35,12 @@ class NodeTestingDetector(NodeDetector):
         # Detect coverage configuration
         self._detect_coverage_config(ctx, index, result)
 
+        # Detect test file naming conventions
+        self._detect_test_file_naming(ctx, index, result)
+
+        # Detect coverage thresholds
+        self._detect_coverage_thresholds(ctx, index, result)
+
         return result
 
     def _detect_test_patterns(
@@ -231,5 +237,182 @@ class NodeTestingDetector(NodeDetector):
             stats={
                 "has_coverage_script": has_coverage_script,
                 "coverage_tools": tools,
+            },
+        ))
+
+    def _detect_test_file_naming(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect test file naming conventions (*.unit.ts, *.int.ts, *.spec.ts, etc.)."""
+        test_files = index.get_test_files()
+        if len(test_files) < 3:
+            return
+
+        naming_patterns: Counter[str] = Counter()
+
+        for f in test_files:
+            rel_path = f.relative_path.lower()
+            if ".unit." in rel_path:
+                naming_patterns["unit"] += 1
+            elif ".int." in rel_path or ".integration." in rel_path:
+                naming_patterns["integration"] += 1
+            elif ".e2e." in rel_path:
+                naming_patterns["e2e"] += 1
+            elif ".spec." in rel_path:
+                naming_patterns["spec"] += 1
+            elif ".test." in rel_path:
+                naming_patterns["test"] += 1
+
+        if not naming_patterns:
+            return
+
+        # Only report if there's a clear convention
+        total = sum(naming_patterns.values())
+        if total < 3:
+            return
+
+        primary, primary_count = naming_patterns.most_common(1)[0]
+
+        naming_labels = {
+            "unit": "*.unit.ts",
+            "integration": "*.int.ts / *.integration.ts",
+            "e2e": "*.e2e.ts",
+            "spec": "*.spec.ts",
+            "test": "*.test.ts",
+        }
+
+        # Check if multiple naming conventions are used (unit + integration is common)
+        has_unit = naming_patterns.get("unit", 0) >= 2
+        has_integration = naming_patterns.get("integration", 0) >= 2
+        has_e2e = naming_patterns.get("e2e", 0) >= 2
+
+        if has_unit and has_integration:
+            title = "Unit/integration test separation"
+            description = (
+                f"Test files use naming convention to separate test types: "
+                f"unit: {naming_patterns.get('unit', 0)}, "
+                f"integration: {naming_patterns.get('integration', 0)}."
+            )
+            if has_e2e:
+                description = description[:-1] + f", e2e: {naming_patterns.get('e2e', 0)}."
+            confidence = 0.9
+        else:
+            title = f"Test naming: {naming_labels.get(primary, f'*.{primary}.ts')}"
+            description = (
+                f"Test files follow {naming_labels.get(primary, f'*.{primary}.ts')} naming convention. "
+                f"Found {primary_count} files."
+            )
+            confidence = min(0.85, 0.6 + primary_count * 0.03)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.test_file_naming",
+            category="testing",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=[],
+            stats={
+                "naming_pattern_counts": dict(naming_patterns),
+                "primary_pattern": primary,
+                "has_unit_integration_separation": has_unit and has_integration,
+            },
+        ))
+
+    def _detect_coverage_thresholds(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect configured coverage thresholds."""
+        import json
+        import re
+        from ...fs import read_file_safe
+
+        thresholds: dict[str, float] = {}
+
+        # Check package.json for Jest coverage config
+        package_json = ctx.repo_root / "package.json"
+        content = read_file_safe(package_json)
+        if content:
+            try:
+                pkg_data = json.loads(content)
+                jest_config = pkg_data.get("jest", {})
+                coverage_threshold = jest_config.get("coverageThreshold", {})
+                global_threshold = coverage_threshold.get("global", {})
+                if global_threshold:
+                    for key in ["lines", "branches", "functions", "statements"]:
+                        if key in global_threshold:
+                            thresholds[key] = global_threshold[key]
+            except (json.JSONDecodeError, KeyError):
+                pass
+
+        # Check jest.config.js/ts
+        for jest_config_name in ["jest.config.js", "jest.config.ts", "jest.config.mjs"]:
+            jest_config_path = ctx.repo_root / jest_config_name
+            jest_content = read_file_safe(jest_config_path)
+            if jest_content:
+                # Parse coverage thresholds from JS config
+                for key in ["lines", "branches", "functions", "statements"]:
+                    match = re.search(rf'{key}\s*:\s*(\d+)', jest_content)
+                    if match:
+                        thresholds[key] = float(match.group(1))
+
+        # Check .nycrc / .nycrc.json for Istanbul/nyc config
+        for nyc_config_name in [".nycrc", ".nycrc.json", "nyc.config.js"]:
+            nyc_config_path = ctx.repo_root / nyc_config_name
+            nyc_content = read_file_safe(nyc_config_path)
+            if nyc_content:
+                if nyc_config_name.endswith(".json") or nyc_config_name == ".nycrc":
+                    try:
+                        nyc_data = json.loads(nyc_content)
+                        for key in ["lines", "branches", "functions", "statements"]:
+                            if key in nyc_data:
+                                thresholds[key] = nyc_data[key]
+                    except json.JSONDecodeError:
+                        pass
+                else:
+                    for key in ["lines", "branches", "functions", "statements"]:
+                        match = re.search(rf'{key}\s*:\s*(\d+)', nyc_content)
+                        if match:
+                            thresholds[key] = float(match.group(1))
+
+        if not thresholds:
+            return
+
+        # Determine strictness level
+        line_threshold = thresholds.get("lines", 0)
+        branch_threshold = thresholds.get("branches", 0)
+
+        if line_threshold >= 90 and branch_threshold >= 90:
+            title = "High coverage requirements"
+            strictness = "strict"
+        elif line_threshold >= 80 or branch_threshold >= 80:
+            title = "Moderate coverage requirements"
+            strictness = "moderate"
+        else:
+            title = "Coverage thresholds configured"
+            strictness = "basic"
+
+        threshold_strs = [f"{k}: {v}%" for k, v in sorted(thresholds.items())]
+        description = f"Coverage thresholds: {', '.join(threshold_strs)}."
+
+        confidence = 0.95
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.coverage_thresholds",
+            category="testing",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=[],
+            stats={
+                "thresholds": thresholds,
+                "strictness": strictness,
             },
         ))

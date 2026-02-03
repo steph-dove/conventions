@@ -32,6 +32,15 @@ class NodeAPIDetector(NodeDetector):
         # Detect response patterns
         self._detect_response_patterns(ctx, index, result)
 
+        # Detect handler pattern
+        self._detect_handler_pattern(ctx, index, result)
+
+        # Detect route factory pattern
+        self._detect_route_factory_pattern(ctx, index, result)
+
+        # Detect response utility pattern (Reply.ok(), etc.)
+        self._detect_response_utility_pattern(ctx, index, result)
+
         return result
 
     def _detect_middleware_patterns(
@@ -188,5 +197,168 @@ class NodeAPIDetector(NodeDetector):
                 "res_status_json_count": status_json_count,
                 "res_send_count": send_count,
                 "json_ratio": round(json_ratio, 3),
+            },
+        ))
+
+    def _detect_handler_pattern(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect handler pattern (async functions with typed responses)."""
+        from pathlib import Path
+
+        # Check for handlers/ directory
+        handler_dirs = set()
+        handler_files = []
+        for rel_path, f in index.files.items():
+            parts = Path(rel_path).parts
+            for part in parts:
+                if part.lower() == "handlers":
+                    handler_dirs.add(part)
+                    handler_files.append(f)
+
+        # Look for typed handler return types (SendsReply, ApiResponse, etc.)
+        handler_return_pattern = r'(?:async\s+)?function\s+\w+[^)]*\)\s*:\s*(?:Promise<)?(?:SendsReply|ApiResponse|Response|HandlerResult)'
+        handler_matches = index.search_pattern(handler_return_pattern, limit=30, exclude_tests=True)
+
+        # Also check for arrow function handlers
+        arrow_handler_pattern = r'=\s*async\s*\([^)]*\)\s*:\s*(?:Promise<)?(?:SendsReply|ApiResponse|Response|HandlerResult)'
+        arrow_count = index.count_pattern(arrow_handler_pattern, exclude_tests=True)
+
+        total = len(handler_matches) + arrow_count + len(handler_files)
+        if total < 3:
+            return
+
+        title = "Handler pattern"
+        parts = []
+        if handler_dirs:
+            parts.append(f"handlers/ directory")
+        if handler_matches or arrow_count:
+            parts.append(f"{len(handler_matches) + arrow_count} typed handlers")
+
+        description = f"Uses handler pattern for request processing. {', '.join(parts)}."
+        confidence = min(0.9, 0.6 + total * 0.04)
+
+        evidence = []
+        for rel_path, line, _ in handler_matches[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.handler_pattern",
+            category="api",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=evidence,
+            stats={
+                "handler_directories": list(handler_dirs),
+                "typed_handler_count": len(handler_matches) + arrow_count,
+                "handler_files": len(handler_files),
+            },
+        ))
+
+    def _detect_route_factory_pattern(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect route factory pattern (make(config) factories that return Express app)."""
+        # Look for factory function pattern: function make(config, ...) or export function make
+        factory_pattern = r'(?:export\s+)?(?:async\s+)?function\s+make\s*\(\s*(?:config|options|settings)'
+        factory_matches = index.search_pattern(factory_pattern, limit=20, exclude_tests=True)
+
+        # Also check for arrow function factories
+        arrow_factory_pattern = r'(?:export\s+)?const\s+make\s*=\s*(?:async\s*)?\([^)]*(?:config|options)'
+        arrow_count = index.count_pattern(arrow_factory_pattern, exclude_tests=True)
+
+        # Check for createApp/createRouter patterns as well
+        create_pattern = r'(?:export\s+)?(?:async\s+)?function\s+(?:create(?:App|Router|Server)|make(?:App|Router|Server))\s*\('
+        create_count = index.count_pattern(create_pattern, exclude_tests=True)
+
+        total = len(factory_matches) + arrow_count + create_count
+        if total < 2:
+            return
+
+        title = "Route factory pattern"
+        description = (
+            f"Routes use factory functions that receive config and return Express app. "
+            f"Found {total} factory functions."
+        )
+        confidence = min(0.9, 0.6 + total * 0.1)
+
+        evidence = []
+        for rel_path, line, _ in factory_matches[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=4)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.route_factory",
+            category="api",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=evidence,
+            stats={
+                "make_function_count": len(factory_matches) + arrow_count,
+                "create_app_count": create_count,
+            },
+        ))
+
+    def _detect_response_utility_pattern(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect centralized response utility (Reply.ok(), Reply.notFound(), etc.)."""
+        # Look for Reply.method() or Response.method() patterns
+        reply_pattern = r'(?:Reply|Response|ApiResponse)\.(?:ok|success|error|notFound|badRequest|created|noContent|validationError|unauthorized|forbidden|sendError)\s*\('
+        reply_matches = index.search_pattern(reply_pattern, limit=50, exclude_tests=True)
+
+        if len(reply_matches) < 3:
+            return
+
+        # Count different response methods used
+        method_counts: dict[str, int] = {}
+        for _, _, match_text in reply_matches:
+            import re
+            method_match = re.search(r'\.(\w+)\s*\(', match_text)
+            if method_match:
+                method = method_match.group(1)
+                method_counts[method] = method_counts.get(method, 0) + 1
+
+        title = "Centralized response utility"
+        methods_used = list(method_counts.keys())[:5]
+        description = (
+            f"Uses centralized response utility for consistent API responses. "
+            f"Methods: {', '.join(methods_used)}. Total usages: {len(reply_matches)}."
+        )
+        confidence = min(0.9, 0.7 + len(reply_matches) * 0.01)
+
+        evidence = []
+        for rel_path, line, _ in reply_matches[:ctx.max_evidence_snippets]:
+            ev = make_evidence(index, rel_path, line, radius=2)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.response_utility",
+            category="api",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=evidence,
+            stats={
+                "total_usages": len(reply_matches),
+                "method_counts": method_counts,
             },
         ))

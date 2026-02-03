@@ -3,8 +3,10 @@
 from .api import NodeAPIDetector
 from .architecture import NodeArchitectureDetector
 from .async_patterns import NodeAsyncPatternsDetector
+from .auth import NodeAuthDetector
 from .base import NodeDetector
 from .build_tools import NodeBuildToolsDetector
+from .codegen import NodeCodeGenDetector
 
 # Import all detector classes to ensure they register
 from .conventions import NodeConventionsDetector
@@ -16,6 +18,7 @@ from .index import NodeIndex, make_evidence
 from .linting import NodeLintingDetector
 from .logging import NodeLoggingDetector
 from .monorepo import NodeMonorepoDetector
+from .naming import NodeNamingDetector
 from .package_manager import NodePackageManagerDetector
 from .patterns import NodePatternsDetector
 from .security import NodeSecurityDetector
@@ -45,4 +48,7 @@ __all__ = [
     "NodeFormattingDetector",
     "NodeFrontendDetector",
     "NodeStateManagementDetector",
+    "NodeAuthDetector",
+    "NodeNamingDetector",
+    "NodeCodeGenDetector",
 ]

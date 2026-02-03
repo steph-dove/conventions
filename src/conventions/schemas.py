@@ -38,6 +38,7 @@ class ConventionRule(BaseModel):
     language: Optional[str] = Field(None, description="Language this rule applies to (python/go/node/None)")
     evidence: list[EvidenceSnippet] = Field(default_factory=list, description="Evidence snippets from source code")
     stats: dict[str, Any] = Field(default_factory=dict, description="Statistics supporting this rule")
+    docs_url: Optional[str] = Field(None, description="URL to relevant documentation for this convention/tool")
 
     class Config:
         extra = "forbid"

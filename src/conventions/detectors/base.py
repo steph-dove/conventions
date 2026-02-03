@@ -129,8 +129,31 @@ class BaseDetector(ABC):
         language: Optional[str] = None,
         evidence: Optional[list[EvidenceSnippet]] = None,
         stats: Optional[dict[str, Any]] = None,
+        docs_url: Optional[str] = None,
     ) -> ConventionRule:
-        """Helper to create a ConventionRule with validated fields."""
+        """Helper to create a ConventionRule with validated fields.
+
+        Args:
+            rule_id: Unique rule identifier
+            category: Category of the convention
+            title: Human-readable title
+            description: Detailed description
+            confidence: Confidence score (0.0-1.0)
+            language: Language this rule applies to
+            evidence: Evidence snippets from source code
+            stats: Statistics supporting this rule
+            docs_url: Explicit documentation URL (if None, auto-detected from stats)
+
+        Returns:
+            ConventionRule with documentation URL if available
+        """
+        final_stats = stats or {}
+
+        # Auto-detect docs URL from stats if not explicitly provided
+        if docs_url is None:
+            from ..docs_registry import get_docs_url_for_rule
+            docs_url = get_docs_url_for_rule(rule_id, final_stats)
+
         return ConventionRule(
             id=rule_id,
             category=category,
@@ -139,7 +162,8 @@ class BaseDetector(ABC):
             confidence=min(1.0, max(0.0, confidence)),
             language=language,
             evidence=evidence or [],
-            stats=stats or {},
+            stats=final_stats,
+            docs_url=docs_url,
         )
 
 

@@ -29,6 +29,9 @@ class NodeTypeScriptDetector(NodeDetector):
         # Detect type coverage (any usage)
         self._detect_type_coverage(ctx, index, result)
 
+        # Detect branded/nominal types
+        self._detect_branded_types(ctx, index, result)
+
         return result
 
     def _detect_strict_mode(
@@ -152,5 +155,71 @@ class NodeTypeScriptDetector(NodeDetector):
                 "assertion_count": assertion_count,
                 "annotation_count": annotation_count,
                 "any_ratio": round(any_ratio, 3),
+            },
+        ))
+
+    def _detect_branded_types(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect branded/nominal types for type-safe IDs and values."""
+        # Pattern for branded types: type XId = string & { __brand: 'x' }
+        brand_pattern = r'type\s+\w+(?:Id|ID)\s*=\s*(?:string|number)\s*&\s*\{'
+        brand_matches = index.search_pattern(brand_pattern, limit=20, exclude_tests=True)
+
+        # Pattern for generic branded types: StringIdFor<'tableName'>
+        generic_id_pattern = r'(?:StringIdFor|NumberIdFor|BrandedId|TypedId)<'
+        generic_matches = index.search_pattern(generic_id_pattern, limit=30, exclude_tests=True)
+
+        # Pattern for Opaque/Nominal type utilities
+        opaque_pattern = r'(?:Opaque|Nominal|Brand|Tagged)<'
+        opaque_count = index.count_pattern(opaque_pattern, exclude_tests=True)
+
+        # Check for __brand or __type or __tag fields (common branding approaches)
+        brand_field_pattern = r'__(?:brand|type|tag|nominal)\s*[?:]'
+        brand_field_count = index.count_pattern(brand_field_pattern, exclude_tests=True)
+
+        total = len(brand_matches) + len(generic_matches) + opaque_count + (brand_field_count // 2)
+        if total < 2:
+            return
+
+        title = "Branded types for IDs"
+        parts = []
+        if brand_matches:
+            parts.append(f"{len(brand_matches)} branded ID types")
+        if generic_matches:
+            parts.append(f"{len(generic_matches)} generic ID types")
+        if opaque_count:
+            parts.append(f"{opaque_count} opaque type usages")
+
+        description = (
+            f"Uses branded/nominal types for type-safe identifiers. "
+            f"{', '.join(parts)}."
+        )
+        confidence = min(0.9, 0.7 + total * 0.05)
+
+        evidence = []
+        all_matches = brand_matches + generic_matches
+        for rel_path, line, _ in all_matches[:ctx.max_evidence_snippets]:
+            from .index import make_evidence
+            ev = make_evidence(index, rel_path, line, radius=3)
+            if ev:
+                evidence.append(ev)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.branded_types",
+            category="language",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=evidence,
+            stats={
+                "branded_id_types": len(brand_matches),
+                "generic_id_types": len(generic_matches),
+                "opaque_type_usages": opaque_count,
+                "brand_field_count": brand_field_count,
             },
         ))

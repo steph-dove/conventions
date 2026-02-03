@@ -38,6 +38,9 @@ class NodeConventionsDetector(NodeDetector):
         # Detect module system
         self._detect_module_system(ctx, index, result)
 
+        # Detect JS to TS migration status
+        self._detect_migration_status(ctx, index, result)
+
         return result
 
     def _detect_typescript(
@@ -318,5 +321,111 @@ class NodeConventionsDetector(NodeDetector):
                 "esm_count": esm_count,
                 "cjs_count": cjs_count,
                 "esm_ratio": round(esm_ratio, 3),
+            },
+        ))
+
+    def _detect_migration_status(
+        self,
+        ctx: DetectorContext,
+        index: NodeIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Detect JavaScript to TypeScript migration status."""
+        from pathlib import Path
+
+        ts_files = sum(1 for f in index.files.values() if f.has_typescript)
+        js_files = sum(1 for f in index.files.values() if not f.has_typescript)
+        total = ts_files + js_files
+
+        if total < 10:
+            return
+
+        ts_ratio = ts_files / total if total else 0
+
+        # Not a migration scenario if mostly one or the other
+        if ts_ratio < 0.1 or ts_ratio > 0.9:
+            return
+
+        # Check for migration indicators
+        migration_indicators = []
+
+        # Look for allowJs in tsconfig.json
+        from ...fs import read_file_safe
+        tsconfig_path = ctx.repo_root / "tsconfig.json"
+        tsconfig_content = read_file_safe(tsconfig_path)
+        has_allow_js = tsconfig_content and '"allowJs": true' in tsconfig_content
+        has_check_js = tsconfig_content and '"checkJs": true' in tsconfig_content
+
+        if has_allow_js:
+            migration_indicators.append("allowJs enabled")
+        if has_check_js:
+            migration_indicators.append("checkJs enabled")
+
+        # Check for @ts-check comments in JS files
+        ts_check_pattern = r'//\s*@ts-check'
+        ts_check_count = index.count_pattern(ts_check_pattern)
+        if ts_check_count >= 2:
+            migration_indicators.append(f"{ts_check_count} @ts-check comments")
+
+        # Check directory patterns (e.g., src/ is JS, src-ts/ is TS)
+        ts_dirs: set[str] = set()
+        js_dirs: set[str] = set()
+        for rel_path, f in index.files.items():
+            parts = Path(rel_path).parts
+            if len(parts) >= 1:
+                top_dir = parts[0]
+                if f.has_typescript:
+                    ts_dirs.add(top_dir)
+                else:
+                    js_dirs.add(top_dir)
+
+        # Check if there are TS-specific directories
+        ts_only_dirs = ts_dirs - js_dirs
+        js_only_dirs = js_dirs - ts_dirs
+
+        if ts_only_dirs or js_only_dirs:
+            if ts_only_dirs:
+                migration_indicators.append(f"TS dirs: {', '.join(sorted(ts_only_dirs)[:3])}")
+            if js_only_dirs:
+                migration_indicators.append(f"JS dirs: {', '.join(sorted(js_only_dirs)[:3])}")
+
+        # Only report if there are strong migration signals
+        if not migration_indicators and ts_ratio < 0.3:
+            return
+
+        if ts_ratio >= 0.5:
+            title = "Active JS to TS migration"
+            description = (
+                f"Actively migrating from JavaScript to TypeScript. "
+                f"TypeScript: {ts_files} ({ts_ratio:.0%}), JavaScript: {js_files}."
+            )
+        else:
+            title = "Early JS to TS migration"
+            description = (
+                f"Early stage JavaScript to TypeScript migration. "
+                f"TypeScript: {ts_files} ({ts_ratio:.0%}), JavaScript: {js_files}."
+            )
+
+        if migration_indicators:
+            description += f" Indicators: {', '.join(migration_indicators)}."
+
+        confidence = min(0.85, 0.6 + len(migration_indicators) * 0.1)
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.ts_migration",
+            category="language",
+            title=title,
+            description=description,
+            confidence=confidence,
+            language="node",
+            evidence=[],
+            stats={
+                "typescript_files": ts_files,
+                "javascript_files": js_files,
+                "typescript_ratio": round(ts_ratio, 3),
+                "has_allow_js": has_allow_js,
+                "has_check_js": has_check_js,
+                "ts_check_count": ts_check_count,
+                "migration_indicators": migration_indicators,
             },
         ))
