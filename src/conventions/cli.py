@@ -1,3 +1,7 @@
+# Copyright © 2026 Dovatech LLC
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+
 """CLI for conventions detection."""
 
 from __future__ import annotations

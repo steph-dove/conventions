@@ -5,7 +5,6 @@ to their official documentation URLs.
 """
 
 from __future__ import annotations
-
 from typing import Optional
 
 
@@ -264,7 +263,7 @@ DOCS_URLS: dict[str, str] = {
     "gorm": "https://gorm.io/docs/",
     "sqlx": "https://pkg.go.dev/github.com/jmoiron/sqlx",
     "ent": "https://entgo.io/docs/getting-started/",
-    "bun": "https://bun.uptrace.dev/",
+    "bun_go": "https://bun.uptrace.dev/",
 
     # Logging
     "zap": "https://pkg.go.dev/go.uber.org/zap",

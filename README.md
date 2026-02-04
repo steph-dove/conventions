@@ -1,3 +1,9 @@
+## Ownership and Governance
+
+conventions is an open-source project owned and maintained by Dovatech LLC.
+
+Dovatech LLC is a privately held company founded and wholly owned by Stephanie Dover, who is also the original author and lead maintainer of this project.
+
 # Conventions CLI
 
 A command-line tool that automatically discovers and documents coding conventions in your codebase. It analyzes your source code to detect patterns, rates them on a 1-5 scale, and provides actionable improvement suggestions.

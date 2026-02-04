@@ -331,6 +331,7 @@ class NodeTestingDetector(NodeDetector):
         """Detect configured coverage thresholds."""
         import json
         import re
+
         from ...fs import read_file_safe
 
         thresholds: dict[str, float] = {}

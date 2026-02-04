@@ -234,7 +234,7 @@ class NodeAPIDetector(NodeDetector):
         title = "Handler pattern"
         parts = []
         if handler_dirs:
-            parts.append(f"handlers/ directory")
+            parts.append("handlers/ directory")
         if handler_matches or arrow_count:
             parts.append(f"{len(handler_matches) + arrow_count} typed handlers")
 
