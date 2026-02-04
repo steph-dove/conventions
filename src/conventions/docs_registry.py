@@ -5,8 +5,8 @@ to their official documentation URLs.
 """
 
 from __future__ import annotations
-from typing import Optional
 
+from typing import Optional
 
 # Documentation URLs organized by category
 DOCS_URLS: dict[str, str] = {
