@@ -110,7 +110,7 @@ class TestGenericCIDetector:
     def test_detect_github_actions(self, github_actions_repo: Path):
         """Test detection of GitHub Actions."""
         try:
-            from conventions.detectors.generic.ci import GenericCIDetector
+            from conventions.detectors.generic.ci_cd import CICDDetector
         except ImportError:
             pytest.skip("Generic CI detector not available")
 
@@ -120,22 +120,22 @@ class TestGenericCIDetector:
             max_files=100,
         )
 
-        detector = GenericCIDetector()
+        detector = CICDDetector()
         result = detector.detect(ctx)
 
         ci_rule = None
         for rule in result.rules:
-            if rule.id == "generic.conventions.ci_cd_platform":
+            if rule.id == "generic.conventions.ci_platform":
                 ci_rule = rule
                 break
 
         assert ci_rule is not None
-        assert ci_rule.stats.get("primary_platform") == "github_actions"
+        assert "github_actions" in ci_rule.stats.get("platforms", [])
 
     def test_detect_gitlab_ci(self, gitlab_ci_repo: Path):
         """Test detection of GitLab CI."""
         try:
-            from conventions.detectors.generic.ci import GenericCIDetector
+            from conventions.detectors.generic.ci_cd import CICDDetector
         except ImportError:
             pytest.skip("Generic CI detector not available")
 
@@ -145,22 +145,22 @@ class TestGenericCIDetector:
             max_files=100,
         )
 
-        detector = GenericCIDetector()
+        detector = CICDDetector()
         result = detector.detect(ctx)
 
         ci_rule = None
         for rule in result.rules:
-            if rule.id == "generic.conventions.ci_cd_platform":
+            if rule.id == "generic.conventions.ci_platform":
                 ci_rule = rule
                 break
 
         assert ci_rule is not None
-        assert ci_rule.stats.get("primary_platform") == "gitlab_ci"
+        assert "gitlab_ci" in ci_rule.stats.get("platforms", [])
 
     def test_detect_circleci(self, circleci_repo: Path):
         """Test detection of CircleCI."""
         try:
-            from conventions.detectors.generic.ci import GenericCIDetector
+            from conventions.detectors.generic.ci_cd import CICDDetector
         except ImportError:
             pytest.skip("Generic CI detector not available")
 
@@ -170,22 +170,22 @@ class TestGenericCIDetector:
             max_files=100,
         )
 
-        detector = GenericCIDetector()
+        detector = CICDDetector()
         result = detector.detect(ctx)
 
         ci_rule = None
         for rule in result.rules:
-            if rule.id == "generic.conventions.ci_cd_platform":
+            if rule.id == "generic.conventions.ci_platform":
                 ci_rule = rule
                 break
 
         assert ci_rule is not None
-        assert ci_rule.stats.get("primary_platform") == "circleci"
+        assert "circleci" in ci_rule.stats.get("platforms", [])
 
     def test_detect_ci_features(self, github_actions_repo: Path):
         """Test detection of CI features like testing and linting."""
         try:
-            from conventions.detectors.generic.ci import GenericCIDetector
+            from conventions.detectors.generic.ci_cd import CICDDetector
         except ImportError:
             pytest.skip("Generic CI detector not available")
 
@@ -195,19 +195,19 @@ class TestGenericCIDetector:
             max_files=100,
         )
 
-        detector = GenericCIDetector()
+        detector = CICDDetector()
         result = detector.detect(ctx)
 
         quality_rule = None
         for rule in result.rules:
-            if rule.id == "generic.conventions.ci_cd_quality":
+            if rule.id == "generic.conventions.ci_quality":
                 quality_rule = rule
                 break
 
         if quality_rule is not None:
-            features = quality_rule.stats.get("ci_features", {})
+            features = quality_rule.stats.get("features", [])
             # GitHub Actions workflow has testing and linting
-            assert features.get("testing") is True or "test" in str(features).lower()
+            assert "testing" in features or "linting" in features
 
 
 class TestGenericCIDetectorShouldRun:
@@ -216,7 +216,7 @@ class TestGenericCIDetectorShouldRun:
     def test_should_always_run(self, github_actions_repo: Path):
         """Test that generic CI detector always runs."""
         try:
-            from conventions.detectors.generic.ci import GenericCIDetector
+            from conventions.detectors.generic.ci_cd import CICDDetector
         except ImportError:
             pytest.skip("Generic CI detector not available")
 
@@ -225,6 +225,6 @@ class TestGenericCIDetectorShouldRun:
             selected_languages={"python"},  # Any language
         )
 
-        detector = GenericCIDetector()
+        detector = CICDDetector()
         # Generic detectors (empty languages set) should always run
         assert detector.should_run(ctx) is True

@@ -213,8 +213,8 @@ class NodeAPIDetector(NodeDetector):
         handler_dirs = set()
         handler_files = []
         for rel_path, f in index.files.items():
-            parts = Path(rel_path).parts
-            for part in parts:
+            path_parts = Path(rel_path).parts
+            for part in path_parts:
                 if part.lower() == "handlers":
                     handler_dirs.add(part)
                     handler_files.append(f)

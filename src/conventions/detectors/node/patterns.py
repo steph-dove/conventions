@@ -228,8 +228,8 @@ class NodePatternsDetector(NodeDetector):
         from pathlib import Path
         store_dirs = set()
         for rel_path in index.files:
-            parts = Path(rel_path).parts
-            for part in parts:
+            path_parts = Path(rel_path).parts
+            for part in path_parts:
                 if part.lower() in ("stores", "store", "data-store", "data-stores"):
                     store_dirs.add(part)
 
