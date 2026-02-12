@@ -1068,12 +1068,10 @@ def _build_api_chains_section(include_rules: list[ConventionRule]) -> str:
 
     lines = ["\n### API Routes\n"]
 
-    _MAX_ROUTE_ENTRIES = 12
-
     if chains_are_degenerate or not chains:
         # Show route files with their endpoints — more useful than identical chains
         sorted_files = sorted(routes_by_file.keys())
-        for endpoint_file in sorted_files[:_MAX_ROUTE_ENTRIES]:
+        for endpoint_file in sorted_files:
             file_routes = routes_by_file[endpoint_file]
             short = _short_path(endpoint_file)
             route_strs = []
@@ -1082,8 +1080,6 @@ def _build_api_chains_section(include_rules: list[ConventionRule]) -> str:
             if len(file_routes) > 4:
                 route_strs.append(f"+{len(file_routes) - 4} more")
             lines.append(f"- `{short}`: {', '.join(route_strs)}")
-        if len(sorted_files) > _MAX_ROUTE_ENTRIES:
-            lines.append(f"- ... and {len(sorted_files) - _MAX_ROUTE_ENTRIES} more route files")
     else:
         # Chains have differentiated services/stores — show the flow
         connected: list[str] = []
