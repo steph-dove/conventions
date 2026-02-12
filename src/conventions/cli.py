@@ -76,10 +76,10 @@ def discover(
         "--format",
         help="Output format(s), comma-separated (json,markdown,review,html,sarif,claude)",
     ),
-    claude_personal: bool = typer.Option(
+    claude: bool = typer.Option(
         False,
-        "--claude-personal",
-        help="Write CLAUDE.md to .claude/ instead of project root (use with --format claude)",
+        "--claude",
+        help="Generate CLAUDE.md for Claude Code (writes to .claude/ directory)",
     ),
 ) -> None:
     """
@@ -203,10 +203,10 @@ def discover(
             console.print(f"[red]Error writing SARIF report: {e}[/red]")
             raise typer.Exit(1)
 
-    if "claude" in formats:
+    if "claude" in formats or claude:
         try:
             from .outputs.claude import write_claude_md
-            claude_path = write_claude_md(output, repo, personal=claude_personal)
+            claude_path = write_claude_md(output, repo, personal=claude)
             if not quiet:
                 console.print(f"[green]Wrote CLAUDE.md to:[/green] {claude_path}")
         except Exception as e:

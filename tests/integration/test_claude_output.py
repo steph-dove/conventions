@@ -74,13 +74,12 @@ class TestClaudeFormatCli:
         assert "## Decision Log" in content
         assert "## Known Pitfalls" in content
 
-    def test_claude_personal_flag(self, node_repo: Path):
-        """--claude-personal writes to .claude/CLAUDE.md."""
+    def test_claude_flag(self, node_repo: Path):
+        """--claude writes to .claude/CLAUDE.md."""
         result = runner.invoke(app, [
             "discover",
             "--repo", str(node_repo),
-            "--format", "claude",
-            "--claude-personal",
+            "--claude",
             "--quiet",
         ])
         assert result.exit_code == 0
