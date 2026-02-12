@@ -5,8 +5,8 @@ from .base import RustDetector
 
 # Import all detector classes to ensure they register
 from .cargo import RustCargoDetector
-from .data_flow import RustDataFlowDetector
 from .cli import RustCLIDetector
+from .data_flow import RustDataFlowDetector
 from .database import RustDatabaseDetector
 from .documentation import RustDocumentationDetector
 from .errors import RustErrorHandlingDetector

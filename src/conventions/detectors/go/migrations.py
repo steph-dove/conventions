@@ -141,8 +141,6 @@ class GoMigrationsDetector(GoDetector):
             if file_idx.role == "test":
                 continue
 
-            content = "\n".join(file_idx.lines)
-
             for struct_name, struct_line in file_idx.structs:
                 # Look at lines after struct declaration for db tags
                 start = struct_line - 1

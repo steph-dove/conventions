@@ -9,8 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..schemas import ConventionsOutput, ConventionRule
-
+from ..schemas import ConventionRule, ConventionsOutput
 
 # --- Rule classification ---
 
@@ -454,7 +453,7 @@ def _build_environment_section(include_rules: list[ConventionRule]) -> str:
             total = _get_stat(rule, "total_vars", 0)
             env_file = _get_stat(rule, "env_file", ".env.example")
             categories = _get_stat(rule, "var_categories", {})
-            lines.append(f"### Environment Variables\n")
+            lines.append("### Environment Variables\n")
             lines.append(f"{total} variables in `{env_file}`.")
             if categories:
                 cat_parts = [f"{k} ({v})" for k, v in sorted(categories.items())]
@@ -550,7 +549,6 @@ def _build_commands_from_task_runner(
         prefix = runner_cmds[primary]
         runner_targets = targets.get(primary, [])
         dev_targets = [t for t in runner_targets if _is_dev_target(t.get("name", ""))]
-        other_targets = [t for t in runner_targets if not _is_dev_target(t.get("name", ""))]
 
         for target in dev_targets:
             name = target.get("name", "")
@@ -1020,7 +1018,6 @@ def _build_deployment_section(
                 parts.extend(features[:3])
             lines.append(f"- **Compose**: {', '.join(parts)}")
         elif suffix == "kubernetes":
-            tools = _get_stat(rule, "tools", [])
             manifest_count = _get_stat(rule, "manifest_count", 0)
             has_helm = _get_stat(rule, "has_helm", False)
             has_kustomize = _get_stat(rule, "has_kustomize", False)

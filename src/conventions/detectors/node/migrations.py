@@ -14,7 +14,6 @@ from ..registry import DetectorRegistry
 from .base import NodeDetector
 from .index import NodeIndex
 
-
 # Migration tool definitions
 _MIGRATION_TOOLS = [
     {

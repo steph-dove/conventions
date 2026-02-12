@@ -5,9 +5,7 @@ Detects CODEOWNERS patterns and file change hotspots.
 
 from __future__ import annotations
 
-import re
 import subprocess
-from pathlib import Path
 
 from ...fs import read_file_safe
 from ..base import BaseDetector, DetectorContext, DetectorResult

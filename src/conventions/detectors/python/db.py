@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector

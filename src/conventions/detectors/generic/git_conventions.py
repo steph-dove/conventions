@@ -319,7 +319,7 @@ class GitConventionsDetector(BaseDetector):
         title = "PR template"
         if has_multiple:
             title = f"PR templates ({template_count} templates)"
-            description = f"Multiple PR templates in .github/PULL_REQUEST_TEMPLATE/."
+            description = "Multiple PR templates in .github/PULL_REQUEST_TEMPLATE/."
         elif sections:
             description = f"PR template with sections: {', '.join(sections[:5])}."
         else:

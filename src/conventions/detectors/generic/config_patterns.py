@@ -6,7 +6,6 @@ Detects how the project accesses configuration and secrets.
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
 from ...fs import read_file_safe, walk_files
 from ..base import BaseDetector, DetectorContext, DetectorResult

@@ -6,7 +6,6 @@ Detects required environment variables, services, and runtime prerequisites.
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
 from ...fs import read_file_safe
 from ..base import BaseDetector, DetectorContext, DetectorResult
@@ -148,15 +147,12 @@ class EnvironmentSetupDetector(BaseDetector):
         current_service: str | None = None
         current_image = ""
         current_ports: list[str] = []
-        service_indent = 0
-
         for line in lines:
             stripped = line.strip()
 
             # Find services: top-level key
             if re.match(r"^services:\s*$", line):
                 in_services = True
-                service_indent = 2
                 continue
 
             if not in_services:

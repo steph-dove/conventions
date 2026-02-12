@@ -10,7 +10,6 @@ from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
 from ..graph import (
-    EndpointChain,
     FileNode,
     ImportEdge,
     build_import_graph,

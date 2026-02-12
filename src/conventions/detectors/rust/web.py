@@ -170,10 +170,6 @@ class RustWebDetector(RustDetector):
         attr_pattern = re.compile(
             r"""#\[(get|post|put|patch|delete)\(\s*"([^"]+)""",
         )
-        # Axum .route("/path", get|post|...(...))
-        axum_route_pattern = re.compile(
-            r"""\.route\(\s*"([^"]+)"\s*,\s*(get|post|put|patch|delete)\b""",
-        )
         # Axum chained: .route("/path", get(h).post(h2))
         axum_chained_pattern = re.compile(
             r"""\.route\(\s*"([^"]+)"[^)]*\)""",
