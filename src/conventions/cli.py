@@ -138,6 +138,9 @@ def discover(
     # Determine output formats
     if output_format:
         formats = {f.strip().lower() for f in output_format.split(",")}
+    elif claude:
+        # --claude without explicit --format: only write CLAUDE.md
+        formats: set[str] = set()
     else:
         formats = set(cfg.output_formats)
 
