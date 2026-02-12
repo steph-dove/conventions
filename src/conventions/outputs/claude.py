@@ -1374,6 +1374,11 @@ def enrich_with_claude(
     )
 
     if result.returncode != 0:
+        stderr = result.stderr.lower()
+        if "auth" in stderr or "login" in stderr or "token" in stderr or "sign in" in stderr:
+            raise RuntimeError(
+                "Claude CLI is not authenticated. Run 'claude login' first."
+            )
         raise RuntimeError(f"Claude CLI failed (exit {result.returncode}): {result.stderr[:200]}")
 
     enriched = result.stdout.strip()
