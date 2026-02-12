@@ -202,7 +202,7 @@ class GenericRepoLayoutDetector(BaseDetector):
         if pkg_json.is_file():
             try:
                 data = json.loads(pkg_json.read_text())
-                desc = data.get("description", "").strip('"')
+                desc = str(data.get("description", "")).strip('"')
                 if desc and len(desc) > 5:
                     return desc.strip()
             except (json.JSONDecodeError, OSError):

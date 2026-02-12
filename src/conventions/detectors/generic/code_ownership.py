@@ -128,13 +128,11 @@ class CodeOwnershipDetector(BaseDetector):
         if not file_counts:
             return
 
-        # Top 10 hotspots
-        hotspots = sorted(
-            [{"file": f, "changes": c} for f, c in file_counts.items()],
-            key=lambda x: -x["changes"],
-        )[:10]
+        # Top 10 hotspots — sort by change count descending
+        sorted_files = sorted(file_counts.items(), key=lambda x: -x[1])[:10]
+        hotspots = [{"file": f, "changes": c} for f, c in sorted_files]
 
-        if not hotspots or hotspots[0]["changes"] < 3:
+        if not hotspots or sorted_files[0][1] < 3:
             return
 
         description = (

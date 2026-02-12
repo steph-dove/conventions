@@ -41,7 +41,7 @@ def _resolve_import(
     Returns:
         List of resolved relative file paths (may be empty).
     """
-    results = []
+    results: list[str] = []
 
     if is_relative:
         # Relative import: resolve against importing file's package

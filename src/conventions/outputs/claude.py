@@ -754,14 +754,14 @@ def _summarize_rule(rule: ConventionRule) -> str:
         return f"{stats['dominant_style']}" + (f" ({pct}%)" if pct else "")
 
     if suffix == "test_file_naming" and "dominant_pattern" in stats:
-        return stats["dominant_pattern"]
+        return str(stats["dominant_pattern"])
 
     if suffix == "module_system" and "dominant_system" in stats:
         pct = stats.get("dominant_percentage", "")
         return f"{stats['dominant_system']}" + (f" ({pct}%)" if pct else "")
 
     if suffix == "async_style" and "dominant_style" in stats:
-        return stats["dominant_style"]
+        return str(stats["dominant_style"])
 
     if suffix == "typescript":
         ratio = stats.get("ts_ratio") or stats.get("typescript_percentage")
@@ -781,7 +781,7 @@ def _summarize_rule(rule: ConventionRule) -> str:
             return f"Early stage JS→TS migration ({', '.join(parts)})"
 
     if suffix == "commit_messages" and "dominant_style" in stats:
-        return stats["dominant_style"]
+        return str(stats["dominant_style"])
 
     if suffix == "branch_naming":
         strategy = stats.get("strategy", "")
@@ -790,7 +790,7 @@ def _summarize_rule(rule: ConventionRule) -> str:
         if strategy == "trunk":
             return "Trunk-based/GitHub Flow"
         if "dominant_pattern" in stats:
-            return stats["dominant_pattern"]
+            return str(stats["dominant_pattern"])
 
     if suffix == "monorepo" and "workspace_count" in stats:
         mgr = stats.get("manager", "")
@@ -1133,7 +1133,7 @@ def _common_store_dir(file_list: list[str]) -> str:
     if not file_list:
         return ""
     from collections import Counter
-    parent_counts: Counter = Counter()
+    parent_counts: Counter[str] = Counter()
     for f in file_list:
         parts = f.replace("\\", "/").split("/")
         if len(parts) >= 2:
