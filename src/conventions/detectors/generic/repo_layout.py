@@ -51,6 +51,9 @@ class GenericRepoLayoutDetector(BaseDetector):
         # Get workspace descriptions for annotation
         ws_descriptions = self._get_workspace_descriptions(ctx)
 
+        # Detect source directories from manifests and code markers
+        source_dirs = self._detect_source_dirs(ctx)
+
         # Build directory tree by scanning repo root children recursively
         found_dirs = []
         tree: dict[str, dict] = {}
@@ -65,12 +68,16 @@ class GenericRepoLayoutDetector(BaseDetector):
             name = child.name
             if name in _SKIP_DIRS:
                 continue
-            # Only include known common dirs or workspace dirs
-            if name not in common_dirs and name not in ws_descriptions:
+            # Include known common dirs, workspace dirs, or detected source dirs
+            if name not in common_dirs and name not in ws_descriptions and name not in source_dirs:
                 continue
 
             found_dirs.append(name)
-            purpose = ws_descriptions.get(name) or common_dirs.get(name, "")
+            purpose = (
+                ws_descriptions.get(name)
+                or common_dirs.get(name, "")
+                or source_dirs.get(name, "")
+            )
             subtree = self._scan_tree(child, ctx.repo_root, ws_descriptions, max_depth=3, current_depth=1)
             tree[name] = {"purpose": purpose, "children": subtree}
 
@@ -224,6 +231,62 @@ class GenericRepoLayoutDetector(BaseDetector):
                 pass
 
         return ""
+
+    @staticmethod
+    def _detect_source_dirs(ctx: DetectorContext) -> dict[str, str]:
+        """Detect source directories from manifest files and code markers.
+
+        Finds directories that are actual source packages but don't appear in
+        the hardcoded common_dirs list (e.g. fastapi/, django/, requests/).
+        """
+        source_dirs: dict[str, str] = {}
+
+        # 1. Python: project name from pyproject.toml → matching directory
+        pyproject = ctx.repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            try:
+                content = pyproject.read_text()
+                m = re.search(r'(?:^|\n)name\s*=\s*"([^"]+)"', content)
+                if m:
+                    proj_name = m.group(1)
+                    # Check both hyphenated and underscored variants
+                    for variant in {proj_name, proj_name.replace("-", "_")}:
+                        proj_dir = ctx.repo_root / variant
+                        if proj_dir.is_dir():
+                            source_dirs[variant] = "source code"
+            except OSError:
+                pass
+
+        # 2. Rust: workspace members from Cargo.toml
+        cargo = ctx.repo_root / "Cargo.toml"
+        if cargo.is_file():
+            try:
+                content = cargo.read_text()
+                m = re.search(r'members\s*=\s*\[(.*?)\]', content, re.DOTALL)
+                if m:
+                    for member in re.findall(r'"([^"]+)"', m.group(1)):
+                        member_path = member.rstrip("/*")
+                        member_dir = ctx.repo_root / member_path
+                        if member_dir.is_dir():
+                            source_dirs[member_path] = "workspace member"
+            except OSError:
+                pass
+
+        # 3. Any top-level directory containing __init__.py (Python package)
+        try:
+            for child in ctx.repo_root.iterdir():
+                if (
+                    child.is_dir()
+                    and not child.name.startswith(".")
+                    and child.name not in _SKIP_DIRS
+                    and child.name not in source_dirs
+                    and (child / "__init__.py").exists()
+                ):
+                    source_dirs[child.name] = "source code"
+        except OSError:
+            pass
+
+        return source_dirs
 
     @staticmethod
     def _get_workspace_descriptions(ctx: DetectorContext) -> dict[str, str]:

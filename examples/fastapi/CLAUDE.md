@@ -15,6 +15,12 @@ FastAPI framework, high performance, easy to learn, fast to code, ready for prod
   - `ISSUE_TEMPLATE/`
   - `workflows/`
 - `docs/` — documentation
+- `fastapi/` — source code
+  - `_compat/`
+  - `dependencies/`
+  - `middleware/`
+  - `openapi/`
+  - `security/`
 - `scripts/` — scripts
   - `playwright/`
   - `tests/`
