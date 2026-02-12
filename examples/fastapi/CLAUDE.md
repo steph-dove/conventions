@@ -16,11 +16,11 @@ FastAPI framework, high performance, easy to learn, fast to code, ready for prod
   - `workflows/`
 - `docs/` — documentation
 - `fastapi/` — source code
-  - `_compat/`
-  - `dependencies/`
-  - `middleware/`
-  - `openapi/`
-  - `security/`
+  - `_compat/` — Pydantic v1/v2 compatibility layer
+  - `dependencies/` — dependency injection system
+  - `middleware/` — custom middleware (AsyncExitStack for resource cleanup)
+  - `openapi/` — OpenAPI schema generation
+  - `security/` — authentication and authorization
 - `scripts/` — scripts
   - `playwright/`
   - `tests/`
@@ -46,6 +46,26 @@ FastAPI framework, high performance, easy to learn, fast to code, ready for prod
 
 - **API routes**: 29 endpoints (2 DELETE, 16 GET, 2 PATCH, 7 POST, 2 PUT)
 
+### How It Works
+
+FastAPI is a framework built on top of **Starlette** (ASGI web framework) and **Pydantic** (data validation). The architecture follows these key flows:
+
+**Core Components:**
+
+1. **`FastAPI` class** (`applications.py`): Main application class that extends Starlette, registers routes, handles OpenAPI generation, and configures middleware
+2. **`APIRouter` class** (`routing.py`): Route registration and path operation decoration. Converts decorated functions into ASGI endpoints
+3. **Dependency injection** (`dependencies/`): The `Dependant` model represents a callable with its parameter dependencies. `solve_dependencies()` recursively resolves and caches dependencies during request handling
+4. **Request flow**: 
+   - Request → Starlette routing → `request_response()` wrapper → dependency resolution → endpoint function → response validation → JSON response
+   - `AsyncExitStackMiddleware` manages resource cleanup (files, database connections) after the request completes
+5. **OpenAPI generation** (`openapi/utils.py`): Introspects route metadata, Pydantic models, and dependency parameters to generate OpenAPI 3.x schemas
+6. **Compatibility layer** (`_compat/`): Abstracts Pydantic v1/v2 differences to support both major versions
+
+**Data flow:**
+- Incoming request parameters (path, query, headers, cookies, body) are extracted and validated using Pydantic models
+- Dependencies are resolved via the `Dependant` graph, with caching support for expensive operations
+- Endpoint functions receive validated, type-safe parameters
+- Response data is serialized via `jsonable_encoder()` and validated against response models if defined
 
 ### API Routes
 
@@ -77,10 +97,62 @@ FastAPI framework, high performance, easy to learn, fast to code, ready for prod
 
 ## Commands
 
-- **Test**: `pytest`
-- **Test single**: `pytest path/to/test.py::TestClass::test_method`
+**Install dependencies:**
+```bash
+pip install "fastapi[standard]"
+# Or for development:
+pip install -e ".[dev]"
+```
 
-[TODO: Add project-specific commands]
+**Development server:**
+```bash
+fastapi dev main.py  # Auto-reload enabled
+fastapi run main.py  # Production mode
+```
+
+**Testing:**
+```bash
+# Run all tests with coverage
+bash scripts/test.sh
+# Or directly:
+PYTHONPATH=./docs_src coverage run -m pytest tests scripts/tests/
+
+# Run single test file
+pytest tests/test_tutorial/test_path_params.py
+
+# Run single test function
+pytest tests/test_tutorial/test_path_params.py::test_foo
+
+# Run with coverage report
+bash scripts/test-cov-html.sh  # Generates coverage/html/index.html
+```
+
+**Linting:**
+```bash
+bash scripts/lint.sh
+# Runs:
+# - mypy fastapi
+# - ruff check fastapi tests docs_src scripts
+# - ruff format fastapi tests --check
+```
+
+**Formatting:**
+```bash
+bash scripts/format.sh
+# Runs:
+# - ruff check --fix
+# - ruff format
+```
+
+**Type checking:**
+```bash
+mypy fastapi
+```
+
+**Environment variables:**
+- `PYTHONPATH=./docs_src` — Required for running tests (includes tutorial code)
+- `CONTEXT` — Used by coverage for dynamic context tracking
+- `INLINE_SNAPSHOT_DEFAULT_FLAGS=review` — Controls inline-snapshot behavior in tests
 
 ## Conventions
 
@@ -109,16 +181,69 @@ FastAPI framework, high performance, easy to learn, fast to code, ready for prod
 - **High type annotation coverage**: Type annotations are commonly used in this codebase. 363/367 functions (99%) have at least one type annotation.
 - **Mixed validation approaches**: Uses multiple validation approaches: Pydantic validation, Manual validation (ValueError/TypeError).
 
-[TODO: Add project-specific conventions]
-
 ## Deployment
 
 - **CI features**: tests, deploy, caching, matrix builds
 
 ## Decision Log
 
-[TODO: Record architectural decisions]
+### Framework Design Decisions
+
+**Starlette as Foundation**: FastAPI extends Starlette rather than reimplementing ASGI. This provides battle-tested routing, middleware, and WebSocket support while adding type-based validation and automatic API documentation.
+
+**Pydantic for Validation**: All request/response validation uses Pydantic models. This unifies type annotations with runtime validation and serialization, enabling automatic OpenAPI schema generation from Python type hints.
+
+**Dual Pydantic Support**: The `_compat/` layer maintains support for both Pydantic v1 and v2, allowing gradual migration for users. TODOs indicate this will be removed once Pydantic v2 adoption is complete.
+
+**Dependency Injection via Type Introspection**: The `Dependant` model inspects function signatures to build a dependency graph. Dependencies are resolved recursively and cached per request using `AsyncExitStack`, enabling clean resource management without manual cleanup.
+
+**Function-scoped vs Request-scoped Dependencies**: Generator dependencies (using `yield`) are request-scoped and cleaned up after the response. Regular callables are function-scoped and may be cached across sub-dependencies within a request.
+
+**Path and Query Capitalization**: `Path()` and `Query()` violate PEP 8 (PascalCase for classes) intentionally to match the visual importance of these commonly-used parameter functions. Ruff ignores are added (noqa: N802).
+
+**Lifespan Management**: The `on_event` decorators are in maintenance mode (multiple TODOs reference deprecation). The recommended pattern is using `lifespan` context managers, though the old interface is kept for backward compatibility.
+
+**Test Documentation as Tests**: The `docs_src/` directory contains runnable example code from documentation. These are tested alongside regular tests (`PYTHONPATH=./docs_src`) to ensure documentation accuracy.
+
+### Build System
+
+**PDM for Build**: Migrated from Hatch to PDM (pyproject.toml uses `pdm-backend`). Provides better dependency group management and lock file support via `uv.lock`.
+
+**fastapi-slim Package**: The build system generates two packages: `fastapi` (full) and `fastapi-slim` (minimal dependencies). This supports users who want to minimize dependency footprint.
 
 ## Known Pitfalls
 
-[TODO: Document gotchas and anti-patterns]
+### Testing and Coverage
+
+**PYTHONPATH Required**: Tests require `PYTHONPATH=./docs_src` to import tutorial examples. Running `pytest` directly without this will cause import errors. Use `bash scripts/test.sh` instead.
+
+**Coverage Context Variable**: Coverage tracking uses dynamic contexts via `CONTEXT` env var and `${CONTEXT}` in pyproject.toml. This enables per-test coverage attribution but may cause confusion if you manually invoke coverage commands.
+
+**Pydantic v1 Examples Omitted**: Many `docs_src/pydantic_v1_in_v2/` examples are intentionally excluded from coverage (see `tool.coverage.run.omit`). These are legacy examples for migration and are not actively tested.
+
+### Linting and Type Checking
+
+**Ruff Ignores by Design**: 
+- `E501` (line too long) is globally disabled; formatting is handled by ruff format, not line length checks
+- `B008` (function calls in defaults) is disabled because FastAPI's `Depends()`, `Query()`, etc. are intentionally used as default values
+- `F401` (unused import) is disabled in `__init__.py` files where re-exports are the purpose
+
+**Relaxed Type Checking for docs_src**: `mypy` has `disallow_untyped_defs = false` for `docs_src.*` because tutorial code prioritizes readability over strict typing.
+
+**mypy Plugin Required**: Pydantic validation requires the pydantic mypy plugin (`plugins = ["pydantic.mypy"]` in pyproject.toml). Without it, type checking will produce false positives on model fields.
+
+### Dependencies and Compatibility
+
+**python-multipart Name Confusion**: FastAPI requires `python-multipart` but a similarly-named `multipart` package exists on PyPI. The codebase has explicit error messages to guide users who install the wrong package (see `dependencies/utils.py:69-81`).
+
+**Minimum Pydantic Version**: Many compatibility layer functions have TODOs referencing "remove when dropping support for Pydantic < v2.12.3". If using older Pydantic versions, expect workarounds in `_compat/`.
+
+**Standard vs Minimal Install**: `pip install fastapi` provides minimal dependencies (Starlette + Pydantic only). Many features (test client, form parsing, templates, uvicorn) require `pip install "fastapi[standard]"`. Forgetting `[standard]` is a common pitfall.
+
+### Testing Matrix
+
+**Matrix Testing Against Starlette Versions**: CI tests against both PyPI Starlette (`starlette-pypi`) and git main (`starlette-git`) to catch compatibility issues early. Local tests only run against the locked version.
+
+**UV_RESOLUTION Variations**: Tests run with `lowest-direct` and `highest` resolution strategies to ensure compatibility across dependency ranges. This can cause confusion if test behavior differs locally from CI.
+
+**Deprecated Warning Filters**: `pytest.ini_options.filterwarnings` ignores specific deprecation warnings from trio and SQLAlchemy that FastAPI cannot fix. Adding new dependencies may introduce unexpected warnings.

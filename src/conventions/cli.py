@@ -81,6 +81,11 @@ def discover(
         "--claude",
         help="Generate CLAUDE.md for Claude Code (writes to .claude/ directory)",
     ),
+    init: bool = typer.Option(
+        False,
+        "--init",
+        help="Enrich CLAUDE.md using Claude Code CLI (requires claude CLI installed)",
+    ),
 ) -> None:
     """
     Discover coding conventions from a repository.
@@ -125,6 +130,10 @@ def discover(
 
     # Use CLI max_files if provided, otherwise config value
     effective_max_files = max_files if max_files is not None else cfg.max_files
+
+    # --init implies claude format
+    if init and not claude and (not output_format or "claude" not in output_format):
+        claude = True
 
     # Determine output formats
     if output_format:
@@ -212,6 +221,20 @@ def discover(
         except Exception as e:
             console.print(f"[red]Error writing CLAUDE.md: {e}[/red]")
             raise typer.Exit(1)
+
+        if init:
+            try:
+                from .outputs.claude import enrich_with_claude
+                if not quiet:
+                    console.print("[blue]Enriching CLAUDE.md with Claude Code...[/blue]")
+                enrich_with_claude(claude_path, repo)
+                if not quiet:
+                    console.print(f"[green]Enriched CLAUDE.md at:[/green] {claude_path}")
+            except Exception as e:
+                if not quiet:
+                    console.print(
+                        f"[yellow]Warning: Could not enrich CLAUDE.md: {e}[/yellow]"
+                    )
 
     # Print summary
     if not quiet:
