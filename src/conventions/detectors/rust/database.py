@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
 from .base import RustDetector
@@ -182,4 +184,73 @@ class RustDatabaseDetector(RustDetector):
             },
         ))
 
+        # Detect database entities
+        self._detect_entities(ctx, index, result)
+
         return result
+
+    def _detect_entities(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect database entities from Rust derive macros and struct patterns."""
+        entities: list[dict[str, str]] = []
+        orm = None
+
+        # Patterns that indicate a DB entity struct
+        db_derives = re.compile(
+            r"#\[derive\([^)]*(?:FromRow|Queryable|Insertable|AsChangeset|"
+            r"DeriveEntityModel|DeriveActiveModel)[^)]*\)\]"
+        )
+        diesel_table = re.compile(r"table!\s*\{")
+
+        for rel_path, file_idx in index.files.items():
+            if file_idx.role == "test":
+                continue
+
+            content = "\n".join(file_idx.lines)
+
+            for struct_name, struct_line, _is_pub in file_idx.structs:
+                # Check lines before the struct for derive macros
+                start = max(0, struct_line - 5)
+                end = struct_line
+                block = "\n".join(file_idx.lines[start:end])
+
+                if db_derives.search(block):
+                    entities.append({"name": struct_name, "file": rel_path})
+                    if "DeriveEntityModel" in block or "DeriveActiveModel" in block:
+                        orm = orm or "sea_orm"
+                    elif "Queryable" in block or "Insertable" in block:
+                        orm = orm or "diesel"
+                    else:
+                        orm = orm or "sqlx"
+
+            # Also check for Diesel table! macros
+            if diesel_table.search(content):
+                orm = orm or "diesel"
+
+        if not entities:
+            return
+
+        names = [e["name"] for e in entities[:10]]
+        description = (
+            f"{len(entities)} {orm or 'DB'} entities: {', '.join(names)}"
+            + ("..." if len(entities) > 10 else "") + "."
+        )
+
+        result.rules.append(self.make_rule(
+            rule_id="rust.conventions.db_entities",
+            category="database",
+            title="Database entities",
+            description=description,
+            confidence=0.90,
+            language="rust",
+            evidence=[],
+            stats={
+                "entities": entities,
+                "entity_count": len(entities),
+                "orm": orm or "unknown",
+            },
+        ))

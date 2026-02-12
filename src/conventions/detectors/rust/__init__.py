@@ -5,6 +5,7 @@ from .base import RustDetector
 
 # Import all detector classes to ensure they register
 from .cargo import RustCargoDetector
+from .data_flow import RustDataFlowDetector
 from .cli import RustCLIDetector
 from .database import RustDatabaseDetector
 from .documentation import RustDocumentationDetector
@@ -33,4 +34,5 @@ __all__ = [
     "RustMacrosDetector",
     "RustLoggingDetector",
     "RustDatabaseDetector",
+    "RustDataFlowDetector",
 ]

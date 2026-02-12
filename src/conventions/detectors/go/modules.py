@@ -120,4 +120,19 @@ class GoModulesDetector(GoDetector):
             },
         ))
 
+        # Emit import alias rule for the module path
+        if module_name:
+            result.rules.append(self.make_rule(
+                rule_id="go.conventions.import_aliases",
+                category="language",
+                title="Go module import path",
+                description=f"Import prefix: `{module_name}`.",
+                confidence=0.95,
+                language="go",
+                evidence=[],
+                stats={
+                    "module_path": module_name,
+                },
+            ))
+
         return result

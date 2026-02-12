@@ -10,6 +10,7 @@ from .codegen import NodeCodeGenDetector
 
 # Import all detector classes to ensure they register
 from .conventions import NodeConventionsDetector
+from .data_flow import NodeDataFlowDetector
 from .documentation import NodeDocumentationDetector
 from .errors import NodeErrorHandlingDetector
 from .formatting import NodeFormattingDetector
@@ -17,6 +18,7 @@ from .frontend import NodeFrontendDetector
 from .index import NodeIndex, make_evidence
 from .linting import NodeLintingDetector
 from .logging import NodeLoggingDetector
+from .migrations import NodeMigrationsDetector
 from .monorepo import NodeMonorepoDetector
 from .naming import NodeNamingDetector
 from .package_manager import NodePackageManagerDetector
@@ -51,4 +53,6 @@ __all__ = [
     "NodeAuthDetector",
     "NodeNamingDetector",
     "NodeCodeGenDetector",
+    "NodeDataFlowDetector",
+    "NodeMigrationsDetector",
 ]

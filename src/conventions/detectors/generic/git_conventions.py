@@ -30,6 +30,9 @@ class GitConventionsDetector(BaseDetector):
         # Detect Git hooks
         self._detect_git_hooks(ctx, result)
 
+        # Detect PR templates
+        self._detect_pr_templates(ctx, result)
+
         return result
 
     def _detect_commit_conventions(
@@ -266,5 +269,74 @@ class GitConventionsDetector(BaseDetector):
                 "has_pre_commit": has_pre_commit,
                 "has_husky": has_husky,
                 "has_lefthook": has_lefthook,
+            },
+        ))
+
+    def _detect_pr_templates(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect pull request templates."""
+        search_paths = [
+            ".github/pull_request_template.md",
+            ".github/PULL_REQUEST_TEMPLATE.md",
+            "PULL_REQUEST_TEMPLATE.md",
+            "pull_request_template.md",
+            "docs/pull_request_template.md",
+        ]
+
+        template_path = None
+        for path in search_paths:
+            candidate = ctx.repo_root / path
+            if candidate.is_file():
+                template_path = path
+                break
+
+        # Check for multiple templates directory
+        multi_dir = ctx.repo_root / ".github" / "PULL_REQUEST_TEMPLATE"
+        has_multiple = multi_dir.is_dir()
+        template_count = 0
+        if has_multiple:
+            template_count = sum(
+                1 for f in multi_dir.iterdir()
+                if f.is_file() and f.suffix.lower() == ".md"
+            )
+
+        if not template_path and not has_multiple:
+            return
+
+        # Parse sections from template
+        sections: list[str] = []
+        if template_path:
+            content = read_file_safe(ctx.repo_root / template_path)
+            if content:
+                for line in content.splitlines():
+                    line = line.strip()
+                    if line.startswith("## ") or line.startswith("### "):
+                        sections.append(line.lstrip("#").strip())
+
+        title = "PR template"
+        if has_multiple:
+            title = f"PR templates ({template_count} templates)"
+            description = f"Multiple PR templates in .github/PULL_REQUEST_TEMPLATE/."
+        elif sections:
+            description = f"PR template with sections: {', '.join(sections[:5])}."
+        else:
+            description = f"PR template at {template_path}."
+
+        result.rules.append(self.make_rule(
+            rule_id="generic.conventions.pr_template",
+            category="git",
+            title=title,
+            description=description,
+            confidence=0.90,
+            language="generic",
+            evidence=[],
+            stats={
+                "template_path": template_path or "",
+                "has_multiple_templates": has_multiple,
+                "template_count": template_count,
+                "sections": sections,
             },
         ))

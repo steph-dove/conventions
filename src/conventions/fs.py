@@ -14,13 +14,16 @@ except ImportError:
 
 # Hard excludes - always skip these directories/patterns
 HARD_EXCLUDES = {
+    # VCS
     ".git",
     ".svn",
     ".hg",
+    # Caches
     "__pycache__",
     ".pytest_cache",
     ".mypy_cache",
     ".ruff_cache",
+    # Dependencies
     "node_modules",
     "vendor",
     ".venv",
@@ -29,13 +32,28 @@ HARD_EXCLUDES = {
     ".env",
     ".tox",
     ".nox",
+    # Build artifacts
     "build",
     "dist",
     "eggs",
     "*.egg-info",
     ".eggs",
     "site-packages",
+    # Conventions output
     ".conventions",
+    # Documentation & examples — tutorial/example code is not representative
+    # of project conventions and pollutes language detection and pattern analysis
+    "docs",
+    "docs_src",
+    "doc",
+    "examples",
+    "example",
+    "samples",
+    "sample",
+    "tutorials",
+    "tutorial",
+    "demo",
+    "demos",
 }
 
 # File size limit (skip very large files)

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
 from .base import NodeDetector
@@ -31,6 +33,9 @@ class NodeTypeScriptDetector(NodeDetector):
 
         # Detect branded/nominal types
         self._detect_branded_types(ctx, index, result)
+
+        # Detect path aliases from tsconfig
+        self._detect_path_aliases(ctx, result)
 
         return result
 
@@ -221,5 +226,66 @@ class NodeTypeScriptDetector(NodeDetector):
                 "generic_id_types": len(generic_matches),
                 "opaque_type_usages": opaque_count,
                 "brand_field_count": brand_field_count,
+            },
+        ))
+
+    def _detect_path_aliases(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect TypeScript path aliases from tsconfig.json."""
+        tsconfig_path = ctx.repo_root / "tsconfig.json"
+        if not tsconfig_path.is_file():
+            return
+
+        try:
+            content = tsconfig_path.read_text()
+            # Strip comments (simple single-line // comments)
+            import re
+            content = re.sub(r'//.*$', '', content, flags=re.MULTILINE)
+            # Strip trailing commas before } or ]
+            content = re.sub(r',\s*([}\]])', r'\1', content)
+            data = json.loads(content)
+        except (json.JSONDecodeError, OSError):
+            return
+
+        compiler_opts = data.get("compilerOptions", {})
+        paths = compiler_opts.get("paths", {})
+        base_url = compiler_opts.get("baseUrl", "")
+
+        if not paths and not base_url:
+            return
+
+        # Normalize aliases: {"@/*": ["src/*"]} -> {"@/*": "src/*"}
+        aliases: dict[str, str] = {}
+        for alias, targets in paths.items():
+            if isinstance(targets, list) and targets:
+                aliases[alias] = targets[0]
+            elif isinstance(targets, str):
+                aliases[alias] = targets
+
+        if not aliases and not base_url:
+            return
+
+        parts = []
+        for alias, target in list(aliases.items())[:5]:
+            parts.append(f"`{alias}` -> `{target}`")
+        desc = f"Path aliases: {', '.join(parts)}."
+        if base_url:
+            desc += f" Base URL: `{base_url}`."
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.import_aliases",
+            category="language",
+            title="TypeScript path aliases",
+            description=desc,
+            confidence=0.90,
+            language="node",
+            evidence=[],
+            stats={
+                "aliases": aliases,
+                "base_url": base_url,
+                "alias_count": len(aliases),
             },
         ))

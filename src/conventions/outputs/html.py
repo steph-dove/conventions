@@ -388,6 +388,7 @@ def _html_rules_table(rated_rules: list) -> str:
     rows = []
     for rule, score, reason, _ in rated_rules:
         lang = rule.language or "generic"
+        docs_cell = f'<a href="{_escape(rule.docs_url)}" target="_blank" rel="noopener">docs</a>' if rule.docs_url else ""
         rows.append(f'''
             <tr data-language="{_escape(lang)}" data-category="{_escape(rule.category)}" data-score="{score}">
                 <td><code>{_escape(rule.id)}</code></td>
@@ -396,6 +397,7 @@ def _html_rules_table(rated_rules: list) -> str:
                 <td>{_escape(rule.category)}</td>
                 <td>{_score_badge(score)}</td>
                 <td>{rule.confidence * 100:.0f}%</td>
+                <td>{docs_cell}</td>
             </tr>
         ''')
 
@@ -432,6 +434,7 @@ def _html_rules_table(rated_rules: list) -> str:
                     <th onclick="sortTable(3)">Category</th>
                     <th onclick="sortTable(4)">Score</th>
                     <th onclick="sortTable(5)">Confidence</th>
+                    <th>Docs</th>
                 </tr>
             </thead>
             <tbody>
@@ -481,6 +484,10 @@ def _html_detailed_rules(rated_rules: list) -> str:
                 </div>
             '''
 
+        docs_html = ""
+        if rule.docs_url:
+            docs_html = f'<span><strong>Docs:</strong> <a href="{_escape(rule.docs_url)}" target="_blank" rel="noopener">{_escape(rule.docs_url)}</a></span>'
+
         details.append(f'''
             <div class="rule-detail" id="rule-{_escape(rule.id.replace('.', '-'))}">
                 <div class="rule-header" onclick="toggleRule(this)">
@@ -498,6 +505,7 @@ def _html_detailed_rules(rated_rules: list) -> str:
                         <span><strong>Category:</strong> {_escape(rule.category)}</span>
                         <span><strong>Language:</strong> {_escape(rule.language or 'generic')}</span>
                         <span><strong>Confidence:</strong> {rule.confidence * 100:.0f}%</span>
+                        {docs_html}
                     </div>
                     <p>{_escape(rule.description)}</p>
                     <p><strong>Assessment:</strong> {_escape(reason)}</p>

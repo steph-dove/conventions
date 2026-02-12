@@ -294,6 +294,18 @@ def infer_rust_file_role(relative_path: str) -> str:
     if "benches" in parts:
         return "bench"
 
+    # API/routes
+    if any(p in ("handlers", "api", "routes", "endpoints", "controllers") for p in parts):
+        return "api"
+
+    # Services
+    if any(p in ("services", "service") for p in parts):
+        return "service"
+
+    # Database/stores
+    if any(p in ("repositories", "db", "database", "store", "stores", "models") for p in parts):
+        return "db"
+
     # Binary
     if "src/bin" in relative_path or relative_path.endswith("main.rs"):
         return "bin"

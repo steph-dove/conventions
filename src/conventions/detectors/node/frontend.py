@@ -25,17 +25,7 @@ class NodeFrontendDetector(NodeDetector):
         frameworks: dict[str, dict] = {}
         examples: list[tuple[str, int]] = []
 
-        pkg_json_path = ctx.repo_root / "package.json"
-        all_deps = {}
-        if pkg_json_path.exists():
-            try:
-                pkg_data = json.loads(pkg_json_path.read_text())
-                all_deps = {
-                    **pkg_data.get("dependencies", {}),
-                    **pkg_data.get("devDependencies", {}),
-                }
-            except (json.JSONDecodeError, OSError):
-                pass
+        all_deps = self._collect_all_deps(ctx)
 
         # React detection
         react_imports = index.find_imports_matching("react", limit=30)
@@ -115,8 +105,11 @@ class NodeFrontendDetector(NodeDetector):
 
             frameworks["vue"]["features"] = vue_features
 
-        # Svelte detection
-        svelte_files = list(ctx.repo_root.rglob("*.svelte"))[:20]
+        # Svelte detection (exclude node_modules to avoid false positives)
+        svelte_files = [
+            f for f in ctx.repo_root.rglob("*.svelte")
+            if "node_modules" not in f.parts
+        ][:20]
         if svelte_files or "svelte" in all_deps:
             frameworks["svelte"] = {
                 "name": "Svelte",
@@ -205,6 +198,53 @@ class NodeFrontendDetector(NodeDetector):
         self._detect_ui_library(ctx, index, result, all_deps)
 
         return result
+
+    @staticmethod
+    def _collect_all_deps(ctx: DetectorContext) -> dict:
+        """Collect dependencies from root and workspace package.json files."""
+        all_deps: dict = {}
+        pkg_json_path = ctx.repo_root / "package.json"
+        workspace_patterns: list = []
+
+        if pkg_json_path.exists():
+            try:
+                pkg_data = json.loads(pkg_json_path.read_text())
+                all_deps.update(pkg_data.get("dependencies", {}))
+                all_deps.update(pkg_data.get("devDependencies", {}))
+                # Collect workspace patterns for scanning
+                workspaces = pkg_data.get("workspaces")
+                if isinstance(workspaces, list):
+                    workspace_patterns = workspaces
+                elif isinstance(workspaces, dict):
+                    workspace_patterns = workspaces.get("packages", [])
+            except (json.JSONDecodeError, OSError):
+                pass
+
+        # Also scan workspace package.json files
+        for pattern in workspace_patterns:
+            if pattern.endswith("/*"):
+                parent = ctx.repo_root / pattern[:-2]
+                if parent.is_dir():
+                    for item in parent.iterdir():
+                        ws_pkg = item / "package.json"
+                        if item.is_dir() and ws_pkg.is_file():
+                            try:
+                                ws_data = json.loads(ws_pkg.read_text())
+                                all_deps.update(ws_data.get("dependencies", {}))
+                                all_deps.update(ws_data.get("devDependencies", {}))
+                            except (json.JSONDecodeError, OSError):
+                                pass
+            else:
+                ws_pkg = ctx.repo_root / pattern / "package.json"
+                if ws_pkg.is_file():
+                    try:
+                        ws_data = json.loads(ws_pkg.read_text())
+                        all_deps.update(ws_data.get("dependencies", {}))
+                        all_deps.update(ws_data.get("devDependencies", {}))
+                    except (json.JSONDecodeError, OSError):
+                        pass
+
+        return all_deps
 
     def _detect_ui_library(
         self,

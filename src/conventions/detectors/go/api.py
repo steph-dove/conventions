@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult
@@ -33,6 +34,9 @@ class GoAPIDetector(GoDetector):
 
         # Detect response patterns
         self._detect_response_patterns(ctx, index, result)
+
+        # Detect API routes
+        self._detect_api_routes(ctx, index, result)
 
         return result
 
@@ -221,3 +225,104 @@ class GoAPIDetector(GoDetector):
                 "echo_json_count": echo_json_count,
             },
         ))
+
+    def _detect_api_routes(
+        self,
+        ctx: DetectorContext,
+        index: GoIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Extract API route definitions."""
+        # Gin/Echo/Chi: r.GET("/path", handler) or r.Get("/path", handler)
+        method_route_pattern = re.compile(
+            r"""\.(GET|POST|PUT|PATCH|DELETE|Get|Post|Put|Patch|Delete)\(\s*"([^"]+)""",
+        )
+        # stdlib / gorilla: HandleFunc("/path", handler) or Handle("/path", handler)
+        handlefunc_pattern = re.compile(
+            r"""(?:HandleFunc|Handle)\(\s*"([^"]+)""",
+        )
+
+        routes: list[dict[str, str | int]] = []
+        methods: dict[str, int] = {}
+
+        for rel_path, file_idx in index.files.items():
+            if file_idx.role == "test":
+                continue
+
+            content = "\n".join(file_idx.lines)
+
+            for m in method_route_pattern.finditer(content):
+                method = m.group(1).upper()
+                path = m.group(2)
+                line = content[: m.start()].count("\n") + 1
+
+                methods[method] = methods.get(method, 0) + 1
+                routes.append({
+                    "method": method,
+                    "path": path,
+                    "file": rel_path,
+                    "line": line,
+                })
+                if len(routes) >= 100:
+                    break
+
+            for m in handlefunc_pattern.finditer(content):
+                path = m.group(1)
+                line = content[: m.start()].count("\n") + 1
+
+                methods["ANY"] = methods.get("ANY", 0) + 1
+                routes.append({
+                    "method": "ANY",
+                    "path": path,
+                    "file": rel_path,
+                    "line": line,
+                })
+                if len(routes) >= 100:
+                    break
+
+            if len(routes) >= 100:
+                break
+
+        if not routes:
+            return
+
+        path_prefixes = _extract_path_prefixes([str(r["path"]) for r in routes])
+
+        description = (
+            f"{len(routes)} API routes detected. "
+            f"Methods: {', '.join(f'{k}: {v}' for k, v in sorted(methods.items()))}."
+        )
+
+        result.rules.append(self.make_rule(
+            rule_id="go.conventions.api_routes",
+            category="api",
+            title="API routes",
+            description=description,
+            confidence=0.90,
+            language="go",
+            evidence=[],
+            stats={
+                "routes": routes,
+                "total_routes": len(routes),
+                "methods": methods,
+                "path_prefixes": path_prefixes,
+            },
+        ))
+
+
+def _extract_path_prefixes(paths: list[str]) -> list[str]:
+    """Extract common path prefixes from a list of paths."""
+    prefix_counts: dict[str, int] = {}
+    for path in paths:
+        parts = path.strip("/").split("/")
+        if len(parts) >= 2:
+            prefix = "/" + "/".join(parts[:2])
+            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1
+        elif len(parts) == 1 and parts[0]:
+            prefix = "/" + parts[0]
+            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1
+
+    return sorted(
+        [p for p, c in prefix_counts.items() if c > 1],
+        key=lambda p: -prefix_counts[p],
+    )[:10]

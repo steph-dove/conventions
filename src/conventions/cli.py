@@ -74,7 +74,12 @@ def discover(
     output_format: Optional[str] = typer.Option(
         None,
         "--format",
-        help="Output format(s), comma-separated (json,markdown,review,html,sarif)",
+        help="Output format(s), comma-separated (json,markdown,review,html,sarif,claude)",
+    ),
+    claude_personal: bool = typer.Option(
+        False,
+        "--claude-personal",
+        help="Write CLAUDE.md to .claude/ instead of project root (use with --format claude)",
     ),
 ) -> None:
     """
@@ -196,6 +201,16 @@ def discover(
             console.print("[yellow]SARIF output not available[/yellow]")
         except Exception as e:
             console.print(f"[red]Error writing SARIF report: {e}[/red]")
+            raise typer.Exit(1)
+
+    if "claude" in formats:
+        try:
+            from .outputs.claude import write_claude_md
+            claude_path = write_claude_md(output, repo, personal=claude_personal)
+            if not quiet:
+                console.print(f"[green]Wrote CLAUDE.md to:[/green] {claude_path}")
+        except Exception as e:
+            console.print(f"[red]Error writing CLAUDE.md: {e}[/red]")
             raise typer.Exit(1)
 
     # Print summary

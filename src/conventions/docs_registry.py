@@ -225,6 +225,34 @@ DOCS_URLS: dict[str, str] = {
     "python_dotenv": "https://pypi.org/project/python-dotenv/",
     "dynaconf": "https://www.dynaconf.com/",
 
+    # Package/dependency management
+    "uv": "https://docs.astral.sh/uv/",
+    "pdm": "https://pdm-project.org/",
+    "pipenv": "https://pipenv.pypa.io/",
+    "hatch": "https://hatch.pypa.io/",
+    "pip_tools": "https://pip-tools.readthedocs.io/",
+    "pip": "https://pip.pypa.io/",
+    "poetry": "https://python-poetry.org/docs/",
+
+    # GraphQL
+    "strawberry": "https://strawberry.rocks/docs",
+    "ariadne": "https://ariadnegraphql.org/docs/intro",
+    "graphene": "https://graphene-python.org/",
+
+    # Auth / JWT
+    "pyjwt": "https://pyjwt.readthedocs.io/",
+    "python_jose": "https://python-jose.readthedocs.io/",
+    "authlib": "https://docs.authlib.org/",
+
+    # Standard library docs
+    "pathlib": "https://docs.python.org/3/library/pathlib.html",
+    "logging": "https://docs.python.org/3/library/logging.html",
+    "dataclasses": "https://docs.python.org/3/library/dataclasses.html",
+    "enum": "https://docs.python.org/3/library/enum.html",
+    "typing": "https://docs.python.org/3/library/typing.html",
+    "json": "https://docs.python.org/3/library/json.html",
+    "unittest_mock": "https://docs.python.org/3/library/unittest.mock.html",
+
     # Logging
     "loguru": "https://loguru.readthedocs.io/",
     "structlog": "https://www.structlog.org/",
@@ -337,11 +365,29 @@ DOCS_URLS: dict[str, str] = {
     "conventional_commits": "https://www.conventionalcommits.org/",
     "pre_commit": "https://pre-commit.com/",
 
+    # Dependency updates
+    "dependabot": "https://docs.github.com/en/code-security/dependabot",
+    "renovate": "https://docs.renovatebot.com/",
+
     # API
     "openapi": "https://swagger.io/specification/",
     "graphql": "https://graphql.org/learn/",
     "grpc": "https://grpc.io/docs/",
     "rest": "https://restfulapi.net/",
+
+    # Caching
+    "redis": "https://redis.io/docs/",
+    "memcached": "https://memcached.org/",
+
+    # Message queues
+    "rabbitmq": "https://www.rabbitmq.com/docs",
+    "kafka": "https://kafka.apache.org/documentation/",
+
+    # Observability
+    "prometheus": "https://prometheus.io/docs/",
+    "opentelemetry": "https://opentelemetry.io/docs/",
+    "sentry": "https://docs.sentry.io/",
+    "datadog": "https://docs.datadoghq.com/",
 }
 
 
@@ -383,15 +429,39 @@ def get_docs_url_for_rule(rule_id: str, stats: dict) -> Optional[str]:
     Returns:
         Most relevant documentation URL or None
     """
-    # Check for primary_framework, primary_library, etc. in stats
-    for key in ["primary_framework", "primary_library", "primary_provider", "primary"]:
+    # Check for primary_* keys in stats (various naming patterns used by detectors)
+    primary_keys = [
+        "primary_framework",
+        "primary_library",
+        "primary_provider",
+        "primary_tool",
+        "primary_formatter",
+        "primary_linter",
+        "primary_sorter",
+        "primary_lock",
+        "primary",
+    ]
+    for key in primary_keys:
         if key in stats:
             url = get_docs_url(stats[key])
             if url:
                 return url
 
-    # Check for specific tools in stats
-    for key in ["di_library", "mock_library", "coverage_tools", "linter", "formatter"]:
+    # Check for specific tool/library names in stats
+    tool_keys = [
+        "di_library",
+        "mock_library",
+        "coverage_tools",
+        "linter",
+        "formatter",
+        "type_checker",
+        "graphql_library",
+        "http_client",
+        "cache_backend",
+        "queue_backend",
+        "observability_tool",
+    ]
+    for key in tool_keys:
         if key in stats:
             value = stats[key]
             if isinstance(value, str):
@@ -405,9 +475,97 @@ def get_docs_url_for_rule(rule_id: str, stats: dict) -> Optional[str]:
 
     # Fall back to rule-specific defaults based on rule_id
     rule_docs_map = {
+        # Node/TypeScript
         "node.conventions.typescript": "typescript",
         "node.conventions.strict_mode": "typescript",
+        "node.conventions.jsdoc": "typescript",
+
+        # Python tooling
         "python.conventions.typing": "mypy",
+        "python.conventions.typing_coverage": "typing",
+        "python.conventions.type_checker_strictness": "mypy",
+        "python.conventions.import_sorting": "ruff",
+        "python.conventions.line_length": "ruff",
+        "python.conventions.string_quotes": "ruff",
+        "python.conventions.pre_commit_hooks": "pre_commit",
+
+        # Python dependencies
+        "python.conventions.dependency_management": "uv",
+        "python.conventions.lock_file": "uv",
+
+        # Python testing
+        "python.test_conventions.fixtures": "pytest",
+        "python.test_conventions.mocking": "unittest_mock",
+        "python.test_conventions.parametrized": "pytest",
+        "python.test_conventions.assertions": "pytest",
+
+        # Python code patterns
+        "python.conventions.naming": "ruff",
+        "python.conventions.path_handling": "pathlib",
+        "python.conventions.string_formatting": "ruff",
+        "python.conventions.context_managers": "typing",
+        "python.conventions.data_class_style": "pydantic",
+        "python.conventions.class_style": "pydantic",
+        "python.conventions.decorator_caching": "typing",
+        "python.conventions.json_library": "json",
+        "python.conventions.enum_usage": "enum",
+        "python.conventions.optional_usage": "typing",
+        "python.conventions.constant_naming": "ruff",
+        "python.conventions.import_style": "ruff",
+        "python.conventions.docstrings": "ruff",
+
+        # Python API patterns
+        "python.conventions.api_versioning": "fastapi",
+        "python.conventions.auth_pattern": "pyjwt",
+        "python.conventions.openapi_docs": "openapi",
+        "python.conventions.env_separation": "pydantic_settings",
+        "python.conventions.secrets_access_style": "pydantic_settings",
+        "python.conventions.validation_style": "pydantic",
+        "python.conventions.response_envelope": "pydantic",
+        "python.conventions.pagination_pattern": "fastapi",
+        "python.conventions.background_jobs": "fastapi",
+        "python.conventions.health_checks": "fastapi",
+
+        # Python database
+        "python.conventions.db_query_style": "sqlalchemy",
+        "python.conventions.db_session_lifecycle": "sqlalchemy",
+        "python.conventions.db_connection_pooling": "sqlalchemy",
+        "python.conventions.db_transactions": "sqlalchemy",
+
+        # Python errors
+        "python.conventions.error_handling_boundary": "fastapi",
+        "python.conventions.exception_chaining": "typing",
+        "python.conventions.error_taxonomy": "typing",
+        "python.conventions.exception_handlers": "fastapi",
+        "python.conventions.error_wrapper": "typing",
+
+        # Python logging
+        "python.conventions.logging_library": "logging",
+
+        # Python caching
+        "python.conventions.caching": "redis",
+
+        # Python docs
+        "python.docs_conventions.example_structure": "fastapi",
+        "python.docs_conventions.organization": "fastapi",
+        "python.docs_conventions.example_completeness": "fastapi",
+
+        # Python testing organization
+        "python.conventions.test_naming": "pytest",
+        "python.conventions.test_structure": "pytest",
+
+        # Python timeouts/resilience
+        "python.conventions.timeouts": "httpx",
+
+        # Generic CI/CD
+        "generic.conventions.ci_platform": "github_actions",
+        "generic.conventions.ci_quality": "github_actions",
+        "generic.conventions.dependency_updates": "dependabot",
+        "generic.conventions.git_hooks": "pre_commit",
+        "generic.conventions.repo_layout": "github_actions",
+        "generic.conventions.standard_files": "github_actions",
+
+        # Go
         "go.conventions.error_handling": "go_testing",
     }
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
@@ -90,20 +91,62 @@ class NodeMonorepoDetector(NodeDetector):
         if not tools:
             return result
 
-        # Count packages
-        package_count = 0
-        packages_dir = ctx.repo_root / "packages"
-        if packages_dir.is_dir():
-            for item in packages_dir.iterdir():
-                if item.is_dir() and (item / "package.json").exists():
-                    package_count += 1
+        # Scan for workspace packages using workspace patterns + well-known dirs
+        packages: list[dict] = []
+        seen_paths: set[Path] = set()
 
-        # Also check apps/ directory (common in Turborepo)
-        apps_dir = ctx.repo_root / "apps"
-        if apps_dir.is_dir():
-            for item in apps_dir.iterdir():
-                if item.is_dir() and (item / "package.json").exists():
-                    package_count += 1
+        # Resolve workspace globs from package.json
+        search_dirs: list[Path] = []
+        for pattern in workspace_patterns:
+            if pattern.endswith("/*"):
+                # Glob pattern like "src/*", "packages/*"
+                parent = ctx.repo_root / pattern[:-2]
+                if parent.is_dir():
+                    search_dirs.append(parent)
+            else:
+                # Exact directory like "server-ts", "cypress"
+                exact = ctx.repo_root / pattern
+                if exact.is_dir() and (exact / "package.json").is_file():
+                    if exact not in seen_paths:
+                        seen_paths.add(exact)
+                        try:
+                            pkg_data = json.loads((exact / "package.json").read_text())
+                            packages.append({
+                                "name": pkg_data.get("name", exact.name),
+                                "path": str(exact.relative_to(ctx.repo_root)),
+                                "private": pkg_data.get("private", False),
+                            })
+                        except (json.JSONDecodeError, OSError):
+                            packages.append({
+                                "name": exact.name,
+                                "path": str(exact.relative_to(ctx.repo_root)),
+                            })
+
+        # Also check well-known monorepo dirs as fallback
+        for dirname in ["packages", "apps"]:
+            d = ctx.repo_root / dirname
+            if d.is_dir() and d not in search_dirs:
+                search_dirs.append(d)
+
+        for search_dir in search_dirs:
+            for item in sorted(search_dir.iterdir()):
+                pkg_json = item / "package.json"
+                if item.is_dir() and pkg_json.exists() and item not in seen_paths:
+                    seen_paths.add(item)
+                    try:
+                        pkg_data = json.loads(pkg_json.read_text())
+                        packages.append({
+                            "name": pkg_data.get("name", item.name),
+                            "path": str(item.relative_to(ctx.repo_root)),
+                            "private": pkg_data.get("private", False),
+                        })
+                    except (json.JSONDecodeError, OSError):
+                        packages.append({
+                            "name": item.name,
+                            "path": str(item.relative_to(ctx.repo_root)),
+                        })
+
+        package_count = len(packages)
 
         [t["name"] for t in tools.values()]
         primary = list(tools.keys())[0]
@@ -132,6 +175,7 @@ class NodeMonorepoDetector(NodeDetector):
                 "tools": list(tools.keys()),
                 "primary_tool": primary,
                 "package_count": package_count,
+                "packages": packages,
                 "workspace_patterns": workspace_patterns,
                 "tool_details": tools,
             },

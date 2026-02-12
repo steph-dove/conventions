@@ -18,13 +18,14 @@
               "fullDescription": {
                 "text": "Codebase is written in JavaScript. 3 files."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://www.typescriptlang.org/docs/",
               "properties": {
                 "category": "language",
                 "language": "node",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://www.typescriptlang.org/docs/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -44,13 +45,14 @@
               "fullDescription": {
                 "text": "Some JSDoc documentation present. JSDoc blocks: 12, functions: ~27."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://www.typescriptlang.org/docs/",
               "properties": {
                 "category": "documentation",
                 "language": "node",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://www.typescriptlang.org/docs/"
               },
               "help": {
                 "text": "Assessment: JSDoc coverage: 12 blocks, 18 @param tags\n\nSuggestion: Add JSDoc comments with @param and @returns for better documentation.",
@@ -70,13 +72,14 @@
               "fullDescription": {
                 "text": "Uses GitHub Actions for CI/CD. 19 workflow(s) configured."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.github.com/en/actions",
               "properties": {
                 "category": "ci_cd",
                 "language": "generic",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.github.com/en/actions"
               },
               "help": {
                 "text": "Assessment: Convention detected with 80% confidence\n\nSuggestion: Add automated testing, linting, and deployment steps to your CI/CD pipeline.",
@@ -96,13 +99,14 @@
               "fullDescription": {
                 "text": "CI configuration includes: testing, deployment, caching, matrix builds."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.github.com/en/actions",
               "properties": {
                 "category": "ci_cd",
                 "language": "generic",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.github.com/en/actions"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -122,13 +126,14 @@
               "fullDescription": {
                 "text": "Automated dependency updates via Dependabot for github-actions."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.github.com/en/code-security/dependabot",
               "properties": {
                 "category": "dependencies",
                 "language": "generic",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.github.com/en/code-security/dependabot"
               },
               "help": {
                 "text": "Assessment: Dependency updates: dependabot",
@@ -146,15 +151,16 @@
                 "text": "Git hooks: pre-commit"
               },
               "fullDescription": {
-                "text": "Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting."
+                "text": "Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting, linting."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://pre-commit.com/",
               "properties": {
                 "category": "git",
                 "language": "generic",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://pre-commit.com/"
               },
               "help": {
                 "text": "Assessment: Git hooks: pre-commit",
@@ -174,13 +180,14 @@
               "fullDescription": {
                 "text": "Repository has standard directories: tests (tests), docs (documentation), scripts (scripts), .github (GitHub configuration)"
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.github.com/en/actions",
               "properties": {
                 "category": "structure",
                 "language": "generic",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.github.com/en/actions"
               },
               "help": {
                 "text": "Assessment: Convention detected with 70% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -200,13 +207,14 @@
               "fullDescription": {
                 "text": "Repository has standard files: README.md, LICENSE, CONTRIBUTING.md, .gitignore, .pre-commit-config.yaml"
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.github.com/en/actions",
               "properties": {
                 "category": "structure",
                 "language": "generic",
                 "score": 2,
                 "scoreLabel": "Below Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.github.com/en/actions"
               },
               "help": {
                 "text": "Assessment: Convention detected with 65% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -226,13 +234,14 @@
               "fullDescription": {
                 "text": "Uses response envelope classes (5 found)."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pydantic.dev/",
               "properties": {
                 "category": "api",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.pydantic.dev/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 70% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -252,13 +261,14 @@
               "fullDescription": {
                 "text": "Uses cursor-based pagination. 8 cursor/after/before usages."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "api",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 80% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -278,17 +288,18 @@
               "fullDescription": {
                 "text": "Uses FastAPI as primary framework (2977/3072 usages). Also uses: Starlette, Flask."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "api",
                 "language": "python",
-                "score": 4,
-                "scoreLabel": "Good",
-                "precision": "high"
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
-                "text": "Assessment: Uses FastAPI as primary API framework\n\nSuggestion: Consolidate API frameworks to a single choice for consistency.",
-                "markdown": "**Assessment:** Uses FastAPI as primary API framework\n\n**Suggestion:** Consolidate API frameworks to a single choice for consistency."
+                "text": "Assessment: Uses FastAPI as primary API framework",
+                "markdown": "**Assessment:** Uses FastAPI as primary API framework\n\n"
               },
               "defaultConfiguration": {
                 "level": "note",
@@ -304,17 +315,99 @@
               "fullDescription": {
                 "text": "Uses Pydantic as primary schema library (876/895 usages). Also uses: dataclasses."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pydantic.dev/",
               "properties": {
                 "category": "api",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pydantic.dev/"
               },
               "help": {
                 "text": "Assessment: Uses Pydantic for schema validation\n\nSuggestion: Ensure consistent schema library usage across the codebase.",
                 "markdown": "**Assessment:** Uses Pydantic for schema validation\n\n**Suggestion:** Ensure consistent schema library usage across the codebase."
+              },
+              "defaultConfiguration": {
+                "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.api_versioning",
+              "name": "URL-based API versioning",
+              "shortDescription": {
+                "text": "URL-based API versioning"
+              },
+              "fullDescription": {
+                "text": "Uses URL path versioning (e.g., /v1/, /api/v2/). Found 2 versioned routes."
+              },
+              "helpUri": "https://fastapi.tiangolo.com/",
+              "properties": {
+                "category": "api",
+                "language": "python",
+                "score": 3,
+                "scoreLabel": "Average",
+                "precision": "high",
+                "docsUrl": "https://fastapi.tiangolo.com/"
+              },
+              "help": {
+                "text": "Assessment: URL-based API versioning (2 versioned routes)\n\nSuggestion: Apply consistent versioning across all API routes.",
+                "markdown": "**Assessment:** URL-based API versioning (2 versioned routes)\n\n**Suggestion:** Apply consistent versioning across all API routes."
+              },
+              "defaultConfiguration": {
+                "level": "warning",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.openapi_docs",
+              "name": "OpenAPI with FastAPI (customized)",
+              "shortDescription": {
+                "text": "OpenAPI with FastAPI (customized)"
+              },
+              "fullDescription": {
+                "text": "Uses FastAPI's built-in OpenAPI with custom configuration."
+              },
+              "helpUri": "https://swagger.io/specification/",
+              "properties": {
+                "category": "api",
+                "language": "python",
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": "https://swagger.io/specification/"
+              },
+              "help": {
+                "text": "Assessment: OpenAPI docs via FastAPI (customized)",
+                "markdown": "**Assessment:** OpenAPI docs via FastAPI (customized)\n\n"
+              },
+              "defaultConfiguration": {
+                "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.data_class_style",
+              "name": "Data class style: Pydantic for API + dataclasses for internal",
+              "shortDescription": {
+                "text": "Data class style: Pydantic for API + dataclasses for internal"
+              },
+              "fullDescription": {
+                "text": "Uses Pydantic for API schemas (62) and dataclasses for internal DTOs (6). Good separation."
+              },
+              "helpUri": "https://docs.pydantic.dev/",
+              "properties": {
+                "category": "api",
+                "language": "python",
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": "https://docs.pydantic.dev/"
+              },
+              "help": {
+                "text": "Assessment: Data class style: Pydantic",
+                "markdown": "**Assessment:** Data class style: Pydantic\n\n"
               },
               "defaultConfiguration": {
                 "level": "note",
@@ -330,13 +423,14 @@
               "fullDescription": {
                 "text": "Uses FastAPI BackgroundTasks for background task processing. Found 4 usages."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "concurrency",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 72% confidence\n\nSuggestion: Use appropriate synchronization primitives and handle async errors properly.",
@@ -356,20 +450,21 @@
               "fullDescription": {
                 "text": "Uses functools.lru_cache for caching."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://redis.io/docs/",
               "properties": {
                 "category": "performance",
                 "language": "python",
-                "score": 3,
-                "scoreLabel": "Average",
-                "precision": "high"
+                "score": 4,
+                "scoreLabel": "Good",
+                "precision": "high",
+                "docsUrl": "https://redis.io/docs/"
               },
               "help": {
-                "text": "Assessment: Caching: none\n\nSuggestion: Use Redis or functools caching for performance.",
-                "markdown": "**Assessment:** Caching: none\n\n**Suggestion:** Use Redis or functools caching for performance."
+                "text": "Assessment: Caching with functools.lru_cache\n\nSuggestion: Consider Redis for distributed caching in production environments.",
+                "markdown": "**Assessment:** Caching with functools.lru_cache\n\n**Suggestion:** Consider Redis for distributed caching in production environments."
               },
               "defaultConfiguration": {
-                "level": "warning",
+                "level": "note",
                 "enabled": true
               }
             },
@@ -382,13 +477,14 @@
               "fullDescription": {
                 "text": "Uses Pydantic models for structured data. 84/98 structured classes use this pattern."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pydantic.dev/",
               "properties": {
                 "category": "code_style",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pydantic.dev/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 86% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -408,13 +504,14 @@
               "fullDescription": {
                 "text": "Uses Typer for CLI."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://typer.tiangolo.com/",
               "properties": {
                 "category": "cli",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://typer.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: CLI framework: typer",
@@ -434,20 +531,21 @@
               "fullDescription": {
                 "text": "Uses f-strings consistently for string formatting. 209/211 (99%) use f-strings."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
               "properties": {
                 "category": "code_style",
                 "language": "python",
-                "score": 4,
-                "scoreLabel": "Good",
-                "precision": "high"
+                "score": 3,
+                "scoreLabel": "Average",
+                "precision": "high",
+                "docsUrl": "https://docs.astral.sh/ruff/"
               },
               "help": {
-                "text": "Assessment: Convention detected with 95% confidence",
-                "markdown": "**Assessment:** Convention detected with 95% confidence\n\n"
+                "text": "Assessment: f-string usage: 0%\n\nSuggestion: Prefer f-strings for readability and performance over .format() or %.",
+                "markdown": "**Assessment:** f-string usage: 0%\n\n**Suggestion:** Prefer f-strings for readability and performance over .format() or %."
               },
               "defaultConfiguration": {
-                "level": "note",
+                "level": "warning",
                 "enabled": true
               }
             },
@@ -460,13 +558,14 @@
               "fullDescription": {
                 "text": "Uses pathlib consistently for file paths. 66/66 (100%) use pathlib."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/pathlib.html",
               "properties": {
                 "category": "code_style",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/pathlib.html"
               },
               "help": {
                 "text": "Assessment: Convention detected with 95% confidence",
@@ -486,13 +585,14 @@
               "fullDescription": {
                 "text": "Prefers absolute imports. 74 relative vs 491 absolute imports."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
               "properties": {
                 "category": "code_style",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.astral.sh/ruff/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 70% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -512,13 +612,14 @@
               "fullDescription": {
                 "text": "Uses lowercase naming for module-level values. 87/91 use lowercase."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
               "properties": {
                 "category": "naming",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.astral.sh/ruff/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 70% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -538,13 +639,14 @@
               "fullDescription": {
                 "text": "Uses Python enums for categorical values. Found 4 enum class(es)."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/enum.html",
               "properties": {
                 "category": "code_style",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/enum.html"
               },
               "help": {
                 "text": "Assessment: Convention detected with 80% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -564,13 +666,14 @@
               "fullDescription": {
                 "text": "Uses get_db() dependency pattern with Depends() for session lifecycle. Found 3 get_db definitions."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.sqlalchemy.org/",
               "properties": {
                 "category": "database",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.sqlalchemy.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 85% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -590,13 +693,14 @@
               "fullDescription": {
                 "text": "Uses modern SQLAlchemy 2.0 select() syntax. 8/8 queries use select()."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.sqlalchemy.org/",
               "properties": {
                 "category": "database",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.sqlalchemy.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -616,13 +720,14 @@
               "fullDescription": {
                 "text": "Relies on autocommit or implicit transactions. Found 20 explicit commit calls."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.sqlalchemy.org/",
               "properties": {
                 "category": "database",
                 "language": "python",
                 "score": 2,
                 "scoreLabel": "Below Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.sqlalchemy.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 60% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -630,6 +735,33 @@
               },
               "defaultConfiguration": {
                 "level": "error",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.db_connection_pooling",
+              "name": "Default connection pooling",
+              "shortDescription": {
+                "text": "Default connection pooling"
+              },
+              "fullDescription": {
+                "text": "Uses default SQLAlchemy connection pooling without explicit configuration."
+              },
+              "helpUri": "https://docs.sqlalchemy.org/",
+              "properties": {
+                "category": "database",
+                "language": "python",
+                "score": 3,
+                "scoreLabel": "Average",
+                "precision": "medium",
+                "docsUrl": "https://docs.sqlalchemy.org/"
+              },
+              "help": {
+                "text": "Assessment: Uses default connection pooling\n\nSuggestion: Configure pool_size, max_overflow, and pool_pre_ping for production reliability.",
+                "markdown": "**Assessment:** Uses default connection pooling\n\n**Suggestion:** Configure pool_size, max_overflow, and pool_pre_ping for production reliability."
+              },
+              "defaultConfiguration": {
+                "level": "warning",
                 "enabled": true
               }
             },
@@ -642,13 +774,14 @@
               "fullDescription": {
                 "text": "Uses caching decorators for memoization. Found 14 usages."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/typing.html",
               "properties": {
                 "category": "decorators",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -668,17 +801,45 @@
               "fullDescription": {
                 "text": "Uses uv with lock file for dependencies."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/uv/",
               "properties": {
                 "category": "dependencies",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.astral.sh/uv/"
               },
               "help": {
                 "text": "Assessment: Dependencies: uv",
                 "markdown": "**Assessment:** Dependencies: uv\n\n"
+              },
+              "defaultConfiguration": {
+                "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.lock_file",
+              "name": "Lock file: uv.lock",
+              "shortDescription": {
+                "text": "Lock file: uv.lock"
+              },
+              "fullDescription": {
+                "text": "Dependencies locked with uv.lock."
+              },
+              "helpUri": "https://docs.astral.sh/uv/",
+              "properties": {
+                "category": "dependencies",
+                "language": "python",
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": "https://docs.astral.sh/uv/"
+              },
+              "help": {
+                "text": "Assessment: Lock file: uv.lock",
+                "markdown": "**Assessment:** Lock file: uv.lock\n\n"
               },
               "defaultConfiguration": {
                 "level": "note",
@@ -694,13 +855,14 @@
               "fullDescription": {
                 "text": "Examples use main() function as entry point. Found 14 examples with main()."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "documentation",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 80% confidence\n\nSuggestion: Add docstrings to public functions and classes explaining purpose and parameters.",
@@ -720,13 +882,14 @@
               "fullDescription": {
                 "text": "Documentation uses code snippets (may require context from docs). Only 77/530 examples have all imports."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "documentation",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 70% confidence\n\nSuggestion: Add docstrings to public functions and classes explaining purpose and parameters.",
@@ -746,13 +909,14 @@
               "fullDescription": {
                 "text": "Documentation organized as tutorials. Found 496 tutorial files. Common types: tutorial."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "documentation",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 80% confidence\n\nSuggestion: Add docstrings to public functions and classes explaining purpose and parameters.",
@@ -772,13 +936,14 @@
               "fullDescription": {
                 "text": "Few functions have docstrings. Only 72/366 (20%)."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
               "properties": {
                 "category": "documentation",
                 "language": "python",
                 "score": 1,
                 "scoreLabel": "Poor",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.astral.sh/ruff/"
               },
               "help": {
                 "text": "Assessment: Docstring coverage is 20% of public functions\n\nSuggestion: Add docstrings to public functions and classes. Focus on explaining the 'why' and documenting parameters/return values.",
@@ -798,13 +963,14 @@
               "fullDescription": {
                 "text": "Function names follow PEP 8 snake_case convention. 305/305 functions use snake_case. Found 21 module-level constants."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
               "properties": {
                 "category": "style",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.astral.sh/ruff/"
               },
               "help": {
                 "text": "Assessment: PEP 8 snake_case compliance is 100%",
@@ -824,13 +990,14 @@
               "fullDescription": {
                 "text": "HTTPException is frequently raised outside the API layer. Service: 0, API: 0, Other: 136."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "error_handling",
                 "language": "python",
                 "score": 1,
                 "scoreLabel": "Poor",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: HTTPException raised in API layer 0% of the time\n\nSuggestion: Ensure HTTP errors are raised only at the API boundary layer.",
@@ -850,13 +1017,14 @@
               "fullDescription": {
                 "text": "Exception naming is mixed: 17 *Error, 4 *Exception out of 22 total."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/typing.html",
               "properties": {
                 "category": "error_handling",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
               },
               "help": {
                 "text": "Assessment: Exception naming is 77% consistent across 22 custom exceptions\n\nSuggestion: Standardize exception naming to use *Error suffix consistently.",
@@ -876,13 +1044,14 @@
               "fullDescription": {
                 "text": "Exception handlers are spread across 6 modules."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "error_handling",
                 "language": "python",
                 "score": 1,
                 "scoreLabel": "Poor",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
                 "text": "Assessment: Exception handlers spread across 6 module(s) (31 handlers)\n\nSuggestion: Consolidate exception handlers into a single module (currently in 6 files).",
@@ -902,13 +1071,14 @@
               "fullDescription": {
                 "text": "Uses 'time.sleep' as a common error handler function. Called in 6/28 (21%) except blocks. Also uses: errors.append, RuntimeError."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/typing.html",
               "properties": {
                 "category": "error_handling",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
               },
               "help": {
                 "text": "Assessment: Error wrapper 'time.sleep' used in 6/28 handlers (21%)\n\nSuggestion: Consider using 'time.sleep' more consistently across all exception handlers.",
@@ -916,6 +1086,33 @@
               },
               "defaultConfiguration": {
                 "level": "warning",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.exception_chaining",
+              "name": "Limited exception chaining",
+              "shortDescription": {
+                "text": "Limited exception chaining"
+              },
+              "fullDescription": {
+                "text": "Rarely uses 'raise X from Y'. 7/66 (11%) raises use chaining. Use 'raise X from Y' to preserve context or 'raise X from None' to suppress."
+              },
+              "helpUri": "https://docs.python.org/3/library/typing.html",
+              "properties": {
+                "category": "error_handling",
+                "language": "python",
+                "score": 2,
+                "scoreLabel": "Below Average",
+                "precision": "medium",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
+              },
+              "help": {
+                "text": "Assessment: Exception chaining: 11%\n\nSuggestion: Use 'raise X from Y' for context or 'raise X from None' to suppress chain.",
+                "markdown": "**Assessment:** Exception chaining: 11%\n\n**Suggestion:** Use 'raise X from Y' for context or 'raise X from None' to suppress chain."
+              },
+              "defaultConfiguration": {
+                "level": "error",
                 "enabled": true
               }
             },
@@ -928,13 +1125,14 @@
               "fullDescription": {
                 "text": "Uses Strawberry for GraphQL API. (code-first (type hints))"
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://strawberry.rocks/docs",
               "properties": {
                 "category": "api",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://strawberry.rocks/docs"
               },
               "help": {
                 "text": "Assessment: GraphQL: strawberry",
@@ -954,13 +1152,14 @@
               "fullDescription": {
                 "text": "Exclusively uses Python standard logging for logging. Found 10 usages."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/logging.html",
               "properties": {
                 "category": "logging",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/logging.html"
               },
               "help": {
                 "text": "Assessment: Uses stdlib logging as primary logging library\n\nSuggestion: Consider adopting structlog or Loguru for structured logging with better context propagation.",
@@ -968,6 +1167,33 @@
               },
               "defaultConfiguration": {
                 "level": "warning",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.async_http_client",
+              "name": "Async HTTP client: httpx (recommended)",
+              "shortDescription": {
+                "text": "Async HTTP client: httpx (recommended)"
+              },
+              "fullDescription": {
+                "text": "Uses httpx for HTTP requests."
+              },
+              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "properties": {
+                "category": "async",
+                "language": "python",
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": null
+              },
+              "help": {
+                "text": "Assessment: Uses httpx for HTTP requests",
+                "markdown": "**Assessment:** Uses httpx for HTTP requests\n\n"
+              },
+              "defaultConfiguration": {
+                "level": "note",
                 "enabled": true
               }
             },
@@ -980,17 +1206,45 @@
               "fullDescription": {
                 "text": "Timeouts are rarely specified on external calls. Only 4 calls with explicit timeouts."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://www.python-httpx.org/",
+              "properties": {
+                "category": "resilience",
+                "language": "python",
+                "score": 1,
+                "scoreLabel": "Poor",
+                "precision": "medium",
+                "docsUrl": "https://www.python-httpx.org/"
+              },
+              "help": {
+                "text": "Assessment: Timeout coverage is 2% (4 with, 207 without)\n\nSuggestion: Add explicit timeouts to HTTP client calls. Found 207 calls without timeouts.",
+                "markdown": "**Assessment:** Timeout coverage is 2% (4 with, 207 without)\n\n**Suggestion:** Add explicit timeouts to HTTP client calls. Found 207 calls without timeouts."
+              },
+              "defaultConfiguration": {
+                "level": "error",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.health_checks",
+              "name": "Health check functions",
+              "shortDescription": {
+                "text": "Health check functions"
+              },
+              "fullDescription": {
+                "text": "Has 1 health-related function(s) but no clear endpoints."
+              },
+              "helpUri": "https://fastapi.tiangolo.com/",
               "properties": {
                 "category": "resilience",
                 "language": "python",
                 "score": 2,
                 "scoreLabel": "Below Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://fastapi.tiangolo.com/"
               },
               "help": {
-                "text": "Assessment: Convention detected with 60% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
-                "markdown": "**Assessment:** Convention detected with 60% confidence\n\n**Suggestion:** Review this convention and consider industry best practices for improvement."
+                "text": "Assessment: Health checks: liveness\n\nSuggestion: Add a /ready endpoint to signal when the service is ready to accept traffic.",
+                "markdown": "**Assessment:** Health checks: liveness\n\n**Suggestion:** Add a /ready endpoint to signal when the service is ready to accept traffic."
               },
               "defaultConfiguration": {
                 "level": "error",
@@ -1006,13 +1260,14 @@
               "fullDescription": {
                 "text": "Uses context managers for resource management. 25 with statements (17 sync, 8 async). Types: file_io (2)."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/typing.html",
               "properties": {
                 "category": "resource_management",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -1032,13 +1287,14 @@
               "fullDescription": {
                 "text": "Uses Optional type hint for nullable values. Found 20 imports of Optional."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/typing.html",
               "properties": {
                 "category": "typing",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
               },
               "help": {
                 "text": "Assessment: Convention detected with 80% confidence\n\nSuggestion: Add type annotations to function parameters and return types. Start with public APIs.",
@@ -1058,13 +1314,14 @@
               "fullDescription": {
                 "text": "Uses JWT tokens for authentication. JWT imports: 16."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://pyjwt.readthedocs.io/",
               "properties": {
                 "category": "security",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://pyjwt.readthedocs.io/"
               },
               "help": {
                 "text": "Assessment: Authentication uses JWT, OAuth2, dependency injection\n\nSuggestion: Use a dedicated password hashing library (passlib or bcrypt) for secure credential storage.",
@@ -1084,13 +1341,14 @@
               "fullDescription": {
                 "text": "Uses Pydantic BaseSettings for configuration management. Found 38 Settings usages."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pydantic.dev/latest/concepts/pydantic_settings/",
               "properties": {
                 "category": "security",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pydantic.dev/latest/concepts/pydantic_settings/"
               },
               "help": {
                 "text": "Assessment: Uses Pydantic Settings for configuration (os.environ: 1 direct accesses)\n\nSuggestion: Replace remaining os.environ accesses with Settings class properties.",
@@ -1098,6 +1356,60 @@
               },
               "defaultConfiguration": {
                 "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.env_separation",
+              "name": "Environment separation: Pydantic Settings",
+              "shortDescription": {
+                "text": "Environment separation: Pydantic Settings"
+              },
+              "fullDescription": {
+                "text": "Uses Pydantic Settings for structured configuration."
+              },
+              "helpUri": "https://docs.pydantic.dev/latest/concepts/pydantic_settings/",
+              "properties": {
+                "category": "security",
+                "language": "python",
+                "score": 4,
+                "scoreLabel": "Good",
+                "precision": "high",
+                "docsUrl": "https://docs.pydantic.dev/latest/concepts/pydantic_settings/"
+              },
+              "help": {
+                "text": "Assessment: Config: Pydantic Settings",
+                "markdown": "**Assessment:** Config: Pydantic Settings\n\n"
+              },
+              "defaultConfiguration": {
+                "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.json_library",
+              "name": "JSON library: mixed",
+              "shortDescription": {
+                "text": "JSON library: mixed"
+              },
+              "fullDescription": {
+                "text": "Uses both stdlib json and orjson. Consider standardizing on orjson."
+              },
+              "helpUri": "https://docs.python.org/3/library/json.html",
+              "properties": {
+                "category": "serialization",
+                "language": "python",
+                "score": 3,
+                "scoreLabel": "Average",
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/json.html"
+              },
+              "help": {
+                "text": "Assessment: Uses stdlib json (41 usages)\n\nSuggestion: Consider orjson for 10x faster JSON serialization with minimal API changes.",
+                "markdown": "**Assessment:** Uses stdlib json (41 usages)\n\n**Suggestion:** Consider orjson for 10x faster JSON serialization with minimal API changes."
+              },
+              "defaultConfiguration": {
+                "level": "warning",
                 "enabled": true
               }
             },
@@ -1110,13 +1422,14 @@
               "fullDescription": {
                 "text": "Uses pytest as primary testing framework. Found 887 pytest usages across 465 test files."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pytest.org/",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pytest.org/"
               },
               "help": {
                 "text": "Assessment: Uses pytest with 465 test file(s)",
@@ -1136,13 +1449,14 @@
               "fullDescription": {
                 "text": "Uses pytest @fixture decorator for test setup. Found 186 fixtures. Uses 1 conftest.py file(s) for shared fixtures."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pytest.org/",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pytest.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -1162,13 +1476,14 @@
               "fullDescription": {
                 "text": "Uses plain Python assert statements for test assertions. 4113 assert statements. Uses pytest.raises for exception testing (94 usages)."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pytest.org/",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pytest.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 89% confidence\n\nSuggestion: Add more test cases and increase coverage of edge cases and error paths.",
@@ -1188,13 +1503,14 @@
               "fullDescription": {
                 "text": "Uses unittest.mock / Mock for test mocking. Found 14 usages. Also uses: pytest monkeypatch fixture, @patch decorator."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/unittest.mock.html",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/unittest.mock.html"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -1214,13 +1530,14 @@
               "fullDescription": {
                 "text": "Uses @pytest.mark.parametrize for data-driven tests. Found 442 parametrized test functions."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pytest.org/",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 4,
                 "scoreLabel": "Good",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pytest.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 90% confidence",
@@ -1240,13 +1557,14 @@
               "fullDescription": {
                 "text": "Test files spread across 2 directories. 465 total test files."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pytest.org/",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.pytest.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 70% confidence\n\nSuggestion: Add more test cases and increase coverage of edge cases and error paths.",
@@ -1266,13 +1584,14 @@
               "fullDescription": {
                 "text": "Uses Simple style (test_feature) naming. 2006/2047 (98%) test functions."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pytest.org/",
               "properties": {
                 "category": "testing",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.pytest.org/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 84% confidence\n\nSuggestion: Add more test cases and increase coverage of edge cases and error paths.",
@@ -1292,17 +1611,18 @@
               "fullDescription": {
                 "text": "Uses Ruff, mypy for code quality."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
               "properties": {
                 "category": "tooling",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.astral.sh/ruff/"
               },
               "help": {
-                "text": "Assessment: Linter: ruff",
-                "markdown": "**Assessment:** Linter: ruff\n\n"
+                "text": "Assessment: Linters: Ruff, mypy",
+                "markdown": "**Assessment:** Linters: Ruff, mypy\n\n"
               },
               "defaultConfiguration": {
                 "level": "note",
@@ -1311,24 +1631,79 @@
             },
             {
               "id": "python.conventions.import_sorting",
-              "name": "Import sorting: Ruff (isort rules)",
+              "name": "Import organization: Ruff with grouping",
               "shortDescription": {
-                "text": "Import sorting: Ruff (isort rules)"
+                "text": "Import organization: Ruff with grouping"
               },
               "fullDescription": {
-                "text": "Uses Ruff (isort rules) for import organization."
+                "text": "Uses Ruff isort rules with proper import grouping. Has first-party package configuration."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.astral.sh/ruff/",
+              "properties": {
+                "category": "tooling",
+                "language": "python",
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": "https://docs.astral.sh/ruff/"
+              },
+              "help": {
+                "text": "Assessment: Import sorting: ruff with grouping",
+                "markdown": "**Assessment:** Import sorting: ruff with grouping\n\n"
+              },
+              "defaultConfiguration": {
+                "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.type_checker_strictness",
+              "name": "Type checker: mypy (strict mode)",
+              "shortDescription": {
+                "text": "Type checker: mypy (strict mode)"
+              },
+              "fullDescription": {
+                "text": "Uses mypy in strict mode - catches the most type errors."
+              },
+              "helpUri": "https://mypy.readthedocs.io/",
+              "properties": {
+                "category": "tooling",
+                "language": "python",
+                "score": 5,
+                "scoreLabel": "Excellent",
+                "precision": "high",
+                "docsUrl": "https://mypy.readthedocs.io/"
+              },
+              "help": {
+                "text": "Assessment: mypy in strict mode",
+                "markdown": "**Assessment:** mypy in strict mode\n\n"
+              },
+              "defaultConfiguration": {
+                "level": "note",
+                "enabled": true
+              }
+            },
+            {
+              "id": "python.conventions.pre_commit_hooks",
+              "name": "Pre-commit hooks configured",
+              "shortDescription": {
+                "text": "Pre-commit hooks configured"
+              },
+              "fullDescription": {
+                "text": "Pre-commit is configured with 13 hooks."
+              },
+              "helpUri": "https://pre-commit.com/",
               "properties": {
                 "category": "tooling",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "high"
+                "precision": "medium",
+                "docsUrl": "https://pre-commit.com/"
               },
               "help": {
-                "text": "Assessment: Import sorting: none\n\nSuggestion: Use isort or Ruff for consistent import ordering.",
-                "markdown": "**Assessment:** Import sorting: none\n\n**Suggestion:** Use isort or Ruff for consistent import ordering."
+                "text": "Assessment: 13 pre-commit hooks configured\n\nSuggestion: Add ruff to pre-commit for fast linting and formatting.",
+                "markdown": "**Assessment:** 13 pre-commit hooks configured\n\n**Suggestion:** Add ruff to pre-commit for fast linting and formatting."
               },
               "defaultConfiguration": {
                 "level": "warning",
@@ -1344,13 +1719,14 @@
               "fullDescription": {
                 "text": "Type annotations are commonly used in this codebase. 362/366 functions (99%) have at least one type annotation."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.python.org/3/library/typing.html",
               "properties": {
                 "category": "typing",
                 "language": "python",
                 "score": 5,
                 "scoreLabel": "Excellent",
-                "precision": "high"
+                "precision": "high",
+                "docsUrl": "https://docs.python.org/3/library/typing.html"
               },
               "help": {
                 "text": "Assessment: Type annotation coverage is 99%",
@@ -1370,13 +1746,14 @@
               "fullDescription": {
                 "text": "Uses Pydantic validation for input validation. 17/28 (61%) validation patterns use this approach."
               },
-              "helpUri": "https://github.com/conventions-cli/conventions-cli#rules",
+              "helpUri": "https://docs.pydantic.dev/",
               "properties": {
                 "category": "validation",
                 "language": "python",
                 "score": 3,
                 "scoreLabel": "Average",
-                "precision": "medium"
+                "precision": "medium",
+                "docsUrl": "https://docs.pydantic.dev/"
               },
               "help": {
                 "text": "Assessment: Convention detected with 78% confidence\n\nSuggestion: Review this convention and consider industry best practices for improvement.",
@@ -1680,7 +2057,8 @@
               "hooks_configured": [
                 "whitespace",
                 "file validation",
-                "formatting"
+                "formatting",
+                "linting"
               ],
               "hook_tool": "pre-commit",
               "has_pre_commit": true,
@@ -1936,8 +2314,8 @@
           },
           "properties": {
             "confidence": 0.8391764322916666,
-            "score": 4,
-            "scoreLabel": "Good",
+            "score": 5,
+            "scoreLabel": "Excellent",
             "stats": {
               "framework_counts": {
                 "fastapi": 2977,
@@ -1947,14 +2325,6 @@
               "primary_framework": "fastapi"
             }
           },
-          "fixes": [
-            {
-              "description": {
-                "text": "Consolidate API frameworks to a single choice for consistency."
-              },
-              "changes": []
-            }
-          ],
           "locations": [
             {
               "physicalLocation": {
@@ -2140,8 +2510,312 @@
           ]
         },
         {
-          "ruleId": "python.conventions.background_jobs",
+          "ruleId": "python.conventions.api_versioning",
           "ruleIndex": 12,
+          "level": "warning",
+          "kind": "review",
+          "message": {
+            "text": "URL-based API versioning: URL-based API versioning (2 versioned routes)"
+          },
+          "properties": {
+            "confidence": 0.85,
+            "score": 3,
+            "scoreLabel": "Average",
+            "stats": {
+              "versioning_patterns": {
+                "url_versioning": 2,
+                "header_versioning": 5,
+                "router_prefix": 6
+              },
+              "primary_pattern": "url_versioning"
+            }
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Apply consistent versioning across all API routes."
+              },
+              "changes": []
+            }
+          ],
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/applications.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 220,
+                  "endLine": 226,
+                  "snippet": {
+                    "text": "                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(openapi_url=\"/api/v1/openapi.json\")\n                ```\n                \"\"\"\n            ),"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/applications.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 659,
+                  "endLine": 665,
+                  "snippet": {
+                    "text": "                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path=\"/api/v1\")\n                ```\n                \"\"\"\n            ),"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/applications.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 871,
+                  "endLine": 877,
+                  "snippet": {
+                    "text": "        self.separate_input_output_schemas = separate_input_output_schemas\n        self.openapi_external_docs = openapi_external_docs\n        self.extra = extra\n        self.openapi_version: Annotated[\n            str,\n            Doc(\n                \"\"\""
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/applications.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 897,
+                  "endLine": 903,
+                  "snippet": {
+                    "text": "\n                app = FastAPI()\n\n                app.openapi_version = \"3.0.2\"\n                ```\n                \"\"\"\n            ),"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/applications.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1061,
+                  "endLine": 1067,
+                  "snippet": {
+                    "text": "            self.openapi_schema = get_openapi(\n                title=self.title,\n                version=self.version,\n                openapi_version=self.openapi_version,\n                summary=self.summary,\n                description=self.description,\n                terms_of_service=self.terms_of_service,"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.openapi_docs",
+          "ruleIndex": 13,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "OpenAPI with FastAPI (customized): OpenAPI docs via FastAPI (customized)"
+          },
+          "properties": {
+            "confidence": 0.85,
+            "score": 5,
+            "scoreLabel": "Excellent",
+            "stats": {
+              "openapi_indicators": {
+                "fastapi_builtin": 1,
+                "fastapi_customized": 6
+              },
+              "primary_tool": "fastapi_customized"
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "docs_src/conditional_openapi/tutorial001_py39.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 8,
+                  "endLine": 14,
+                  "snippet": {
+                    "text": "\nsettings = Settings()\n\napp = FastAPI(openapi_url=settings.openapi_url)\n\n\n@app.get(\"/\")"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "docs_src/custom_docs_ui/tutorial002_py39.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 6,
+                  "endLine": 12,
+                  "snippet": {
+                    "text": ")\nfrom fastapi.staticfiles import StaticFiles\n\napp = FastAPI(docs_url=None, redoc_url=None)\n\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\n"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "docs_src/custom_docs_ui/tutorial001_py39.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 5,
+                  "endLine": 11,
+                  "snippet": {
+                    "text": "    get_swagger_ui_oauth2_redirect_html,\n)\n\napp = FastAPI(docs_url=None, redoc_url=None)\n\n\n@app.get(\"/docs\", include_in_schema=False)"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "docs_src/metadata/tutorial004_py39.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 15,
+                  "endLine": 21,
+                  "snippet": {
+                    "text": "    },\n]\n\napp = FastAPI(openapi_tags=tags_metadata)\n\n\n@app.get(\"/users/\", tags=[\"users\"])"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "docs_src/metadata/tutorial002_py39.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 6,
+                  "snippet": {
+                    "text": "from fastapi import FastAPI\n\napp = FastAPI(openapi_url=\"/api/v1/openapi.json\")\n\n\n@app.get(\"/items/\")"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.data_class_style",
+          "ruleIndex": 14,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "Data class style: Pydantic for API + dataclasses for internal: Data class style: Pydantic"
+          },
+          "properties": {
+            "confidence": 0.9,
+            "score": 5,
+            "scoreLabel": "Excellent",
+            "stats": {
+              "primary_style": "pydantic",
+              "style_counts": {
+                "dataclass": 6,
+                "pydantic": 62
+              },
+              "has_validation": true
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/security/http.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 11,
+                  "endLine": 21,
+                  "snippet": {
+                    "text": "from pydantic import BaseModel\nfrom starlette.requests import Request\nfrom starlette.status import HTTP_401_UNAUTHORIZED\n\n\nclass HTTPBasicCredentials(BaseModel):\n    \"\"\"\n    The HTTP Basic credentials given as the result of using `HTTPBasic` in a\n    dependency.\n\n    Read more about it in the"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/security/http.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 24,
+                  "endLine": 34,
+                  "snippet": {
+                    "text": "\n    username: Annotated[str, Doc(\"The HTTP Basic username.\")]\n    password: Annotated[str, Doc(\"The HTTP Basic password.\")]\n\n\nclass HTTPAuthorizationCredentials(BaseModel):\n    \"\"\"\n    The HTTP authorization credentials in the result of using `HTTPBearer` or\n    `HTTPDigest` in a dependency.\n\n    The HTTP authorization header value is split by the first space."
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/openapi/models.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 52,
+                  "endLine": 62,
+                  "snippet": {
+                    "text": "            cls, source: type[Any], handler: Callable[[Any], Mapping[str, Any]]\n        ) -> Mapping[str, Any]:\n            return with_info_plain_validator_function(cls._validate)\n\n\nclass BaseModelWithConfig(BaseModel):\n    model_config = {\"extra\": \"allow\"}\n\n\nclass Contact(BaseModelWithConfig):\n    name: Optional[str] = None"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/openapi/models.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 90,
+                  "endLine": 100,
+                  "snippet": {
+                    "text": "    url: Union[AnyUrl, str]\n    description: Optional[str] = None\n    variables: Optional[dict[str, ServerVariable]] = None\n\n\nclass Reference(BaseModel):\n    ref: str = Field(alias=\"$ref\")\n\n\nclass Discriminator(BaseModel):\n    propertyName: str"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/openapi/models.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 94,
+                  "endLine": 104,
+                  "snippet": {
+                    "text": "\nclass Reference(BaseModel):\n    ref: str = Field(alias=\"$ref\")\n\n\nclass Discriminator(BaseModel):\n    propertyName: str\n    mapping: Optional[dict[str, str]] = None\n\n\nclass XML(BaseModelWithConfig):"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.background_jobs",
+          "ruleIndex": 15,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -2232,16 +2906,16 @@
         },
         {
           "ruleId": "python.conventions.caching",
-          "ruleIndex": 13,
-          "level": "warning",
-          "kind": "review",
+          "ruleIndex": 16,
+          "level": "note",
+          "kind": "pass",
           "message": {
-            "text": "Caching: functools.lru_cache: Caching: none"
+            "text": "Caching: functools.lru_cache: Caching with functools.lru_cache"
           },
           "properties": {
             "confidence": 0.8,
-            "score": 3,
-            "scoreLabel": "Average",
+            "score": 4,
+            "scoreLabel": "Good",
             "stats": {
               "caching_methods": [
                 "lru_cache"
@@ -2258,7 +2932,7 @@
           "fixes": [
             {
               "description": {
-                "text": "Use Redis or functools caching for performance."
+                "text": "Consider Redis for distributed caching in production environments."
               },
               "changes": []
             }
@@ -2274,7 +2948,7 @@
                   "startLine": 476,
                   "endLine": 482,
                   "snippet": {
-                    "text": "\n\n@lru_cache\ndef get_cached_model_fields(model: type[BaseModel]) -> list[ModelField]:\n    return get_model_fields(model)  # type: ignore[return-value]\n\n"
+                    "text": "\n\n@lru_cache\ndef get_cached_model_fields(model: type[BaseModel]) -> list[ModelField]:\n    return get_model_fields(model)\n\n"
                   }
                 }
               }
@@ -2343,7 +3017,7 @@
         },
         {
           "ruleId": "python.conventions.class_style",
-          "ruleIndex": 14,
+          "ruleIndex": 17,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -2450,7 +3124,7 @@
         },
         {
           "ruleId": "python.conventions.cli_framework",
-          "ruleIndex": 15,
+          "ruleIndex": 18,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -2553,16 +3227,16 @@
         },
         {
           "ruleId": "python.conventions.string_formatting",
-          "ruleIndex": 16,
-          "level": "note",
-          "kind": "pass",
+          "ruleIndex": 19,
+          "level": "warning",
+          "kind": "review",
           "message": {
-            "text": "Modern f-string formatting: Convention detected with 95% confidence"
+            "text": "Modern f-string formatting: f-string usage: 0%"
           },
           "properties": {
             "confidence": 0.9466824644549763,
-            "score": 4,
-            "scoreLabel": "Good",
+            "score": 3,
+            "scoreLabel": "Average",
             "stats": {
               "total_formats": 211,
               "fstring_count": 209,
@@ -2572,6 +3246,14 @@
               "dominant_style": "fstring"
             }
           },
+          "fixes": [
+            {
+              "description": {
+                "text": "Prefer f-strings for readability and performance over .format() or %."
+              },
+              "changes": []
+            }
+          ],
           "locations": [
             {
               "physicalLocation": {
@@ -2652,7 +3334,7 @@
         },
         {
           "ruleId": "python.conventions.path_handling",
-          "ruleIndex": 17,
+          "ruleIndex": 20,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -2749,7 +3431,7 @@
         },
         {
           "ruleId": "python.conventions.import_style",
-          "ruleIndex": 18,
+          "ruleIndex": 21,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -2854,7 +3536,7 @@
         },
         {
           "ruleId": "python.conventions.constant_naming",
-          "ruleIndex": 19,
+          "ruleIndex": 22,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -2959,7 +3641,7 @@
         },
         {
           "ruleId": "python.conventions.enum_usage",
-          "ruleIndex": 20,
+          "ruleIndex": 23,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3055,7 +3737,7 @@
         },
         {
           "ruleId": "python.conventions.db_session_lifecycle",
-          "ruleIndex": 21,
+          "ruleIndex": 24,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3113,7 +3795,7 @@
         },
         {
           "ruleId": "python.conventions.db_query_style",
-          "ruleIndex": 22,
+          "ruleIndex": 25,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3218,7 +3900,7 @@
         },
         {
           "ruleId": "python.conventions.db_transactions",
-          "ruleIndex": 23,
+          "ruleIndex": 26,
           "level": "error",
           "kind": "fail",
           "message": {
@@ -3254,8 +3936,43 @@
           ]
         },
         {
+          "ruleId": "python.conventions.db_connection_pooling",
+          "ruleIndex": 27,
+          "level": "warning",
+          "kind": "review",
+          "message": {
+            "text": "Default connection pooling: Uses default connection pooling"
+          },
+          "properties": {
+            "confidence": 0.6,
+            "score": 3,
+            "scoreLabel": "Average",
+            "stats": {
+              "default_pool": 12
+            }
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Configure pool_size, max_overflow, and pool_pre_ping for production reliability."
+              },
+              "changes": []
+            }
+          ],
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".",
+                  "uriBaseId": "%SRCROOT%"
+                }
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "python.conventions.decorator_caching",
-          "ruleIndex": 24,
+          "ruleIndex": 28,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -3351,7 +4068,7 @@
         },
         {
           "ruleId": "python.conventions.dependency_management",
-          "ruleIndex": 25,
+          "ruleIndex": 29,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -3386,8 +4103,40 @@
           ]
         },
         {
+          "ruleId": "python.conventions.lock_file",
+          "ruleIndex": 30,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "Lock file: uv.lock: Lock file: uv.lock"
+          },
+          "properties": {
+            "confidence": 0.95,
+            "score": 5,
+            "scoreLabel": "Excellent",
+            "stats": {
+              "lock_files": {
+                "uv": "uv.lock"
+              },
+              "primary_lock": "uv",
+              "quality": "modern",
+              "has_lock": true
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".",
+                  "uriBaseId": "%SRCROOT%"
+                }
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "python.docs_conventions.example_structure",
-          "ruleIndex": 26,
+          "ruleIndex": 31,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3429,7 +4178,7 @@
         },
         {
           "ruleId": "python.docs_conventions.example_completeness",
-          "ruleIndex": 27,
+          "ruleIndex": 32,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3467,7 +4216,7 @@
         },
         {
           "ruleId": "python.docs_conventions.organization",
-          "ruleIndex": 28,
+          "ruleIndex": 33,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3511,7 +4260,7 @@
         },
         {
           "ruleId": "python.conventions.docstrings",
-          "ruleIndex": 29,
+          "ruleIndex": 34,
           "level": "error",
           "kind": "fail",
           "message": {
@@ -3603,7 +4352,7 @@
         },
         {
           "ruleId": "python.conventions.naming",
-          "ruleIndex": 30,
+          "ruleIndex": 35,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -3633,7 +4382,7 @@
         },
         {
           "ruleId": "python.conventions.error_handling_boundary",
-          "ruleIndex": 31,
+          "ruleIndex": 36,
           "level": "error",
           "kind": "fail",
           "message": {
@@ -3741,7 +4490,7 @@
         },
         {
           "ruleId": "python.conventions.error_taxonomy",
-          "ruleIndex": 32,
+          "ruleIndex": 37,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -3868,7 +4617,7 @@
         },
         {
           "ruleId": "python.conventions.exception_handlers",
-          "ruleIndex": 33,
+          "ruleIndex": 38,
           "level": "error",
           "kind": "fail",
           "message": {
@@ -3883,12 +4632,12 @@
               "decorator_handlers": 12,
               "call_handlers": 19,
               "handler_files": [
-                "tests/test_validation_error_context.py",
-                "docs_src/handling_errors/tutorial005_py39.py",
-                "docs_src/handling_errors/tutorial003_py39.py",
-                "docs_src/handling_errors/tutorial004_py39.py",
                 "docs_src/handling_errors/tutorial006_py39.py",
-                "fastapi/applications.py"
+                "docs_src/handling_errors/tutorial005_py39.py",
+                "tests/test_validation_error_context.py",
+                "docs_src/handling_errors/tutorial003_py39.py",
+                "fastapi/applications.py",
+                "docs_src/handling_errors/tutorial004_py39.py"
               ]
             }
           },
@@ -3980,7 +4729,7 @@
         },
         {
           "ruleId": "python.conventions.error_wrapper",
-          "ruleIndex": 34,
+          "ruleIndex": 39,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -4088,8 +4837,98 @@
           ]
         },
         {
+          "ruleId": "python.conventions.exception_chaining",
+          "ruleIndex": 40,
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Limited exception chaining: Exception chaining: 11%"
+          },
+          "properties": {
+            "confidence": 0.7,
+            "score": 2,
+            "scoreLabel": "Below Average",
+            "stats": {
+              "chained_raises": 7,
+              "unchained_raises": 59,
+              "bare_raises": 2,
+              "chaining_ratio": 0.106
+            }
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Use 'raise X from Y' for context or 'raise X from None' to suppress chain."
+              },
+              "changes": []
+            }
+          ],
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/encoders.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 332,
+                  "endLine": 338,
+                  "snippet": {
+                    "text": "            data = vars(obj)\n        except Exception as e:\n            errors.append(e)\n            raise ValueError(errors) from e\n    return jsonable_encoder(\n        data,\n        include=include,"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/utils.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 92,
+                  "endLine": 98,
+                  "snippet": {
+                    "text": "    try:\n        return v2.ModelField(**kwargs)  # type: ignore[arg-type]\n    except PydanticSchemaGenerationError:\n        raise fastapi.exceptions.FastAPIError(\n            _invalid_args_message.format(type_=type_)\n        ) from None\n"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/concurrency.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 34,
+                  "endLine": 40,
+                  "snippet": {
+                    "text": "            )\n        )\n        if not ok:\n            raise e\n    else:\n        await anyio.to_thread.run_sync(\n            cm.__exit__, None, None, None, limiter=exit_limiter"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/encoders.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 319,
+                  "endLine": 325,
+                  "snippet": {
+                    "text": "        if isinstance(obj, classes_tuple):\n            return encoder(obj)\n    if is_pydantic_v1_model_instance(obj):\n        raise PydanticV1NotSupportedError(\n            \"pydantic.v1 models are no longer supported by FastAPI.\"\n            f\" Please update the model {obj!r}.\"\n        )"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "python.conventions.graphql",
-          "ruleIndex": 35,
+          "ruleIndex": 41,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -4148,7 +4987,7 @@
         },
         {
           "ruleId": "python.conventions.logging_library",
-          "ruleIndex": 36,
+          "ruleIndex": 42,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -4253,17 +5092,116 @@
           ]
         },
         {
+          "ruleId": "python.conventions.async_http_client",
+          "ruleIndex": 43,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "Async HTTP client: httpx (recommended): Uses httpx for HTTP requests"
+          },
+          "properties": {
+            "confidence": 0.85,
+            "score": 5,
+            "scoreLabel": "Excellent",
+            "stats": {
+              "http_client_counts": {
+                "requests": 1,
+                "httpx": 11
+              },
+              "primary_client": "httpx",
+              "quality": "excellent"
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/contributors.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 6,
+                  "endLine": 12,
+                  "snippet": {
+                    "text": "from pathlib import Path\nfrom typing import Any\n\nimport httpx\nimport yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/notify_translations.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 5,
+                  "endLine": 11,
+                  "snippet": {
+                    "text": "from pathlib import Path\nfrom typing import Any, Union, cast\n\nimport httpx\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/sponsors.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 5,
+                  "endLine": 11,
+                  "snippet": {
+                    "text": "from pathlib import Path\nfrom typing import Any\n\nimport httpx\nimport yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/people.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 8,
+                  "endLine": 14,
+                  "snippet": {
+                    "text": "from pathlib import Path\nfrom typing import Any, Union\n\nimport httpx\nimport yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/playwright/cookie_param_models/image01.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 7,
+                  "snippet": {
+                    "text": "import subprocess\nimport time\n\nimport httpx\nfrom playwright.sync_api import Playwright, sync_playwright\n\n"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "python.conventions.timeouts",
-          "ruleIndex": 37,
+          "ruleIndex": 44,
           "level": "error",
           "kind": "fail",
           "message": {
-            "text": "Infrequent timeout specification: Convention detected with 60% confidence"
+            "text": "Infrequent timeout specification: Timeout coverage is 2% (4 with, 207 without)"
           },
           "properties": {
             "confidence": 0.6,
-            "score": 2,
-            "scoreLabel": "Below Average",
+            "score": 1,
+            "scoreLabel": "Poor",
             "stats": {
               "timeout_indicators": 4,
               "no_timeout_indicators": 207,
@@ -4273,7 +5211,7 @@
           "fixes": [
             {
               "description": {
-                "text": "Review this convention and consider industry best practices for improvement."
+                "text": "Add explicit timeouts to HTTP client calls. Found 207 calls without timeouts."
               },
               "changes": []
             }
@@ -4342,8 +5280,53 @@
           ]
         },
         {
+          "ruleId": "python.conventions.health_checks",
+          "ruleIndex": 45,
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Health check functions: Health checks: liveness"
+          },
+          "properties": {
+            "confidence": 0.5,
+            "score": 2,
+            "scoreLabel": "Below Average",
+            "stats": {
+              "health_endpoint_count": 0,
+              "health_function_count": 1,
+              "has_readiness": false,
+              "has_liveness": true
+            }
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Add a /ready endpoint to signal when the service is ready to accept traffic."
+              },
+              "changes": []
+            }
+          ],
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/docs.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 307,
+                  "endLine": 313,
+                  "snippet": {
+                    "text": "\n\n@app.command()\ndef live(\n    lang: str = typer.Argument(\n        None, callback=lang_callback, autocompletion=complete_existing_lang\n    ),"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "python.conventions.context_managers",
-          "ruleIndex": 38,
+          "ruleIndex": 46,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -4397,7 +5380,7 @@
         },
         {
           "ruleId": "python.conventions.optional_usage",
-          "ruleIndex": 39,
+          "ruleIndex": 47,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -4499,7 +5482,7 @@
         },
         {
           "ruleId": "python.conventions.auth_pattern",
-          "ruleIndex": 40,
+          "ruleIndex": 48,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -4603,7 +5586,7 @@
         },
         {
           "ruleId": "python.conventions.secrets_access_style",
-          "ruleIndex": 41,
+          "ruleIndex": 49,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -4705,8 +5688,197 @@
           ]
         },
         {
+          "ruleId": "python.conventions.env_separation",
+          "ruleIndex": 50,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "Environment separation: Pydantic Settings: Config: Pydantic Settings"
+          },
+          "properties": {
+            "confidence": 0.85,
+            "score": 4,
+            "scoreLabel": "Good",
+            "stats": {
+              "approach": "pydantic_settings",
+              "has_env_files": false,
+              "raw_environ_count": 1
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/contributors.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 10,
+                  "endLine": 16,
+                  "snippet": {
+                    "text": "import yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\ngithub_graphql_url = \"https://api.github.com/graphql\"\n"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/label_approved.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 10,
+                  "snippet": {
+                    "text": "from github import Github\nfrom github.PullRequestReview import PullRequestReview\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\n\nclass LabelSettings(BaseModel):"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/notify_translations.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 8,
+                  "endLine": 14,
+                  "snippet": {
+                    "text": "import httpx\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\nawaiting_label = \"awaiting-review\"\nlang_all_label = \"lang-all\""
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/sponsors.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9,
+                  "endLine": 15,
+                  "snippet": {
+                    "text": "import yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\ngithub_graphql_url = \"https://api.github.com/graphql\"\n"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/people.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 18,
+                  "snippet": {
+                    "text": "import yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\ngithub_graphql_url = \"https://api.github.com/graphql\"\nquestions_category_id = \"MDE4OkRpc2N1c3Npb25DYXRlZ29yeTMyMDAxNDM0\""
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.json_library",
+          "ruleIndex": 51,
+          "level": "warning",
+          "kind": "review",
+          "message": {
+            "text": "JSON library: mixed: Uses stdlib json (41 usages)"
+          },
+          "properties": {
+            "confidence": 0.9,
+            "score": 3,
+            "scoreLabel": "Average",
+            "stats": {
+              "json_library_counts": {
+                "ujson": 3,
+                "orjson": 4,
+                "json": 34
+              },
+              "primary_library": "json",
+              "total_usages": 41
+            }
+          },
+          "fixes": [
+            {
+              "description": {
+                "text": "Consider orjson for 10x faster JSON serialization with minimal API changes."
+              },
+              "changes": []
+            }
+          ],
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/routing.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 7,
+                  "snippet": {
+                    "text": "import email.message\nimport functools\nimport inspect\nimport json\nfrom collections.abc import (\n    AsyncIterator,\n    Awaitable,"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "fastapi/openapi/docs.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 4,
+                  "snippet": {
+                    "text": "import json\nfrom typing import Annotated, Any, Optional\n\nfrom annotated_doc import Doc"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/translate.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 4,
+                  "snippet": {
+                    "text": "import json\nimport secrets\nimport subprocess\nfrom collections.abc import Iterable"
+                  }
+                }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "scripts/docs.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 4,
+                  "snippet": {
+                    "text": "import json\nimport logging\nimport os\nimport re"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
           "ruleId": "python.conventions.testing_framework",
-          "ruleIndex": 42,
+          "ruleIndex": 52,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -4805,7 +5977,7 @@
         },
         {
           "ruleId": "python.test_conventions.fixtures",
-          "ruleIndex": 43,
+          "ruleIndex": 53,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -4903,7 +6075,7 @@
         },
         {
           "ruleId": "python.test_conventions.assertions",
-          "ruleIndex": 44,
+          "ruleIndex": 54,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -5010,7 +6182,7 @@
         },
         {
           "ruleId": "python.test_conventions.mocking",
-          "ruleIndex": 45,
+          "ruleIndex": 55,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -5109,7 +6281,7 @@
         },
         {
           "ruleId": "python.test_conventions.parametrized",
-          "ruleIndex": 46,
+          "ruleIndex": 56,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -5203,7 +6375,7 @@
         },
         {
           "ruleId": "python.conventions.test_structure",
-          "ruleIndex": 47,
+          "ruleIndex": 57,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -5247,7 +6419,7 @@
         },
         {
           "ruleId": "python.conventions.test_naming",
-          "ruleIndex": 48,
+          "ruleIndex": 58,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -5325,11 +6497,11 @@
         },
         {
           "ruleId": "python.conventions.linter",
-          "ruleIndex": 49,
+          "ruleIndex": 59,
           "level": "note",
           "kind": "pass",
           "message": {
-            "text": "Linters: Ruff, mypy: Linter: ruff"
+            "text": "Linters: Ruff, mypy: Linters: Ruff, mypy"
           },
           "properties": {
             "confidence": 0.8999999999999999,
@@ -5370,16 +6542,16 @@
         },
         {
           "ruleId": "python.conventions.import_sorting",
-          "ruleIndex": 50,
-          "level": "warning",
-          "kind": "review",
+          "ruleIndex": 60,
+          "level": "note",
+          "kind": "pass",
           "message": {
-            "text": "Import sorting: Ruff (isort rules): Import sorting: none"
+            "text": "Import organization: Ruff with grouping: Import sorting: ruff with grouping"
           },
           "properties": {
-            "confidence": 0.9,
-            "score": 3,
-            "scoreLabel": "Average",
+            "confidence": 0.95,
+            "score": 5,
+            "scoreLabel": "Excellent",
             "stats": {
               "sorters": [
                 "ruff"
@@ -5388,15 +6560,102 @@
               "sorter_details": {
                 "ruff": {
                   "name": "Ruff (isort rules)",
-                  "config_file": "pyproject.toml"
+                  "config_file": "pyproject.toml",
+                  "has_grouping": true
+                }
+              },
+              "has_grouping": true,
+              "has_known_first_party": true,
+              "has_sections": false,
+              "has_force_sort_within_sections": false,
+              "profile": null
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".",
+                  "uriBaseId": "%SRCROOT%"
                 }
               }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.type_checker_strictness",
+          "ruleIndex": 61,
+          "level": "note",
+          "kind": "pass",
+          "message": {
+            "text": "Type checker: mypy (strict mode): mypy in strict mode"
+          },
+          "properties": {
+            "confidence": 0.9,
+            "score": 5,
+            "scoreLabel": "Excellent",
+            "stats": {
+              "type_checker": "mypy",
+              "strictness": "strict",
+              "strict_options": [
+                "strict mode"
+              ],
+              "config_file": "pyproject.toml"
+            }
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".",
+                  "uriBaseId": "%SRCROOT%"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "python.conventions.pre_commit_hooks",
+          "ruleIndex": 62,
+          "level": "warning",
+          "kind": "review",
+          "message": {
+            "text": "Pre-commit hooks configured: 13 pre-commit hooks configured"
+          },
+          "properties": {
+            "confidence": 0.6,
+            "score": 3,
+            "scoreLabel": "Average",
+            "stats": {
+              "has_pre_commit": true,
+              "hooks": [
+                "check-added-large-files",
+                "check-toml",
+                "check-yaml",
+                "end-of-file-fixer",
+                "trailing-whitespace",
+                "local-ruff-check",
+                "local-ruff-format",
+                "local-mypy",
+                "add-permalinks-pages",
+                "generate-readme",
+                "update-languages",
+                "ensure-non-translated",
+                "fix-translations"
+              ],
+              "has_ruff": false,
+              "has_mypy": false,
+              "has_pyright": false,
+              "has_type_checker": false,
+              "has_black": false,
+              "has_flake8": false,
+              "has_isort": false
             }
           },
           "fixes": [
             {
               "description": {
-                "text": "Use isort or Ruff for consistent import ordering."
+                "text": "Add ruff to pre-commit for fast linting and formatting."
               },
               "changes": []
             }
@@ -5414,7 +6673,7 @@
         },
         {
           "ruleId": "python.conventions.typing_coverage",
-          "ruleIndex": 51,
+          "ruleIndex": 63,
           "level": "note",
           "kind": "pass",
           "message": {
@@ -5497,7 +6756,7 @@
         },
         {
           "ruleId": "python.conventions.validation_style",
-          "ruleIndex": 52,
+          "ruleIndex": 64,
           "level": "warning",
           "kind": "review",
           "message": {
@@ -5606,7 +6865,7 @@
       "invocations": [
         {
           "executionSuccessful": true,
-          "startTimeUtc": "2026-01-25T06:05:46.022804+00:00",
+          "startTimeUtc": "2026-02-04T05:12:12.253596+00:00",
           "workingDirectory": {
             "uri": "/private/tmp/fastapi"
           }

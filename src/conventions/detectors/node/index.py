@@ -249,8 +249,8 @@ def infer_node_module_role(relative_path: str) -> str:
     if any(p in ("services", "service") for p in parts):
         return "service"
 
-    # Models/DB
-    if any(p in ("models", "db", "database", "repositories") for p in parts):
+    # Models/DB/Stores
+    if any(p in ("models", "db", "database", "repositories", "store", "stores", "data-store") for p in parts):
         return "db"
 
     return "other"

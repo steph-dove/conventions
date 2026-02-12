@@ -21,7 +21,8 @@
         "typescript_files": 0,
         "javascript_files": 3,
         "typescript_ratio": 0.0
-      }
+      },
+      "docs_url": "https://www.typescriptlang.org/docs/"
     },
     {
       "id": "node.conventions.jsdoc",
@@ -69,7 +70,8 @@
         "type_tags": 0,
         "function_count": 27,
         "jsdoc_ratio": 0.444
-      }
+      },
+      "docs_url": "https://www.typescriptlang.org/docs/"
     },
     {
       "id": "generic.conventions.ci_platform",
@@ -96,7 +98,8 @@
             ]
           }
         }
-      }
+      },
+      "docs_url": "https://docs.github.com/en/actions"
     },
     {
       "id": "generic.conventions.ci_quality",
@@ -118,7 +121,8 @@
           "caching",
           "matrix builds"
         ]
-      }
+      },
+      "docs_url": "https://docs.github.com/en/actions"
     },
     {
       "id": "generic.conventions.dependency_updates",
@@ -141,13 +145,14 @@
           }
         },
         "primary_tool": "dependabot"
-      }
+      },
+      "docs_url": "https://docs.github.com/en/code-security/dependabot"
     },
     {
       "id": "generic.conventions.git_hooks",
       "category": "git",
       "title": "Git hooks: pre-commit",
-      "description": "Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting.",
+      "description": "Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting, linting.",
       "confidence": 0.7999999999999999,
       "language": "generic",
       "evidence": [],
@@ -158,13 +163,15 @@
         "hooks_configured": [
           "whitespace",
           "file validation",
-          "formatting"
+          "formatting",
+          "linting"
         ],
         "hook_tool": "pre-commit",
         "has_pre_commit": true,
         "has_husky": false,
         "has_lefthook": false
-      }
+      },
+      "docs_url": "https://pre-commit.com/"
     },
     {
       "id": "generic.conventions.repo_layout",
@@ -181,7 +188,8 @@
           "scripts",
           ".github"
         ]
-      }
+      },
+      "docs_url": "https://docs.github.com/en/actions"
     },
     {
       "id": "generic.conventions.standard_files",
@@ -199,7 +207,8 @@
           ".gitignore",
           ".pre-commit-config.yaml"
         ]
-      }
+      },
+      "docs_url": "https://docs.github.com/en/actions"
     },
     {
       "id": "python.conventions.response_envelope",
@@ -248,7 +257,8 @@
           "items": 5
         },
         "pattern": "class_based"
-      }
+      },
+      "docs_url": "https://docs.pydantic.dev/"
     },
     {
       "id": "python.conventions.pagination_pattern",
@@ -263,7 +273,8 @@
         "cursor_count": 8,
         "page_count": 0,
         "pattern": "cursor"
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.api_framework",
@@ -311,7 +322,8 @@
           "flask": 3
         },
         "primary_framework": "fastapi"
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.schema_library",
@@ -358,7 +370,8 @@
           "dataclasses": 19
         },
         "primary_library": "pydantic"
-      }
+      },
+      "docs_url": "https://docs.pydantic.dev/"
     },
     {
       "id": "python.conventions.api_versioning",
@@ -406,7 +419,8 @@
           "router_prefix": 6
         },
         "primary_pattern": "url_versioning"
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.openapi_docs",
@@ -453,7 +467,57 @@
           "fastapi_customized": 6
         },
         "primary_tool": "fastapi_customized"
-      }
+      },
+      "docs_url": "https://swagger.io/specification/"
+    },
+    {
+      "id": "python.conventions.data_class_style",
+      "category": "api",
+      "title": "Data class style: Pydantic for API + dataclasses for internal",
+      "description": "Uses Pydantic for API schemas (62) and dataclasses for internal DTOs (6). Good separation.",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "fastapi/security/http.py",
+          "line_start": 11,
+          "line_end": 21,
+          "excerpt": "from pydantic import BaseModel\nfrom starlette.requests import Request\nfrom starlette.status import HTTP_401_UNAUTHORIZED\n\n\nclass HTTPBasicCredentials(BaseModel):\n    \"\"\"\n    The HTTP Basic credentials given as the result of using `HTTPBasic` in a\n    dependency.\n\n    Read more about it in the"
+        },
+        {
+          "file_path": "fastapi/security/http.py",
+          "line_start": 24,
+          "line_end": 34,
+          "excerpt": "\n    username: Annotated[str, Doc(\"The HTTP Basic username.\")]\n    password: Annotated[str, Doc(\"The HTTP Basic password.\")]\n\n\nclass HTTPAuthorizationCredentials(BaseModel):\n    \"\"\"\n    The HTTP authorization credentials in the result of using `HTTPBearer` or\n    `HTTPDigest` in a dependency.\n\n    The HTTP authorization header value is split by the first space."
+        },
+        {
+          "file_path": "fastapi/openapi/models.py",
+          "line_start": 52,
+          "line_end": 62,
+          "excerpt": "            cls, source: type[Any], handler: Callable[[Any], Mapping[str, Any]]\n        ) -> Mapping[str, Any]:\n            return with_info_plain_validator_function(cls._validate)\n\n\nclass BaseModelWithConfig(BaseModel):\n    model_config = {\"extra\": \"allow\"}\n\n\nclass Contact(BaseModelWithConfig):\n    name: Optional[str] = None"
+        },
+        {
+          "file_path": "fastapi/openapi/models.py",
+          "line_start": 90,
+          "line_end": 100,
+          "excerpt": "    url: Union[AnyUrl, str]\n    description: Optional[str] = None\n    variables: Optional[dict[str, ServerVariable]] = None\n\n\nclass Reference(BaseModel):\n    ref: str = Field(alias=\"$ref\")\n\n\nclass Discriminator(BaseModel):\n    propertyName: str"
+        },
+        {
+          "file_path": "fastapi/openapi/models.py",
+          "line_start": 94,
+          "line_end": 104,
+          "excerpt": "\nclass Reference(BaseModel):\n    ref: str = Field(alias=\"$ref\")\n\n\nclass Discriminator(BaseModel):\n    propertyName: str\n    mapping: Optional[dict[str, str]] = None\n\n\nclass XML(BaseModelWithConfig):"
+        }
+      ],
+      "stats": {
+        "primary_style": "pydantic",
+        "style_counts": {
+          "dataclass": 6,
+          "pydantic": 62
+        },
+        "has_validation": true
+      },
+      "docs_url": "https://docs.pydantic.dev/"
     },
     {
       "id": "python.conventions.background_jobs",
@@ -494,7 +558,8 @@
         },
         "primary_library": "fastapi_background",
         "task_decorators": 0
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.caching",
@@ -508,7 +573,7 @@
           "file_path": "fastapi/_compat/v2.py",
           "line_start": 476,
           "line_end": 482,
-          "excerpt": "\n\n@lru_cache\ndef get_cached_model_fields(model: type[BaseModel]) -> list[ModelField]:\n    return get_model_fields(model)  # type: ignore[return-value]\n\n"
+          "excerpt": "\n\n@lru_cache\ndef get_cached_model_fields(model: type[BaseModel]) -> list[ModelField]:\n    return get_model_fields(model)\n\n"
         },
         {
           "file_path": "scripts/translate.py",
@@ -546,7 +611,8 @@
             "count": 8
           }
         }
-      }
+      },
+      "docs_url": "https://redis.io/docs/"
     },
     {
       "id": "python.conventions.class_style",
@@ -594,7 +660,8 @@
         "namedtuple_count": 8,
         "plain_count": 58,
         "dominant_style": "pydantic"
-      }
+      },
+      "docs_url": "https://docs.pydantic.dev/"
     },
     {
       "id": "python.conventions.cli_framework",
@@ -646,7 +713,8 @@
             "import_count": 14
           }
         }
-      }
+      },
+      "docs_url": "https://typer.tiangolo.com/"
     },
     {
       "id": "python.conventions.string_formatting",
@@ -694,7 +762,8 @@
         "percent_count": 0,
         "fstring_ratio": 0.991,
         "dominant_style": "fstring"
-      }
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
     },
     {
       "id": "python.conventions.path_handling",
@@ -740,7 +809,8 @@
         "ospath_count": 0,
         "pathlib_ratio": 1.0,
         "style": "pathlib"
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/pathlib.html"
     },
     {
       "id": "python.conventions.import_style",
@@ -786,7 +856,8 @@
         "absolute_count": 491,
         "relative_ratio": 0.131,
         "style": "absolute"
-      }
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
     },
     {
       "id": "python.conventions.constant_naming",
@@ -832,7 +903,8 @@
         "lowercase_count": 87,
         "all_caps_ratio": 0.044,
         "style": "lowercase"
-      }
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
     },
     {
       "id": "python.conventions.enum_usage",
@@ -878,7 +950,8 @@
           "SecuritySchemeType",
           "APIKeyIn"
         ]
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/enum.html"
     },
     {
       "id": "python.conventions.db_session_lifecycle",
@@ -904,7 +977,8 @@
       "stats": {
         "get_db": 3,
         "Depends_injection": 357
-      }
+      },
+      "docs_url": "https://docs.sqlalchemy.org/"
     },
     {
       "id": "python.conventions.db_query_style",
@@ -950,7 +1024,8 @@
         "modern_select_count": 8,
         "legacy_ratio": 0.0,
         "modern_ratio": 1.0
-      }
+      },
+      "docs_url": "https://docs.sqlalchemy.org/"
     },
     {
       "id": "python.conventions.db_transactions",
@@ -964,7 +1039,8 @@
         "begin_count": 0,
         "begin_nested_count": 0,
         "commit_count": 20
-      }
+      },
+      "docs_url": "https://docs.sqlalchemy.org/"
     },
     {
       "id": "python.conventions.db_connection_pooling",
@@ -976,7 +1052,8 @@
       "evidence": [],
       "stats": {
         "default_pool": 12
-      }
+      },
+      "docs_url": "https://docs.sqlalchemy.org/"
     },
     {
       "id": "python.conventions.decorator_caching",
@@ -1021,7 +1098,8 @@
         "usage_count": 14,
         "top_decorator": "cached_property",
         "category": "caching"
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
     },
     {
       "id": "python.conventions.dependency_management",
@@ -1042,7 +1120,26 @@
             "has_lock": true
           }
         }
-      }
+      },
+      "docs_url": "https://docs.astral.sh/uv/"
+    },
+    {
+      "id": "python.conventions.lock_file",
+      "category": "dependencies",
+      "title": "Lock file: uv.lock",
+      "description": "Dependencies locked with uv.lock.",
+      "confidence": 0.95,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "lock_files": {
+          "uv": "uv.lock"
+        },
+        "primary_lock": "uv",
+        "quality": "modern",
+        "has_lock": true
+      },
+      "docs_url": "https://docs.astral.sh/uv/"
     },
     {
       "id": "python.docs_conventions.example_structure",
@@ -1061,7 +1158,8 @@
         },
         "topics": {},
         "pattern": "main_function"
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.docs_conventions.example_completeness",
@@ -1076,7 +1174,8 @@
         "incomplete_examples": 453,
         "complete_ratio": 0.145,
         "style": "snippets"
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.docs_conventions.organization",
@@ -1097,7 +1196,8 @@
           "depth_4": 10
         },
         "style": "tutorials"
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.docstrings",
@@ -1139,7 +1239,8 @@
         "total_classes": 170,
         "documented_classes": 29,
         "class_doc_ratio": 0.171
-      }
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
     },
     {
       "id": "python.conventions.naming",
@@ -1154,7 +1255,8 @@
         "camel_case_functions": 0,
         "snake_case_ratio": 1.0,
         "module_constants": 21
-      }
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
     },
     {
       "id": "python.conventions.error_handling_boundary",
@@ -1203,7 +1305,8 @@
           "docs": 121
         },
         "api_ratio": 0.0
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.error_taxonomy",
@@ -1271,7 +1374,8 @@
           "OwnerError"
         ],
         "consistency": 0.773
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
     },
     {
       "id": "python.conventions.exception_handlers",
@@ -1317,14 +1421,15 @@
         "decorator_handlers": 12,
         "call_handlers": 19,
         "handler_files": [
+          "docs_src/handling_errors/tutorial006_py39.py",
           "docs_src/handling_errors/tutorial005_py39.py",
           "tests/test_validation_error_context.py",
-          "docs_src/handling_errors/tutorial006_py39.py",
+          "docs_src/handling_errors/tutorial003_py39.py",
           "fastapi/applications.py",
-          "docs_src/handling_errors/tutorial004_py39.py",
-          "docs_src/handling_errors/tutorial003_py39.py"
+          "docs_src/handling_errors/tutorial004_py39.py"
         ]
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.error_wrapper",
@@ -1374,7 +1479,49 @@
           "errors.append",
           "RuntimeError"
         ]
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
+    },
+    {
+      "id": "python.conventions.exception_chaining",
+      "category": "error_handling",
+      "title": "Limited exception chaining",
+      "description": "Rarely uses 'raise X from Y'. 7/66 (11%) raises use chaining. Use 'raise X from Y' to preserve context or 'raise X from None' to suppress.",
+      "confidence": 0.7,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "fastapi/encoders.py",
+          "line_start": 332,
+          "line_end": 338,
+          "excerpt": "            data = vars(obj)\n        except Exception as e:\n            errors.append(e)\n            raise ValueError(errors) from e\n    return jsonable_encoder(\n        data,\n        include=include,"
+        },
+        {
+          "file_path": "fastapi/utils.py",
+          "line_start": 92,
+          "line_end": 98,
+          "excerpt": "    try:\n        return v2.ModelField(**kwargs)  # type: ignore[arg-type]\n    except PydanticSchemaGenerationError:\n        raise fastapi.exceptions.FastAPIError(\n            _invalid_args_message.format(type_=type_)\n        ) from None\n"
+        },
+        {
+          "file_path": "fastapi/concurrency.py",
+          "line_start": 34,
+          "line_end": 40,
+          "excerpt": "            )\n        )\n        if not ok:\n            raise e\n    else:\n        await anyio.to_thread.run_sync(\n            cm.__exit__, None, None, None, limiter=exit_limiter"
+        },
+        {
+          "file_path": "fastapi/encoders.py",
+          "line_start": 319,
+          "line_end": 325,
+          "excerpt": "        if isinstance(obj, classes_tuple):\n            return encoder(obj)\n    if is_pydantic_v1_model_instance(obj):\n        raise PydanticV1NotSupportedError(\n            \"pydantic.v1 models are no longer supported by FastAPI.\"\n            f\" Please update the model {obj!r}.\"\n        )"
+        }
+      ],
+      "stats": {
+        "chained_raises": 7,
+        "unchained_raises": 59,
+        "bare_raises": 2,
+        "chaining_ratio": 0.106
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
     },
     {
       "id": "python.conventions.graphql",
@@ -1409,7 +1556,8 @@
             "style": "code-first (type hints)"
           }
         }
-      }
+      },
+      "docs_url": "https://strawberry.rocks/docs"
     },
     {
       "id": "python.conventions.logging_library",
@@ -1456,7 +1604,8 @@
         },
         "primary_library": "stdlib_logging",
         "primary_ratio": 1.0
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/logging.html"
     },
     {
       "id": "python.conventions.async_http_client",
@@ -1504,7 +1653,8 @@
         },
         "primary_client": "httpx",
         "quality": "excellent"
-      }
+      },
+      "docs_url": null
     },
     {
       "id": "python.conventions.timeouts",
@@ -1543,7 +1693,8 @@
         "timeout_indicators": 4,
         "no_timeout_indicators": 207,
         "timeout_ratio": 0.019
-      }
+      },
+      "docs_url": "https://www.python-httpx.org/"
     },
     {
       "id": "python.conventions.health_checks",
@@ -1565,7 +1716,8 @@
         "health_function_count": 1,
         "has_readiness": false,
         "has_liveness": true
-      }
+      },
+      "docs_url": "https://fastapi.tiangolo.com/"
     },
     {
       "id": "python.conventions.context_managers",
@@ -1595,7 +1747,8 @@
         "context_types": {
           "file_io": 2
         }
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
     },
     {
       "id": "python.conventions.optional_usage",
@@ -1638,7 +1791,8 @@
       ],
       "stats": {
         "optional_imports": 20
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
     },
     {
       "id": "python.conventions.auth_pattern",
@@ -1683,7 +1837,8 @@
         "oauth2": 49,
         "jwt": 16,
         "dependency_auth": 53
-      }
+      },
+      "docs_url": "https://pyjwt.readthedocs.io/"
     },
     {
       "id": "python.conventions.secrets_access_style",
@@ -1727,7 +1882,98 @@
       "stats": {
         "os_environ": 1,
         "pydantic_settings": 38
-      }
+      },
+      "docs_url": "https://docs.pydantic.dev/latest/concepts/pydantic_settings/"
+    },
+    {
+      "id": "python.conventions.env_separation",
+      "category": "security",
+      "title": "Environment separation: Pydantic Settings",
+      "description": "Uses Pydantic Settings for structured configuration.",
+      "confidence": 0.85,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "scripts/contributors.py",
+          "line_start": 10,
+          "line_end": 16,
+          "excerpt": "import yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\ngithub_graphql_url = \"https://api.github.com/graphql\"\n"
+        },
+        {
+          "file_path": "scripts/label_approved.py",
+          "line_start": 4,
+          "line_end": 10,
+          "excerpt": "from github import Github\nfrom github.PullRequestReview import PullRequestReview\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\n\nclass LabelSettings(BaseModel):"
+        },
+        {
+          "file_path": "scripts/notify_translations.py",
+          "line_start": 8,
+          "line_end": 14,
+          "excerpt": "import httpx\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\nawaiting_label = \"awaiting-review\"\nlang_all_label = \"lang-all\""
+        },
+        {
+          "file_path": "scripts/sponsors.py",
+          "line_start": 9,
+          "line_end": 15,
+          "excerpt": "import yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\ngithub_graphql_url = \"https://api.github.com/graphql\"\n"
+        },
+        {
+          "file_path": "scripts/people.py",
+          "line_start": 12,
+          "line_end": 18,
+          "excerpt": "import yaml\nfrom github import Github\nfrom pydantic import BaseModel, SecretStr\nfrom pydantic_settings import BaseSettings\n\ngithub_graphql_url = \"https://api.github.com/graphql\"\nquestions_category_id = \"MDE4OkRpc2N1c3Npb25DYXRlZ29yeTMyMDAxNDM0\""
+        }
+      ],
+      "stats": {
+        "approach": "pydantic_settings",
+        "has_env_files": false,
+        "raw_environ_count": 1
+      },
+      "docs_url": "https://docs.pydantic.dev/latest/concepts/pydantic_settings/"
+    },
+    {
+      "id": "python.conventions.json_library",
+      "category": "serialization",
+      "title": "JSON library: mixed",
+      "description": "Uses both stdlib json and orjson. Consider standardizing on orjson.",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [
+        {
+          "file_path": "fastapi/routing.py",
+          "line_start": 1,
+          "line_end": 7,
+          "excerpt": "import email.message\nimport functools\nimport inspect\nimport json\nfrom collections.abc import (\n    AsyncIterator,\n    Awaitable,"
+        },
+        {
+          "file_path": "fastapi/openapi/docs.py",
+          "line_start": 1,
+          "line_end": 4,
+          "excerpt": "import json\nfrom typing import Annotated, Any, Optional\n\nfrom annotated_doc import Doc"
+        },
+        {
+          "file_path": "scripts/translate.py",
+          "line_start": 1,
+          "line_end": 4,
+          "excerpt": "import json\nimport secrets\nimport subprocess\nfrom collections.abc import Iterable"
+        },
+        {
+          "file_path": "scripts/docs.py",
+          "line_start": 1,
+          "line_end": 4,
+          "excerpt": "import json\nimport logging\nimport os\nimport re"
+        }
+      ],
+      "stats": {
+        "json_library_counts": {
+          "ujson": 3,
+          "orjson": 4,
+          "json": 34
+        },
+        "primary_library": "json",
+        "total_usages": 41
+      },
+      "docs_url": "https://docs.python.org/3/library/json.html"
     },
     {
       "id": "python.conventions.testing_framework",
@@ -1775,7 +2021,8 @@
         },
         "primary_framework": "pytest",
         "test_file_count": 465
-      }
+      },
+      "docs_url": "https://docs.pytest.org/"
     },
     {
       "id": "python.test_conventions.fixtures",
@@ -1822,7 +2069,8 @@
         },
         "conftest_files": 1,
         "pattern": "pytest_fixture"
-      }
+      },
+      "docs_url": "https://docs.pytest.org/"
     },
     {
       "id": "python.test_conventions.assertions",
@@ -1870,7 +2118,8 @@
           "pytest_warns": 15
         },
         "style": "plain_assert"
-      }
+      },
+      "docs_url": "https://docs.pytest.org/"
     },
     {
       "id": "python.test_conventions.mocking",
@@ -1918,7 +2167,8 @@
           "patch_decorator": 1
         },
         "primary_pattern": "unittest_mock"
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/unittest.mock.html"
     },
     {
       "id": "python.test_conventions.parametrized",
@@ -1961,7 +2211,8 @@
       ],
       "stats": {
         "parametrize_count": 442
-      }
+      },
+      "docs_url": "https://docs.pytest.org/"
     },
     {
       "id": "python.conventions.test_structure",
@@ -1982,7 +2233,8 @@
         "has_e2e": false,
         "structure": "distributed",
         "categories": []
-      }
+      },
+      "docs_url": "https://docs.pytest.org/"
     },
     {
       "id": "python.conventions.test_naming",
@@ -2019,7 +2271,8 @@
         },
         "test_class_count": 0,
         "dominant_pattern": "simple"
-      }
+      },
+      "docs_url": "https://docs.pytest.org/"
     },
     {
       "id": "python.conventions.linter",
@@ -2049,14 +2302,15 @@
             "config_file": "pyproject.toml"
           }
         }
-      }
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
     },
     {
       "id": "python.conventions.import_sorting",
       "category": "tooling",
-      "title": "Import sorting: Ruff (isort rules)",
-      "description": "Uses Ruff (isort rules) for import organization.",
-      "confidence": 0.9,
+      "title": "Import organization: Ruff with grouping",
+      "description": "Uses Ruff isort rules with proper import grouping. Has first-party package configuration.",
+      "confidence": 0.95,
       "language": "python",
       "evidence": [],
       "stats": {
@@ -2067,10 +2321,70 @@
         "sorter_details": {
           "ruff": {
             "name": "Ruff (isort rules)",
-            "config_file": "pyproject.toml"
+            "config_file": "pyproject.toml",
+            "has_grouping": true
           }
-        }
-      }
+        },
+        "has_grouping": true,
+        "has_known_first_party": true,
+        "has_sections": false,
+        "has_force_sort_within_sections": false,
+        "profile": null
+      },
+      "docs_url": "https://docs.astral.sh/ruff/"
+    },
+    {
+      "id": "python.conventions.type_checker_strictness",
+      "category": "tooling",
+      "title": "Type checker: mypy (strict mode)",
+      "description": "Uses mypy in strict mode - catches the most type errors.",
+      "confidence": 0.9,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "type_checker": "mypy",
+        "strictness": "strict",
+        "strict_options": [
+          "strict mode"
+        ],
+        "config_file": "pyproject.toml"
+      },
+      "docs_url": "https://mypy.readthedocs.io/"
+    },
+    {
+      "id": "python.conventions.pre_commit_hooks",
+      "category": "tooling",
+      "title": "Pre-commit hooks configured",
+      "description": "Pre-commit is configured with 13 hooks.",
+      "confidence": 0.6,
+      "language": "python",
+      "evidence": [],
+      "stats": {
+        "has_pre_commit": true,
+        "hooks": [
+          "check-added-large-files",
+          "check-toml",
+          "check-yaml",
+          "end-of-file-fixer",
+          "trailing-whitespace",
+          "local-ruff-check",
+          "local-ruff-format",
+          "local-mypy",
+          "add-permalinks-pages",
+          "generate-readme",
+          "update-languages",
+          "ensure-non-translated",
+          "fix-translations"
+        ],
+        "has_ruff": false,
+        "has_mypy": false,
+        "has_pyright": false,
+        "has_type_checker": false,
+        "has_black": false,
+        "has_flake8": false,
+        "has_isort": false
+      },
+      "docs_url": "https://pre-commit.com/"
     },
     {
       "id": "python.conventions.typing_coverage",
@@ -2111,7 +2425,8 @@
         "fully_annotated_functions": 225,
         "any_annotation_coverage": 0.989,
         "full_annotation_coverage": 0.615
-      }
+      },
+      "docs_url": "https://docs.python.org/3/library/typing.html"
     },
     {
       "id": "python.conventions.validation_style",
@@ -2159,7 +2474,8 @@
         },
         "dominant_style": "pydantic",
         "dominant_ratio": 0.607
-      }
+      },
+      "docs_url": "https://docs.pydantic.dev/"
     }
   ],
   "warnings": []

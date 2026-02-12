@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import re
+
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
 from .base import RustDetector
-from .index import make_evidence
+from .index import RustIndex, make_evidence
 
 
 @DetectorRegistry.register
@@ -152,4 +154,128 @@ class RustWebDetector(RustDetector):
             },
         ))
 
+        # Detect API routes
+        self._detect_api_routes(ctx, index, result)
+
         return result
+
+    def _detect_api_routes(
+        self,
+        ctx: DetectorContext,
+        index: RustIndex,
+        result: DetectorResult,
+    ) -> None:
+        """Extract API route definitions."""
+        # Actix/Rocket attribute macros: #[get("/path")]
+        attr_pattern = re.compile(
+            r"""#\[(get|post|put|patch|delete)\(\s*"([^"]+)""",
+        )
+        # Axum .route("/path", get|post|...(...))
+        axum_route_pattern = re.compile(
+            r"""\.route\(\s*"([^"]+)"\s*,\s*(get|post|put|patch|delete)\b""",
+        )
+        # Axum chained: .route("/path", get(h).post(h2))
+        axum_chained_pattern = re.compile(
+            r"""\.route\(\s*"([^"]+)"[^)]*\)""",
+        )
+        axum_method_in_chain = re.compile(r"""\b(get|post|put|patch|delete)\(""")
+
+        routes: list[dict[str, str | int]] = []
+        methods: dict[str, int] = {}
+
+        for rel_path, file_idx in index.files.items():
+            if file_idx.role in ("test", "example", "bench"):
+                continue
+
+            content = "\n".join(file_idx.lines)
+
+            # Attribute macro routes (Actix-web, Rocket)
+            for m in attr_pattern.finditer(content):
+                method = m.group(1).upper()
+                path = m.group(2)
+                line = content[: m.start()].count("\n") + 1
+
+                methods[method] = methods.get(method, 0) + 1
+                routes.append({
+                    "method": method,
+                    "path": path,
+                    "file": rel_path,
+                    "line": line,
+                })
+                if len(routes) >= 100:
+                    break
+
+            # Axum .route() calls
+            for m in axum_chained_pattern.finditer(content):
+                path = m.group(1)
+                line = content[: m.start()].count("\n") + 1
+                route_text = m.group(0)
+
+                found_methods = axum_method_in_chain.findall(route_text)
+                if found_methods:
+                    for method_str in found_methods:
+                        method = method_str.upper()
+                        methods[method] = methods.get(method, 0) + 1
+                        routes.append({
+                            "method": method,
+                            "path": path,
+                            "file": rel_path,
+                            "line": line,
+                        })
+                else:
+                    methods["ANY"] = methods.get("ANY", 0) + 1
+                    routes.append({
+                        "method": "ANY",
+                        "path": path,
+                        "file": rel_path,
+                        "line": line,
+                    })
+
+                if len(routes) >= 100:
+                    break
+            if len(routes) >= 100:
+                break
+
+        if not routes:
+            return
+
+        path_prefixes = _extract_path_prefixes([str(r["path"]) for r in routes])
+
+        description = (
+            f"{len(routes)} API routes detected. "
+            f"Methods: {', '.join(f'{k}: {v}' for k, v in sorted(methods.items()))}."
+        )
+
+        result.rules.append(self.make_rule(
+            rule_id="rust.conventions.api_routes",
+            category="api",
+            title="API routes",
+            description=description,
+            confidence=0.90,
+            language="rust",
+            evidence=[],
+            stats={
+                "routes": routes,
+                "total_routes": len(routes),
+                "methods": methods,
+                "path_prefixes": path_prefixes,
+            },
+        ))
+
+
+def _extract_path_prefixes(paths: list[str]) -> list[str]:
+    """Extract common path prefixes from a list of paths."""
+    prefix_counts: dict[str, int] = {}
+    for path in paths:
+        parts = path.strip("/").split("/")
+        if len(parts) >= 2:
+            prefix = "/" + "/".join(parts[:2])
+            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1
+        elif len(parts) == 1 and parts[0]:
+            prefix = "/" + parts[0]
+            prefix_counts[prefix] = prefix_counts.get(prefix, 0) + 1
+
+    return sorted(
+        [p for p, c in prefix_counts.items() if c > 1],
+        key=lambda p: -prefix_counts[p],
+    )[:10]

@@ -1,79 +1,83 @@
 # Code Conventions Report
 
-*Generated: 2026-01-24 23:14:49*
+*Generated: 2026-02-03 21:12:12*
 
 ## Summary
 
 - **Repository:** `/private/tmp/fastapi`
 - **Languages:** node, python
 - **Files scanned:** 1252
-- **Conventions detected:** 61
+- **Conventions detected:** 65
 
 ## Detected Conventions
 
-| ID | Title | Confidence | Evidence |
-|:---|:------|:----------:|:--------:|
-| `python.conventions.dependency_management` | Dependency management: uv | 95% | 0 |
-| `python.conventions.graphql` | GraphQL: Strawberry | 95% | 2 |
-| `python.conventions.lock_file` | Lock file: uv.lock | 95% | 0 |
-| `python.conventions.naming` | PEP 8 snake_case naming | 95% | 0 |
-| `python.conventions.path_handling` | Modern pathlib for path handling | 95% | 5 |
-| `python.conventions.testing_framework` | pytest-based testing | 95% | 5 |
-| `python.conventions.typing_coverage` | High type annotation coverage | 95% | 4 |
-| `python.conventions.string_formatting` | Modern f-string formatting | 95% | 5 |
-| `generic.conventions.ci_quality` | CI/CD best practices | 90% | 0 |
-| `node.conventions.typescript` | JavaScript codebase | 90% | 0 |
-| `python.conventions.cli_framework` | CLI framework: Typer | 90% | 5 |
-| `python.conventions.context_managers` | Context manager usage | 90% | 2 |
-| `python.conventions.decorator_caching` | Caching decorator pattern | 90% | 5 |
-| `python.conventions.import_sorting` | Import sorting: Ruff (isort rules) | 90% | 0 |
-| `python.conventions.json_library` | JSON library: mixed | 90% | 4 |
-| `python.conventions.type_checker_strictness` | Type checker: mypy (strict mode) | 90% | 0 |
-| `python.test_conventions.fixtures` | pytest fixtures for test setup | 90% | 5 |
-| `python.test_conventions.mocking` | Mocking with unittest.mock / Mock | 90% | 5 |
-| `python.test_conventions.parametrized` | Parametrized tests | 90% | 5 |
-| `python.conventions.db_query_style` | SQLAlchemy 2.0 select() style | 90% | 5 |
-| `python.conventions.linter` | Linters: Ruff, mypy | 90% | 0 |
-| `python.conventions.logging_library` | Uses Python standard logging | 90% | 5 |
-| `python.test_conventions.assertions` | Plain assert statements | 89% | 5 |
-| `python.conventions.class_style` | Data classes: Pydantic models | 86% | 5 |
-| `python.conventions.api_versioning` | URL-based API versioning | 85% | 5 |
-| `python.conventions.async_http_client` | Async HTTP client: httpx (recommended) | 85% | 5 |
-| `python.conventions.auth_pattern` | JWT-based authentication | 85% | 5 |
-| `python.conventions.db_session_lifecycle` | FastAPI-style session dependency injection | 85% | 2 |
-| `python.conventions.openapi_docs` | OpenAPI with FastAPI (customized) | 85% | 5 |
-| `python.conventions.secrets_access_style` | Structured configuration with Pydantic Settings | 85% | 5 |
-| `python.conventions.test_naming` | Test naming: Simple style (test_feature) | 84% | 3 |
-| `python.conventions.schema_library` | Primary schema library: Pydantic | 84% | 5 |
-| `python.conventions.api_framework` | Primary API framework: FastAPI | 84% | 5 |
-| `python.conventions.caching` | Caching: functools.lru_cache | 80% | 5 |
-| `python.conventions.enum_usage` | Enum usage: Enum | 80% | 4 |
-| `python.conventions.optional_usage` | Optional type annotations | 80% | 5 |
-| `python.conventions.pagination_pattern` | Cursor-based pagination | 80% | 0 |
-| `python.docs_conventions.example_structure` | Examples with main() entry point | 80% | 0 |
-| `python.docs_conventions.organization` | Tutorial-style documentation | 80% | 0 |
-| `generic.conventions.ci_platform` | CI/CD: GitHub Actions | 80% | 0 |
-| `generic.conventions.dependency_updates` | Dependency updates: Dependabot | 80% | 0 |
-| `generic.conventions.git_hooks` | Git hooks: pre-commit | 80% | 0 |
-| `python.conventions.validation_style` | Pydantic validation | 78% | 5 |
-| `node.conventions.jsdoc` | Partial JSDoc coverage | 75% | 5 |
-| `python.conventions.background_jobs` | Background jobs with FastAPI BackgroundTasks | 72% | 4 |
-| `generic.conventions.repo_layout` | Standard repository layout | 70% | 0 |
-| `python.conventions.constant_naming` | lowercase constant naming | 70% | 5 |
-| `python.conventions.error_handling_boundary` | HTTP errors raised in service layer | 70% | 5 |
-| `python.conventions.import_style` | Absolute imports preferred | 70% | 5 |
-| `python.conventions.response_envelope` | Response envelope classes | 70% | 5 |
-| `python.conventions.test_structure` | Distributed test files | 70% | 0 |
-| `python.docs_conventions.example_completeness` | Snippet-style examples | 70% | 0 |
-| `generic.conventions.standard_files` | Standard repository files | 65% | 0 |
-| `python.conventions.db_connection_pooling` | Default connection pooling | 60% | 0 |
-| `python.conventions.db_transactions` | Implicit transaction management | 60% | 0 |
-| `python.conventions.docstrings` | Low docstring coverage | 60% | 4 |
-| `python.conventions.error_taxonomy` | Mixed exception naming conventions | 60% | 5 |
-| `python.conventions.exception_handlers` | Distributed exception handling | 60% | 5 |
-| `python.conventions.timeouts` | Infrequent timeout specification | 60% | 4 |
-| `python.conventions.error_wrapper` | Error wrapper pattern: time.sleep | 59% | 5 |
-| `python.conventions.health_checks` | Health check functions | 50% | 1 |
+| ID | Title | Confidence | Evidence | Docs |
+|:---|:------|:----------:|:--------:|:-----|
+| `python.conventions.dependency_management` | Dependency management: uv | 95% | 0 | [docs](https://docs.astral.sh/uv/) |
+| `python.conventions.graphql` | GraphQL: Strawberry | 95% | 2 | [docs](https://strawberry.rocks/docs) |
+| `python.conventions.import_sorting` | Import organization: Ruff with grouping | 95% | 0 | [docs](https://docs.astral.sh/ruff/) |
+| `python.conventions.lock_file` | Lock file: uv.lock | 95% | 0 | [docs](https://docs.astral.sh/uv/) |
+| `python.conventions.naming` | PEP 8 snake_case naming | 95% | 0 | [docs](https://docs.astral.sh/ruff/) |
+| `python.conventions.path_handling` | Modern pathlib for path handling | 95% | 5 | [docs](https://docs.python.org/3/library/pathlib.html) |
+| `python.conventions.testing_framework` | pytest-based testing | 95% | 5 | [docs](https://docs.pytest.org/) |
+| `python.conventions.typing_coverage` | High type annotation coverage | 95% | 4 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.string_formatting` | Modern f-string formatting | 95% | 5 | [docs](https://docs.astral.sh/ruff/) |
+| `generic.conventions.ci_quality` | CI/CD best practices | 90% | 0 | [docs](https://docs.github.com/en/actions) |
+| `node.conventions.typescript` | JavaScript codebase | 90% | 0 | [docs](https://www.typescriptlang.org/docs/) |
+| `python.conventions.cli_framework` | CLI framework: Typer | 90% | 5 | [docs](https://typer.tiangolo.com/) |
+| `python.conventions.context_managers` | Context manager usage | 90% | 2 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.data_class_style` | Data class style: Pydantic for API + dataclasses for internal | 90% | 5 | [docs](https://docs.pydantic.dev/) |
+| `python.conventions.decorator_caching` | Caching decorator pattern | 90% | 5 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.json_library` | JSON library: mixed | 90% | 4 | [docs](https://docs.python.org/3/library/json.html) |
+| `python.conventions.type_checker_strictness` | Type checker: mypy (strict mode) | 90% | 0 | [docs](https://mypy.readthedocs.io/) |
+| `python.test_conventions.fixtures` | pytest fixtures for test setup | 90% | 5 | [docs](https://docs.pytest.org/) |
+| `python.test_conventions.mocking` | Mocking with unittest.mock / Mock | 90% | 5 | [docs](https://docs.python.org/3/library/unittest.mock.html) |
+| `python.test_conventions.parametrized` | Parametrized tests | 90% | 5 | [docs](https://docs.pytest.org/) |
+| `python.conventions.db_query_style` | SQLAlchemy 2.0 select() style | 90% | 5 | [docs](https://docs.sqlalchemy.org/) |
+| `python.conventions.linter` | Linters: Ruff, mypy | 90% | 0 | [docs](https://docs.astral.sh/ruff/) |
+| `python.conventions.logging_library` | Uses Python standard logging | 90% | 5 | [docs](https://docs.python.org/3/library/logging.html) |
+| `python.test_conventions.assertions` | Plain assert statements | 89% | 5 | [docs](https://docs.pytest.org/) |
+| `python.conventions.class_style` | Data classes: Pydantic models | 86% | 5 | [docs](https://docs.pydantic.dev/) |
+| `python.conventions.api_versioning` | URL-based API versioning | 85% | 5 | [docs](https://fastapi.tiangolo.com/) |
+| `python.conventions.async_http_client` | Async HTTP client: httpx (recommended) | 85% | 5 |  |
+| `python.conventions.auth_pattern` | JWT-based authentication | 85% | 5 | [docs](https://pyjwt.readthedocs.io/) |
+| `python.conventions.db_session_lifecycle` | FastAPI-style session dependency injection | 85% | 2 | [docs](https://docs.sqlalchemy.org/) |
+| `python.conventions.env_separation` | Environment separation: Pydantic Settings | 85% | 5 | [docs](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) |
+| `python.conventions.openapi_docs` | OpenAPI with FastAPI (customized) | 85% | 5 | [docs](https://swagger.io/specification/) |
+| `python.conventions.secrets_access_style` | Structured configuration with Pydantic Settings | 85% | 5 | [docs](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) |
+| `python.conventions.test_naming` | Test naming: Simple style (test_feature) | 84% | 3 | [docs](https://docs.pytest.org/) |
+| `python.conventions.schema_library` | Primary schema library: Pydantic | 84% | 5 | [docs](https://docs.pydantic.dev/) |
+| `python.conventions.api_framework` | Primary API framework: FastAPI | 84% | 5 | [docs](https://fastapi.tiangolo.com/) |
+| `python.conventions.caching` | Caching: functools.lru_cache | 80% | 5 | [docs](https://redis.io/docs/) |
+| `python.conventions.enum_usage` | Enum usage: Enum | 80% | 4 | [docs](https://docs.python.org/3/library/enum.html) |
+| `python.conventions.optional_usage` | Optional type annotations | 80% | 5 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.pagination_pattern` | Cursor-based pagination | 80% | 0 | [docs](https://fastapi.tiangolo.com/) |
+| `python.docs_conventions.example_structure` | Examples with main() entry point | 80% | 0 | [docs](https://fastapi.tiangolo.com/) |
+| `python.docs_conventions.organization` | Tutorial-style documentation | 80% | 0 | [docs](https://fastapi.tiangolo.com/) |
+| `generic.conventions.ci_platform` | CI/CD: GitHub Actions | 80% | 0 | [docs](https://docs.github.com/en/actions) |
+| `generic.conventions.dependency_updates` | Dependency updates: Dependabot | 80% | 0 | [docs](https://docs.github.com/en/code-security/dependabot) |
+| `generic.conventions.git_hooks` | Git hooks: pre-commit | 80% | 0 | [docs](https://pre-commit.com/) |
+| `python.conventions.validation_style` | Pydantic validation | 78% | 5 | [docs](https://docs.pydantic.dev/) |
+| `node.conventions.jsdoc` | Partial JSDoc coverage | 75% | 5 | [docs](https://www.typescriptlang.org/docs/) |
+| `python.conventions.background_jobs` | Background jobs with FastAPI BackgroundTasks | 72% | 4 | [docs](https://fastapi.tiangolo.com/) |
+| `generic.conventions.repo_layout` | Standard repository layout | 70% | 0 | [docs](https://docs.github.com/en/actions) |
+| `python.conventions.constant_naming` | lowercase constant naming | 70% | 5 | [docs](https://docs.astral.sh/ruff/) |
+| `python.conventions.error_handling_boundary` | HTTP errors raised in service layer | 70% | 5 | [docs](https://fastapi.tiangolo.com/) |
+| `python.conventions.exception_chaining` | Limited exception chaining | 70% | 4 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.import_style` | Absolute imports preferred | 70% | 5 | [docs](https://docs.astral.sh/ruff/) |
+| `python.conventions.response_envelope` | Response envelope classes | 70% | 5 | [docs](https://docs.pydantic.dev/) |
+| `python.conventions.test_structure` | Distributed test files | 70% | 0 | [docs](https://docs.pytest.org/) |
+| `python.docs_conventions.example_completeness` | Snippet-style examples | 70% | 0 | [docs](https://fastapi.tiangolo.com/) |
+| `generic.conventions.standard_files` | Standard repository files | 65% | 0 | [docs](https://docs.github.com/en/actions) |
+| `python.conventions.db_connection_pooling` | Default connection pooling | 60% | 0 | [docs](https://docs.sqlalchemy.org/) |
+| `python.conventions.db_transactions` | Implicit transaction management | 60% | 0 | [docs](https://docs.sqlalchemy.org/) |
+| `python.conventions.docstrings` | Low docstring coverage | 60% | 4 | [docs](https://docs.astral.sh/ruff/) |
+| `python.conventions.error_taxonomy` | Mixed exception naming conventions | 60% | 5 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.exception_handlers` | Distributed exception handling | 60% | 5 | [docs](https://fastapi.tiangolo.com/) |
+| `python.conventions.pre_commit_hooks` | Pre-commit hooks configured | 60% | 0 | [docs](https://pre-commit.com/) |
+| `python.conventions.timeouts` | Infrequent timeout specification | 60% | 4 | [docs](https://www.python-httpx.org/) |
+| `python.conventions.error_wrapper` | Error wrapper pattern: time.sleep | 59% | 5 | [docs](https://docs.python.org/3/library/typing.html) |
+| `python.conventions.health_checks` | Health check functions | 50% | 1 | [docs](https://fastapi.tiangolo.com/) |
 
 ## Convention Details
 
@@ -83,6 +87,8 @@
 **Category:** dependencies  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.astral.sh/uv/](https://docs.astral.sh/uv/)
 
 Uses uv with lock file for dependencies.
 
@@ -100,6 +106,8 @@ Uses uv with lock file for dependencies.
 **Category:** api  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://strawberry.rocks/docs](https://strawberry.rocks/docs)
 
 Uses Strawberry for GraphQL API. (code-first (type hints))
 
@@ -133,12 +141,38 @@ from strawberry.fastapi import GraphQLRouter
 
 ---
 
+### Import organization: Ruff with grouping
+
+**ID:** `python.conventions.import_sorting`  
+**Category:** tooling  
+**Language:** python  
+**Confidence:** 95%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
+
+Uses Ruff isort rules with proper import grouping. Has first-party package configuration.
+
+**Statistics:**
+
+- sorters: `['ruff']`
+- primary_sorter: `ruff`
+- sorter_details: `{'ruff': {'name': 'Ruff (isort rules)', 'config_file': 'pyproject.toml', 'has_grouping': True}}`
+- has_grouping: `True`
+- has_known_first_party: `True`
+- has_sections: `False`
+- has_force_sort_within_sections: `False`
+- profile: `None`
+
+---
+
 ### Lock file: uv.lock
 
 **ID:** `python.conventions.lock_file`  
 **Category:** dependencies  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.astral.sh/uv/](https://docs.astral.sh/uv/)
 
 Dependencies locked with uv.lock.
 
@@ -157,6 +191,8 @@ Dependencies locked with uv.lock.
 **Category:** style  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 
 Function names follow PEP 8 snake_case convention. 305/305 functions use snake_case. Found 21 module-level constants.
 
@@ -175,6 +211,8 @@ Function names follow PEP 8 snake_case convention. 305/305 functions use snake_c
 **Category:** code_style  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.python.org/3/library/pathlib.html](https://docs.python.org/3/library/pathlib.html)
 
 Uses pathlib consistently for file paths. 66/66 (100%) use pathlib.
 
@@ -231,6 +269,8 @@ import httpx
 **Category:** testing  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.pytest.org/](https://docs.pytest.org/)
 
 Uses pytest as primary testing framework. Found 887 pytest usages across 465 test files.
 
@@ -283,6 +323,8 @@ from fastapi.testclient import TestClient
 **Category:** typing  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
 
 Type annotations are commonly used in this codebase. 362/366 functions (99%) have at least one type annotation.
 
@@ -349,6 +391,8 @@ def iter_all_lang_paths(lang_path_root: Path) -> Iterable[Path]:
 **Category:** code_style  
 **Language:** python  
 **Confidence:** 95%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 
 Uses f-strings consistently for string formatting. 209/211 (99%) use f-strings.
 
@@ -407,6 +451,8 @@ class Form(Body):  # type: ignore[misc]
 **Category:** ci_cd  
 **Language:** generic  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.github.com/en/actions](https://docs.github.com/en/actions)
 
 CI configuration includes: testing, deployment, caching, matrix builds.
 
@@ -427,6 +473,8 @@ CI configuration includes: testing, deployment, caching, matrix builds.
 **Category:** language  
 **Language:** node  
 **Confidence:** 90%
+  
+**Documentation:** [https://www.typescriptlang.org/docs/](https://www.typescriptlang.org/docs/)
 
 Codebase is written in JavaScript. 3 files.
 
@@ -444,6 +492,8 @@ Codebase is written in JavaScript. 3 files.
 **Category:** cli  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://typer.tiangolo.com/](https://typer.tiangolo.com/)
 
 Uses Typer for CLI.
 
@@ -499,6 +549,8 @@ from ruff.__main__ import find_ruff_bin
 **Category:** resource_management  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
 
 Uses context managers for resource management. 25 with statements (17 sync, 8 async). Types: file_io (2).
 
@@ -537,12 +589,80 @@ Uses context managers for resource management. 25 with statements (17 sync, 8 as
 
 ---
 
+### Data class style: Pydantic for API + dataclasses for internal
+
+**ID:** `python.conventions.data_class_style`  
+**Category:** api  
+**Language:** python  
+**Confidence:** 90%
+  
+**Documentation:** [https://docs.pydantic.dev/](https://docs.pydantic.dev/)
+
+Uses Pydantic for API schemas (62) and dataclasses for internal DTOs (6). Good separation.
+
+**Statistics:**
+
+- primary_style: `pydantic`
+- style_counts: `{'dataclass': 6, 'pydantic': 62}`
+- has_validation: `True`
+
+**Evidence:**
+
+1. `fastapi/security/http.py:11-21`
+
+```
+from pydantic import BaseModel
+from starlette.requests import Request
+from starlette.status import HTTP_401_UNAUTHORIZED
+
+
+class HTTPBasicCredentials(BaseModel):
+    """
+    The HTTP Basic credentials given as the result of using `HTTPBasic` in a
+    dependency.
+
+```
+
+2. `fastapi/security/http.py:24-34`
+
+```
+
+    username: Annotated[str, Doc("The HTTP Basic username.")]
+    password: Annotated[str, Doc("The HTTP Basic password.")]
+
+
+class HTTPAuthorizationCredentials(BaseModel):
+    """
+    The HTTP authorization credentials in the result of using `HTTPBearer` or
+    `HTTPDigest` in a dependency.
+
+```
+
+3. `fastapi/openapi/models.py:52-62`
+
+```
+            cls, source: type[Any], handler: Callable[[Any], Mapping[str, Any]]
+        ) -> Mapping[str, Any]:
+            return with_info_plain_validator_function(cls._validate)
+
+
+class BaseModelWithConfig(BaseModel):
+    model_config = {"extra": "allow"}
+
+
+class Contact(BaseModelWithConfig):
+```
+
+---
+
 ### Caching decorator pattern
 
 **ID:** `python.conventions.decorator_caching`  
 **Category:** decorators  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
 
 Uses caching decorators for memoization. Found 14 usages.
 
@@ -601,29 +721,14 @@ Uses caching decorators for memoization. Found 14 usages.
 
 ---
 
-### Import sorting: Ruff (isort rules)
-
-**ID:** `python.conventions.import_sorting`  
-**Category:** tooling  
-**Language:** python  
-**Confidence:** 90%
-
-Uses Ruff (isort rules) for import organization.
-
-**Statistics:**
-
-- sorters: `['ruff']`
-- primary_sorter: `ruff`
-- sorter_details: `{'ruff': {'name': 'Ruff (isort rules)', 'config_file': 'pyproject.toml'}}`
-
----
-
 ### JSON library: mixed
 
 **ID:** `python.conventions.json_library`  
 **Category:** serialization  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.python.org/3/library/json.html](https://docs.python.org/3/library/json.html)
 
 Uses both stdlib json and orjson. Consider standardizing on orjson.
 
@@ -673,6 +778,8 @@ from collections.abc import Iterable
 **Category:** tooling  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://mypy.readthedocs.io/](https://mypy.readthedocs.io/)
 
 Uses mypy in strict mode - catches the most type errors.
 
@@ -691,6 +798,8 @@ Uses mypy in strict mode - catches the most type errors.
 **Category:** testing  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.pytest.org/](https://docs.pytest.org/)
 
 Uses pytest @fixture decorator for test setup. Found 186 fixtures. Uses 1 conftest.py file(s) for shared fixtures.
 
@@ -755,6 +864,8 @@ def get_client():
 **Category:** testing  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.python.org/3/library/unittest.mock.html](https://docs.python.org/3/library/unittest.mock.html)
 
 Uses unittest.mock / Mock for test mocking. Found 14 usages. Also uses: pytest monkeypatch fixture, @patch decorator.
 
@@ -812,6 +923,8 @@ def test_process_items():
 **Category:** testing  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.pytest.org/](https://docs.pytest.org/)
 
 Uses @pytest.mark.parametrize for data-driven tests. Found 442 parametrized test functions.
 
@@ -874,6 +987,8 @@ def test_openapi_schema(client: TestClient):
 **Category:** database  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.sqlalchemy.org/](https://docs.sqlalchemy.org/)
 
 Uses modern SQLAlchemy 2.0 select() syntax. 8/8 queries use select().
 
@@ -939,6 +1054,8 @@ def read_heroes(
 **Category:** tooling  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 
 Uses Ruff, mypy for code quality.
 
@@ -956,6 +1073,8 @@ Uses Ruff, mypy for code quality.
 **Category:** logging  
 **Language:** python  
 **Confidence:** 90%
+  
+**Documentation:** [https://docs.python.org/3/library/logging.html](https://docs.python.org/3/library/logging.html)
 
 Exclusively uses Python standard logging for logging. Found 10 usages.
 
@@ -1001,6 +1120,8 @@ from github import Github
 **Category:** testing  
 **Language:** python  
 **Confidence:** 89%
+  
+**Documentation:** [https://docs.pytest.org/](https://docs.pytest.org/)
 
 Uses plain Python assert statements for test assertions. 4113 assert statements. Uses pytest.raises for exception testing (94 usages).
 
@@ -1053,6 +1174,8 @@ def test_invalid_response_model_raises():
 **Category:** code_style  
 **Language:** python  
 **Confidence:** 86%
+  
+**Documentation:** [https://docs.pydantic.dev/](https://docs.pydantic.dev/)
 
 Uses Pydantic models for structured data. 84/98 structured classes use this pattern.
 
@@ -1120,6 +1243,8 @@ class Contact(BaseModelWithConfig):
 **Category:** api  
 **Language:** python  
 **Confidence:** 85%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Uses URL path versioning (e.g., /v1/, /api/v2/). Found 2 versioned routes.
 
@@ -1229,6 +1354,8 @@ from pydantic import BaseModel, SecretStr
 **Category:** security  
 **Language:** python  
 **Confidence:** 85%
+  
+**Documentation:** [https://pyjwt.readthedocs.io/](https://pyjwt.readthedocs.io/)
 
 Uses JWT tokens for authentication. JWT imports: 16.
 
@@ -1291,6 +1418,8 @@ from fastapi.security import (
 **Category:** database  
 **Language:** python  
 **Confidence:** 85%
+  
+**Documentation:** [https://docs.sqlalchemy.org/](https://docs.sqlalchemy.org/)
 
 Uses get_db() dependency pattern with Depends() for session lifecycle. Found 3 get_db definitions.
 
@@ -1329,12 +1458,71 @@ async def get_db():
 
 ---
 
+### Environment separation: Pydantic Settings
+
+**ID:** `python.conventions.env_separation`  
+**Category:** security  
+**Language:** python  
+**Confidence:** 85%
+  
+**Documentation:** [https://docs.pydantic.dev/latest/concepts/pydantic_settings/](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+
+Uses Pydantic Settings for structured configuration.
+
+**Statistics:**
+
+- approach: `pydantic_settings`
+- has_env_files: `False`
+- raw_environ_count: `1`
+
+**Evidence:**
+
+1. `scripts/contributors.py:10-16`
+
+```
+import yaml
+from github import Github
+from pydantic import BaseModel, SecretStr
+from pydantic_settings import BaseSettings
+
+github_graphql_url = "https://api.github.com/graphql"
+
+```
+
+2. `scripts/label_approved.py:4-10`
+
+```
+from github import Github
+from github.PullRequestReview import PullRequestReview
+from pydantic import BaseModel, SecretStr
+from pydantic_settings import BaseSettings
+
+
+class LabelSettings(BaseModel):
+```
+
+3. `scripts/notify_translations.py:8-14`
+
+```
+import httpx
+from github import Github
+from pydantic import BaseModel, SecretStr
+from pydantic_settings import BaseSettings
+
+awaiting_label = "awaiting-review"
+lang_all_label = "lang-all"
+```
+
+---
+
 ### OpenAPI with FastAPI (customized)
 
 **ID:** `python.conventions.openapi_docs`  
 **Category:** api  
 **Language:** python  
 **Confidence:** 85%
+  
+**Documentation:** [https://swagger.io/specification/](https://swagger.io/specification/)
 
 Uses FastAPI's built-in OpenAPI with custom configuration.
 
@@ -1389,6 +1577,8 @@ app = FastAPI(docs_url=None, redoc_url=None)
 **Category:** security  
 **Language:** python  
 **Confidence:** 85%
+  
+**Documentation:** [https://docs.pydantic.dev/latest/concepts/pydantic_settings/](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 
 Uses Pydantic BaseSettings for configuration management. Found 38 Settings usages.
 
@@ -1443,6 +1633,8 @@ else:
 **Category:** testing  
 **Language:** python  
 **Confidence:** 84%
+  
+**Documentation:** [https://docs.pytest.org/](https://docs.pytest.org/)
 
 Uses Simple style (test_feature) naming. 2006/2047 (98%) test functions.
 
@@ -1499,6 +1691,8 @@ def test_default_placeholder_bool():
 **Category:** api  
 **Language:** python  
 **Confidence:** 84%
+  
+**Documentation:** [https://docs.pydantic.dev/](https://docs.pydantic.dev/)
 
 Uses Pydantic as primary schema library (876/895 usages). Also uses: dataclasses.
 
@@ -1553,6 +1747,8 @@ def client_fixture() -> TestClient:
 **Category:** api  
 **Language:** python  
 **Confidence:** 84%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Uses FastAPI as primary framework (2977/3072 usages). Also uses: Starlette, Flask.
 
@@ -1607,6 +1803,8 @@ def test_upload_file_invalid_pydantic_v2():
 **Category:** performance  
 **Language:** python  
 **Confidence:** 80%
+  
+**Documentation:** [https://redis.io/docs/](https://redis.io/docs/)
 
 Uses functools.lru_cache for caching.
 
@@ -1625,7 +1823,7 @@ Uses functools.lru_cache for caching.
 
 @lru_cache
 def get_cached_model_fields(model: type[BaseModel]) -> list[ModelField]:
-    return get_model_fields(model)  # type: ignore[return-value]
+    return get_model_fields(model)
 
 
 ```
@@ -1662,6 +1860,8 @@ def get_missing_translation_content(docs_dir: str) -> str:
 **Category:** code_style  
 **Language:** python  
 **Confidence:** 80%
+  
+**Documentation:** [https://docs.python.org/3/library/enum.html](https://docs.python.org/3/library/enum.html)
 
 Uses Python enums for categorical values. Found 4 enum class(es).
 
@@ -1726,6 +1926,8 @@ class SecuritySchemeType(Enum):
 **Category:** typing  
 **Language:** python  
 **Confidence:** 80%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
 
 Uses Optional type hint for nullable values. Found 20 imports of Optional.
 
@@ -1778,6 +1980,8 @@ from annotated_doc import Doc
 **Category:** api  
 **Language:** python  
 **Confidence:** 80%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Uses cursor-based pagination. 8 cursor/after/before usages.
 
@@ -1796,6 +2000,8 @@ Uses cursor-based pagination. 8 cursor/after/before usages.
 **Category:** documentation  
 **Language:** python  
 **Confidence:** 80%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Examples use main() function as entry point. Found 14 examples with main().
 
@@ -1816,6 +2022,8 @@ Examples use main() function as entry point. Found 14 examples with main().
 **Category:** documentation  
 **Language:** python  
 **Confidence:** 80%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Documentation organized as tutorials. Found 496 tutorial files. Common types: tutorial.
 
@@ -1834,6 +2042,8 @@ Documentation organized as tutorials. Found 496 tutorial files. Common types: tu
 **Category:** ci_cd  
 **Language:** generic  
 **Confidence:** 80%
+  
+**Documentation:** [https://docs.github.com/en/actions](https://docs.github.com/en/actions)
 
 Uses GitHub Actions for CI/CD. 19 workflow(s) configured.
 
@@ -1850,6 +2060,8 @@ Uses GitHub Actions for CI/CD. 19 workflow(s) configured.
 **Category:** dependencies  
 **Language:** generic  
 **Confidence:** 80%
+  
+**Documentation:** [https://docs.github.com/en/code-security/dependabot](https://docs.github.com/en/code-security/dependabot)
 
 Automated dependency updates via Dependabot for github-actions.
 
@@ -1867,13 +2079,15 @@ Automated dependency updates via Dependabot for github-actions.
 **Category:** git  
 **Language:** generic  
 **Confidence:** 80%
+  
+**Documentation:** [https://pre-commit.com/](https://pre-commit.com/)
 
-Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting.
+Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatting, linting.
 
 **Statistics:**
 
 - hooks_tools: `['pre-commit']`
-- hooks_configured: `['whitespace', 'file validation', 'formatting']`
+- hooks_configured: `['whitespace', 'file validation', 'formatting', 'linting']`
 - hook_tool: `pre-commit`
 - has_pre_commit: `True`
 - has_husky: `False`
@@ -1887,6 +2101,8 @@ Uses pre-commit for Git hooks. Configured: whitespace, file validation, formatti
 **Category:** validation  
 **Language:** python  
 **Confidence:** 78%
+  
+**Documentation:** [https://docs.pydantic.dev/](https://docs.pydantic.dev/)
 
 Uses Pydantic validation for input validation. 17/28 (61%) validation patterns use this approach.
 
@@ -1942,6 +2158,8 @@ from typing_extensions import Literal
 **Category:** documentation  
 **Language:** node  
 **Confidence:** 75%
+  
+**Documentation:** [https://www.typescriptlang.org/docs/](https://www.typescriptlang.org/docs/)
 
 Some JSDoc documentation present. JSDoc blocks: 12, functions: ~27.
 
@@ -2005,6 +2223,8 @@ class Termynal {
 **Category:** concurrency  
 **Language:** python  
 **Confidence:** 72%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Uses FastAPI BackgroundTasks for background task processing. Found 4 usages.
 
@@ -2068,6 +2288,8 @@ from fastapi.concurrency import (
 **Category:** structure  
 **Language:** generic  
 **Confidence:** 70%
+  
+**Documentation:** [https://docs.github.com/en/actions](https://docs.github.com/en/actions)
 
 Repository has standard directories: tests (tests), docs (documentation), scripts (scripts), .github (GitHub configuration)
 
@@ -2083,6 +2305,8 @@ Repository has standard directories: tests (tests), docs (documentation), script
 **Category:** naming  
 **Language:** python  
 **Confidence:** 70%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 
 Uses lowercase naming for module-level values. 87/91 use lowercase.
 
@@ -2133,6 +2357,8 @@ class ParamTypes(Enum):
 **Category:** error_handling  
 **Language:** python  
 **Confidence:** 70%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 HTTPException is frequently raised outside the API layer. Service: 0, API: 0, Other: 136.
 
@@ -2191,12 +2417,72 @@ async def read_starlette_item(item_id: str):
 
 ---
 
+### Limited exception chaining
+
+**ID:** `python.conventions.exception_chaining`  
+**Category:** error_handling  
+**Language:** python  
+**Confidence:** 70%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
+
+Rarely uses 'raise X from Y'. 7/66 (11%) raises use chaining. Use 'raise X from Y' to preserve context or 'raise X from None' to suppress.
+
+**Statistics:**
+
+- chained_raises: `7`
+- unchained_raises: `59`
+- bare_raises: `2`
+- chaining_ratio: `0.106`
+
+**Evidence:**
+
+1. `fastapi/encoders.py:332-338`
+
+```
+            data = vars(obj)
+        except Exception as e:
+            errors.append(e)
+            raise ValueError(errors) from e
+    return jsonable_encoder(
+        data,
+        include=include,
+```
+
+2. `fastapi/utils.py:92-98`
+
+```
+    try:
+        return v2.ModelField(**kwargs)  # type: ignore[arg-type]
+    except PydanticSchemaGenerationError:
+        raise fastapi.exceptions.FastAPIError(
+            _invalid_args_message.format(type_=type_)
+        ) from None
+
+```
+
+3. `fastapi/concurrency.py:34-40`
+
+```
+            )
+        )
+        if not ok:
+            raise e
+    else:
+        await anyio.to_thread.run_sync(
+            cm.__exit__, None, None, None, limiter=exit_limiter
+```
+
+---
+
 ### Absolute imports preferred
 
 **ID:** `python.conventions.import_style`  
 **Category:** code_style  
 **Language:** python  
 **Confidence:** 70%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 
 Prefers absolute imports. 74 relative vs 491 absolute imports.
 
@@ -2253,6 +2539,8 @@ from .exceptions import WebSocketException as WebSocketException
 **Category:** api  
 **Language:** python  
 **Confidence:** 70%
+  
+**Documentation:** [https://docs.pydantic.dev/](https://docs.pydantic.dev/)
 
 Uses response envelope classes (5 found).
 
@@ -2317,6 +2605,8 @@ class PRsResponse(BaseModel):
 **Category:** testing  
 **Language:** python  
 **Confidence:** 70%
+  
+**Documentation:** [https://docs.pytest.org/](https://docs.pytest.org/)
 
 Test files spread across 2 directories. 465 total test files.
 
@@ -2338,6 +2628,8 @@ Test files spread across 2 directories. 465 total test files.
 **Category:** documentation  
 **Language:** python  
 **Confidence:** 70%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Documentation uses code snippets (may require context from docs). Only 77/530 examples have all imports.
 
@@ -2356,6 +2648,8 @@ Documentation uses code snippets (may require context from docs). Only 77/530 ex
 **Category:** structure  
 **Language:** generic  
 **Confidence:** 65%
+  
+**Documentation:** [https://docs.github.com/en/actions](https://docs.github.com/en/actions)
 
 Repository has standard files: README.md, LICENSE, CONTRIBUTING.md, .gitignore, .pre-commit-config.yaml
 
@@ -2371,6 +2665,8 @@ Repository has standard files: README.md, LICENSE, CONTRIBUTING.md, .gitignore, 
 **Category:** database  
 **Language:** python  
 **Confidence:** 60%
+  
+**Documentation:** [https://docs.sqlalchemy.org/](https://docs.sqlalchemy.org/)
 
 Uses default SQLAlchemy connection pooling without explicit configuration.
 
@@ -2386,6 +2682,8 @@ Uses default SQLAlchemy connection pooling without explicit configuration.
 **Category:** database  
 **Language:** python  
 **Confidence:** 60%
+  
+**Documentation:** [https://docs.sqlalchemy.org/](https://docs.sqlalchemy.org/)
 
 Relies on autocommit or implicit transactions. Found 20 explicit commit calls.
 
@@ -2403,6 +2701,8 @@ Relies on autocommit or implicit transactions. Found 20 explicit commit calls.
 **Category:** documentation  
 **Language:** python  
 **Confidence:** 60%
+  
+**Documentation:** [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 
 Few functions have docstrings. Only 72/366 (20%).
 
@@ -2467,6 +2767,8 @@ def pdm_build_initialize(context: Context) -> None:
 **Category:** error_handling  
 **Language:** python  
 **Confidence:** 60%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
 
 Exception naming is mixed: 17 *Error, 4 *Exception out of 22 total.
 
@@ -2524,6 +2826,8 @@ class SyncDependencyError(Exception):
 **Category:** error_handling  
 **Language:** python  
 **Confidence:** 60%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Exception handlers are spread across 6 modules.
 
@@ -2532,7 +2836,7 @@ Exception handlers are spread across 6 modules.
 - total_handlers: `31`
 - decorator_handlers: `12`
 - call_handlers: `19`
-- handler_files: `['docs_src/handling_errors/tutorial004_py39.py', 'docs_src/handling_errors/tutorial006_py39.py', 'fastapi/applications.py', 'tests/test_validation_error_context.py', 'docs_src/handling_errors/tutorial003_py39.py', 'docs_src/handling_errors/tutorial005_py39.py']`
+- handler_files: `['docs_src/handling_errors/tutorial006_py39.py', 'docs_src/handling_errors/tutorial005_py39.py', 'tests/test_validation_error_context.py', 'docs_src/handling_errors/tutorial003_py39.py', 'fastapi/applications.py', 'docs_src/handling_errors/tutorial004_py39.py']`
 
 **Evidence:**
 
@@ -2583,12 +2887,39 @@ async def response_validation_handler(_: Request, exc: ResponseValidationError):
 
 ---
 
+### Pre-commit hooks configured
+
+**ID:** `python.conventions.pre_commit_hooks`  
+**Category:** tooling  
+**Language:** python  
+**Confidence:** 60%
+  
+**Documentation:** [https://pre-commit.com/](https://pre-commit.com/)
+
+Pre-commit is configured with 13 hooks.
+
+**Statistics:**
+
+- has_pre_commit: `True`
+- hooks: `['check-added-large-files', 'check-toml', 'check-yaml', 'end-of-file-fixer', 'trailing-whitespace', 'local-ruff-check', 'local-ruff-format', 'local-mypy', 'add-permalinks-pages', 'generate-readme', 'update-languages', 'ensure-non-translated', 'fix-translations']`
+- has_ruff: `False`
+- has_mypy: `False`
+- has_pyright: `False`
+- has_type_checker: `False`
+- has_black: `False`
+- has_flake8: `False`
+- has_isort: `False`
+
+---
+
 ### Infrequent timeout specification
 
 **ID:** `python.conventions.timeouts`  
 **Category:** resilience  
 **Language:** python  
 **Confidence:** 60%
+  
+**Documentation:** [https://www.python-httpx.org/](https://www.python-httpx.org/)
 
 Timeouts are rarely specified on external calls. Only 4 calls with explicit timeouts.
 
@@ -2644,6 +2975,8 @@ Timeouts are rarely specified on external calls. Only 4 calls with explicit time
 **Category:** error_handling  
 **Language:** python  
 **Confidence:** 59%
+  
+**Documentation:** [https://docs.python.org/3/library/typing.html](https://docs.python.org/3/library/typing.html)
 
 Uses 'time.sleep' as a common error handler function. Called in 6/28 (21%) except blocks. Also uses: errors.append, RuntimeError.
 
@@ -2710,6 +3043,8 @@ try:
 **Category:** resilience  
 **Language:** python  
 **Confidence:** 50%
+  
+**Documentation:** [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 
 Has 1 health-related function(s) but no clear endpoints.
 

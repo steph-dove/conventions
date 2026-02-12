@@ -10,6 +10,7 @@ from .class_patterns import PythonClassPatternsDetector
 from .cli_patterns import PythonCLIPatternDetector
 from .code_style import PythonCodeStyleDetector
 from .constants_enums import PythonConstantsEnumsDetector
+from .data_flow import PythonDataFlowDetector
 from .db import PythonDBConventionsDetector
 from .decorator_patterns import PythonDecoratorPatternsDetector
 from .dependency_management import PythonDependencyManagementDetector
@@ -71,4 +72,5 @@ __all__ = [
     "PythonToolingDetector",
     "PythonTypingConventionsDetector",
     "PythonValidationPatternsDetector",
+    "PythonDataFlowDetector",
 ]

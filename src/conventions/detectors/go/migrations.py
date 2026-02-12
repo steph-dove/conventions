@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
 from .base import GoDetector
@@ -119,4 +121,63 @@ class GoMigrationsDetector(GoDetector):
             },
         ))
 
+        # Detect database entities from struct tags
+        self._detect_entities(ctx, index, result)
+
         return result
+
+    def _detect_entities(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect database entities from Go structs with db/gorm/bun tags."""
+        entities: list[dict[str, str]] = []
+        orm = None
+        db_tag_re = re.compile(r'`[^`]*(?:db:|gorm:|bun:)[^`]*`')
+
+        for rel_path, file_idx in index.files.items():
+            if file_idx.role == "test":
+                continue
+
+            content = "\n".join(file_idx.lines)
+
+            for struct_name, struct_line in file_idx.structs:
+                # Look at lines after struct declaration for db tags
+                start = struct_line - 1
+                end = min(len(file_idx.lines), start + 30)
+                block = "\n".join(file_idx.lines[start:end])
+
+                if db_tag_re.search(block):
+                    entities.append({"name": struct_name, "file": rel_path})
+                    if "gorm:" in block:
+                        orm = orm or "gorm"
+                    elif "bun:" in block:
+                        orm = orm or "bun"
+                    else:
+                        orm = orm or "sqlx"
+
+        if not entities:
+            return
+
+        names = [e["name"] for e in entities[:10]]
+        description = (
+            f"{len(entities)} {orm or 'DB'} entities: {', '.join(names)}"
+            + ("..." if len(entities) > 10 else "") + "."
+        )
+
+        result.rules.append(self.make_rule(
+            rule_id="go.conventions.db_entities",
+            category="database",
+            title="Database entities",
+            description=description,
+            confidence=0.90,
+            language="go",
+            evidence=[],
+            stats={
+                "entities": entities,
+                "entity_count": len(entities),
+                "orm": orm or "unknown",
+            },
+        ))

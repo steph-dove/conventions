@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from ..base import DetectorContext, DetectorResult
 from ..registry import DetectorRegistry
@@ -138,4 +139,99 @@ class NodePackageManagerDetector(NodeDetector):
             },
         ))
 
+        self._detect_dependency_health(ctx, managers, result)
+
         return result
+
+    def _detect_dependency_health(
+        self,
+        ctx: DetectorContext,
+        managers: dict[str, dict],
+        result: DetectorResult,
+    ) -> None:
+        """Analyze dependency health: pinning strategy, lock file, engines."""
+        pkg_json_path = ctx.repo_root / "package.json"
+        if not pkg_json_path.is_file():
+            return
+
+        try:
+            pkg_data = json.loads(pkg_json_path.read_text())
+        except (json.JSONDecodeError, OSError):
+            return
+
+        # Analyze pinning strategy
+        exact_count = 0
+        caret_count = 0
+        tilde_count = 0
+        range_count = 0
+        other_count = 0
+
+        for deps_key in ("dependencies", "devDependencies"):
+            deps = pkg_data.get(deps_key, {})
+            if not isinstance(deps, dict):
+                continue
+            for _, version in deps.items():
+                v = str(version).strip()
+                if re.match(r"^\d+\.\d+\.\d+$", v):
+                    exact_count += 1
+                elif v.startswith("^"):
+                    caret_count += 1
+                elif v.startswith("~"):
+                    tilde_count += 1
+                elif v.startswith(">=") or v.startswith(">") or " " in v:
+                    range_count += 1
+                else:
+                    other_count += 1
+
+        total_deps = exact_count + caret_count + tilde_count + range_count + other_count
+        if total_deps == 0:
+            return
+
+        # Determine dominant pinning strategy
+        counts = {
+            "exact": exact_count,
+            "caret": caret_count,
+            "tilde": tilde_count,
+            "range": range_count,
+        }
+        pinning_strategy = max(counts, key=counts.get)  # type: ignore[arg-type]
+
+        has_lock_file = any(
+            (ctx.repo_root / lf).is_file()
+            for lf in ("package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb")
+        )
+
+        engines = pkg_data.get("engines", {})
+        has_engine_constraint = bool(engines)
+
+        parts = [f"{total_deps} deps"]
+        parts.append(f"pinning: {pinning_strategy} ({counts[pinning_strategy]}/{total_deps})")
+        if has_lock_file:
+            parts.append("lock file present")
+        else:
+            parts.append("no lock file")
+        if has_engine_constraint:
+            parts.append(f"engines: {', '.join(f'{k} {v}' for k, v in engines.items())}")
+
+        description = f"Dependency health: {'; '.join(parts)}."
+
+        result.rules.append(self.make_rule(
+            rule_id="node.conventions.dependency_health",
+            category="dependencies",
+            title="Dependency health",
+            description=description,
+            confidence=0.85,
+            language="node",
+            evidence=[],
+            stats={
+                "total_deps": total_deps,
+                "exact_count": exact_count,
+                "caret_count": caret_count,
+                "tilde_count": tilde_count,
+                "range_count": range_count,
+                "pinning_strategy": pinning_strategy,
+                "has_lock_file": has_lock_file,
+                "has_engine_constraint": has_engine_constraint,
+                "engines": engines,
+            },
+        ))

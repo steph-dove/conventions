@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 
 from ..base import DetectorContext, DetectorResult, PythonDetector
@@ -92,6 +93,9 @@ class PythonDBConventionsDetector(PythonDetector):
 
         # Detect async ORM usage
         self._detect_async_orm(ctx, index, result)
+
+        # Detect database entities
+        self._detect_entities(ctx, index, result)
 
         return result
 
@@ -724,5 +728,76 @@ class PythonDBConventionsDetector(PythonDetector):
                 "async_session_count": async_session_count,
                 "async_engine_count": async_engine_count,
                 "is_async_framework": is_async_framework,
+            },
+        ))
+
+    def _detect_entities(
+        self,
+        ctx: DetectorContext,
+        index,
+        result: DetectorResult,
+    ) -> None:
+        """Detect database model entities (SQLAlchemy, Django, SQLModel)."""
+        entities: list[dict[str, str]] = []
+        orm = None
+
+        for rel_path, cls in index.get_all_classes():
+            # Skip test files
+            file_idx = index.files.get(rel_path)
+            if file_idx and file_idx.role == "test":
+                continue
+
+            # Django models: inherits from models.Model
+            if any("Model" in b for b in cls.bases) and any(
+                "models" in b for b in cls.bases
+            ):
+                entities.append({"name": cls.name, "file": rel_path})
+                orm = orm or "django"
+                continue
+
+            # SQLModel with table=True (check decorators / bases)
+            if "SQLModel" in cls.bases:
+                entities.append({"name": cls.name, "file": rel_path})
+                orm = orm or "sqlmodel"
+                continue
+
+            # Check for __tablename__ in class body (SQLAlchemy declarative)
+            if file_idx and file_idx.lines:
+                # Scan lines after class def until next class/function def
+                start = cls.line  # line after class declaration (0-indexed)
+                end = min(len(file_idx.lines), start + 20)
+                for line_text in file_idx.lines[start:end]:
+                    stripped = line_text.lstrip()
+                    # Stop at next class or top-level def
+                    if stripped.startswith("class ") or (
+                        stripped.startswith("def ") and not line_text.startswith(" ")
+                    ):
+                        break
+                    if "__tablename__" in line_text:
+                        entities.append({"name": cls.name, "file": rel_path})
+                        orm = orm or "sqlalchemy"
+                        break
+
+        if not entities:
+            return
+
+        names = [e["name"] for e in entities[:10]]
+        description = (
+            f"{len(entities)} {orm or 'ORM'} models: {', '.join(names)}"
+            + ("..." if len(entities) > 10 else "") + "."
+        )
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.db_entities",
+            category="database",
+            title="Database entities",
+            description=description,
+            confidence=0.90,
+            language="python",
+            evidence=[],
+            stats={
+                "entities": entities,
+                "entity_count": len(entities),
+                "orm": orm or "unknown",
             },
         ))

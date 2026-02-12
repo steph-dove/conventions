@@ -9,6 +9,7 @@ from .concurrency import GoConcurrencyDetector
 
 # Import all detector classes to ensure they register
 from .conventions import GoConventionsDetector
+from .data_flow import GoDataFlowDetector
 from .di import GoDIDetector
 from .documentation import GoDocumentationDetector
 from .errors import GoErrorHandlingDetector
@@ -41,4 +42,5 @@ __all__ = [
     "GoDIDetector",
     "GoGRPCDetector",
     "GoCodegenDetector",
+    "GoDataFlowDetector",
 ]

@@ -56,6 +56,9 @@ def generate_sarif_report(output: ConventionsOutput) -> dict[str, Any]:
         score, reason, suggestion = rate_convention(rule)
         rule_index_map[rule.id] = idx
 
+        # Use docs_url if available, otherwise fall back to tool info
+        help_uri = rule.docs_url if rule.docs_url else f"{TOOL_INFO_URI}#rules"
+
         sarif_rule: dict[str, Any] = {
             "id": rule.id,
             "name": rule.title,
@@ -65,13 +68,14 @@ def generate_sarif_report(output: ConventionsOutput) -> dict[str, Any]:
             "fullDescription": {
                 "text": rule.description,
             },
-            "helpUri": f"{TOOL_INFO_URI}#rules",
+            "helpUri": help_uri,
             "properties": {
                 "category": rule.category,
                 "language": rule.language or "generic",
                 "score": score,
                 "scoreLabel": get_score_label(score),
                 "precision": "high" if rule.confidence >= 0.8 else "medium",
+                "docsUrl": rule.docs_url,
             },
         }
 

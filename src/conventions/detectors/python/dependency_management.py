@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from ...fs import read_file_safe
 from ..base import DetectorContext, DetectorResult, PythonDetector
 from ..registry import DetectorRegistry
@@ -142,6 +144,12 @@ class PythonDependencyManagementDetector(PythonDetector):
         # Detect lock file separately
         self._detect_lock_file(ctx, tools, result)
 
+        # Detect dependency health
+        self._detect_dependency_health(ctx, result)
+
+        # Detect src-layout / import path
+        self._detect_src_layout(ctx, result)
+
         return result
 
     def _detect_lock_file(
@@ -261,5 +269,167 @@ class PythonDependencyManagementDetector(PythonDetector):
                 "primary_lock": primary,
                 "quality": quality if lock_files else "none",
                 "has_lock": bool(lock_files),
+            },
+        ))
+
+    def _detect_dependency_health(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Analyze dependency pinning strategy."""
+        exact_count = 0  # ==
+        compatible_count = 0  # ~=
+        minimum_count = 0  # >=
+        unpinned_count = 0
+        total = 0
+
+        # Check requirements.txt
+        req_txt = ctx.repo_root / "requirements.txt"
+        if req_txt.is_file():
+            content = read_file_safe(req_txt)
+            if content:
+                for line in content.splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#") or line.startswith("-"):
+                        continue
+                    total += 1
+                    if "==" in line:
+                        exact_count += 1
+                    elif "~=" in line:
+                        compatible_count += 1
+                    elif ">=" in line:
+                        minimum_count += 1
+                    else:
+                        unpinned_count += 1
+
+        # Check pyproject.toml [project.dependencies]
+        pyproject = ctx.repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            content = read_file_safe(pyproject)
+            if content:
+                # Simple regex to find dependencies list
+                dep_match = re.search(
+                    r'\[project\]\s*(?:.*?\n)*?dependencies\s*=\s*\[(.*?)\]',
+                    content,
+                    re.DOTALL,
+                )
+                if dep_match:
+                    for line in dep_match.group(1).splitlines():
+                        line = line.strip().strip(',').strip('"').strip("'")
+                        if not line or line.startswith("#"):
+                            continue
+                        total += 1
+                        if "==" in line:
+                            exact_count += 1
+                        elif "~=" in line:
+                            compatible_count += 1
+                        elif ">=" in line:
+                            minimum_count += 1
+                        else:
+                            unpinned_count += 1
+
+        if total == 0:
+            return
+
+        # Determine pinning strategy
+        counts = {
+            "exact": exact_count,
+            "compatible": compatible_count,
+            "minimum": minimum_count,
+            "unpinned": unpinned_count,
+        }
+        pinning_strategy = max(counts, key=counts.get)  # type: ignore[arg-type]
+
+        has_lock_file = any(
+            (ctx.repo_root / lf).is_file()
+            for lf in ("poetry.lock", "uv.lock", "pdm.lock", "Pipfile.lock")
+        )
+
+        parts = [f"{total} deps"]
+        parts.append(f"pinning: {pinning_strategy} ({counts[pinning_strategy]}/{total})")
+        if has_lock_file:
+            parts.append("lock file present")
+
+        description = f"Dependency health: {'; '.join(parts)}."
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.dependency_health",
+            category="dependencies",
+            title="Dependency health",
+            description=description,
+            confidence=0.85,
+            language="python",
+            evidence=[],
+            stats={
+                "total_deps": total,
+                "exact_count": exact_count,
+                "compatible_count": compatible_count,
+                "minimum_count": minimum_count,
+                "unpinned_count": unpinned_count,
+                "pinning_strategy": pinning_strategy,
+                "has_lock_file": has_lock_file,
+            },
+        ))
+
+    def _detect_src_layout(
+        self,
+        ctx: DetectorContext,
+        result: DetectorResult,
+    ) -> None:
+        """Detect src-layout vs flat-layout and import path."""
+        src_dir = ctx.repo_root / "src"
+        layout = "flat"
+        package_name = None
+
+        if src_dir.is_dir():
+            # Check if src/ contains a Python package
+            for item in src_dir.iterdir():
+                if item.is_dir() and (item / "__init__.py").is_file():
+                    layout = "src"
+                    package_name = item.name
+                    break
+
+        # Also check pyproject.toml for explicit configuration
+        pyproject = ctx.repo_root / "pyproject.toml"
+        if pyproject.is_file():
+            content = read_file_safe(pyproject)
+            if content:
+                # setuptools src layout
+                if 'where = ["src"]' in content or "where = ['src']" in content:
+                    layout = "src"
+                # poetry packages
+                if 'from = "src"' in content or "from = 'src'" in content:
+                    layout = "src"
+                # Try to find package name from pyproject
+                if not package_name:
+                    name_match = re.search(r'^name\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+                    if name_match:
+                        package_name = name_match.group(1).replace("-", "_")
+
+        if not package_name:
+            # Try to find any top-level package
+            for item in ctx.repo_root.iterdir():
+                if item.is_dir() and (item / "__init__.py").is_file():
+                    if item.name not in ("tests", "test", "docs", "scripts", "bin"):
+                        package_name = item.name
+                        break
+
+        if not package_name:
+            return
+
+        desc = f"Python {layout}-layout. Import: `{package_name}`."
+
+        result.rules.append(self.make_rule(
+            rule_id="python.conventions.import_aliases",
+            category="language",
+            title=f"Python import path ({layout}-layout)",
+            description=desc,
+            confidence=0.85,
+            language="python",
+            evidence=[],
+            stats={
+                "layout": layout,
+                "package_name": package_name,
             },
         ))
