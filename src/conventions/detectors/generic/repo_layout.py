@@ -101,7 +101,7 @@ class GenericRepoLayoutDetector(BaseDetector):
                 category="structure",
                 title="Standard repository layout",
                 description=description,
-                confidence=min(0.9, 0.5 + len(found_dirs) * 0.05),
+                confidence=min(0.9, 0.65 + len(found_dirs) * 0.05),
                 language="generic",
                 evidence=[],
                 stats=stats,
